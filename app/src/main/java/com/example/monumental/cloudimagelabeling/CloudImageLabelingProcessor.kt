@@ -1,4 +1,4 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudimagelabeling
+package com.example.monumental.cloudimagelabeling
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -38,7 +38,7 @@ class CloudImageLabelingProcessor : VisionProcessorBase<List<FirebaseVisionImage
 
         results.forEach {
             Log.d(TAG, "cloud label: $it")
-            it.text?.let { text ->
+            it.text.let { text ->
                 labelsStr.add(text)
             }
         }

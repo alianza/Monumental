@@ -1,15 +1,15 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudtextrecognition
+package com.example.monumental.cloudtextrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.monumental.VisionProcessorBase
+import com.example.monumental.common.FrameMetadata
+import com.example.monumental.common.GraphicOverlay
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer
-import com.google.firebase.samples.apps.mlkit.common.FrameMetadata
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
-import com.google.firebase.samples.apps.mlkit.kotlin.VisionProcessorBase
 
 /**
  * Processor for the cloud text detector demo.
@@ -29,9 +29,6 @@ class CloudTextRecognitionProcessor : VisionProcessorBase<FirebaseVisionText>() 
         graphicOverlay: GraphicOverlay
     ) {
         graphicOverlay.clear()
-        if (results == null) {
-            return // TODO: investigate why this is needed
-        }
         val blocks = results.textBlocks
         for (i in blocks.indices) {
             val lines = blocks[i].lines

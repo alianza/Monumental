@@ -1,5 +1,6 @@
 package com.example.monumental
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.util.Pair
 import android.view.Menu
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        requestPermissions(arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), 1)
 
         getImageButton.setOnClickListener { view ->
             // Menu for selecting either: a) take new photo b) select from existing
@@ -237,7 +241,7 @@ class MainActivity : AppCompatActivity() {
             previewOverlay?.clear()
 
             val imageBitmap = if (Build.VERSION.SDK_INT < 29) {
-                MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                getBitmap(contentResolver, imageUri)
             } else {
                 val source = ImageDecoder.createSource(contentResolver, imageUri!!)
                 ImageDecoder.decodeBitmap(source)

@@ -1,11 +1,11 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudlandmarkrecognition
+package com.example.monumental.cloudlandmarkrecognition
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import com.example.monumental.common.GraphicOverlay
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
 
 /** Graphic instance for rendering detected landmark.  */
 class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: FirebaseVisionCloudLandmark) :
@@ -26,7 +26,7 @@ class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: Fireba
      * Draws the landmark block annotations for position, size, and raw value on the supplied canvas.
      */
     override fun draw(canvas: Canvas) {
-        landmark.landmark?.let { lm ->
+        landmark.landmark.let { lm ->
             landmark.boundingBox?.let { boundingBox ->
                 // Draws the bounding box around the LandmarkBlock.
                 val rect = RectF(boundingBox)

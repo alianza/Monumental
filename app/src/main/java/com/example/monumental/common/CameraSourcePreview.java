@@ -23,7 +23,8 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.images.Size;
-import com.google.firebase.samples.apps.mlkit.common.preference.PreferenceUtils;
+
+import com.example.monumental.common.preference.PreferenceUtils;
 
 import java.io.IOException;
 

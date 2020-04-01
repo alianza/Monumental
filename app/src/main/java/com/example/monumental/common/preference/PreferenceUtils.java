@@ -1,5 +1,6 @@
 package com.example.monumental.common.preference;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -11,9 +12,12 @@ import androidx.core.util.Preconditions;
 import com.google.android.gms.common.images.Size;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import com.google.firebase.ml.vision.objects.FirebaseVisionObjectDetectorOptions;
-import com.google.firebase.samples.apps.mlkit.R;
-import com.google.firebase.samples.apps.mlkit.common.CameraSource;
-import com.google.firebase.samples.apps.mlkit.common.CameraSource.SizePair;
+
+import com.example.monumental.R;
+import com.example.monumental.common.CameraSource;
+import com.example.monumental.common.CameraSource.SizePair;
+
+import java.util.Objects;
 
 /** Utility class to retrieve shared preferences. */
 public class PreferenceUtils {
@@ -25,6 +29,7 @@ public class PreferenceUtils {
         .apply();
   }
 
+  @SuppressLint("RestrictedApi")
   @Nullable
   public static SizePair getCameraPreviewSizePair(Context context, int cameraId) {
     Preconditions.checkArgument(
@@ -43,8 +48,8 @@ public class PreferenceUtils {
     try {
       SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
       return new SizePair(
-          Size.parseSize(sharedPreferences.getString(previewSizePrefKey, null)),
-          Size.parseSize(sharedPreferences.getString(pictureSizePrefKey, null)));
+          Size.parseSize(Objects.requireNonNull(sharedPreferences.getString(previewSizePrefKey, null))),
+          Size.parseSize(Objects.requireNonNull(sharedPreferences.getString(pictureSizePrefKey, null))));
     } catch (Exception e) {
       return null;
     }

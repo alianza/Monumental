@@ -1,16 +1,16 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudlandmarkrecognition
+package com.example.monumental.cloudlandmarkrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.monumental.VisionProcessorBase
+import com.example.monumental.common.FrameMetadata
+import com.example.monumental.common.GraphicOverlay
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.google.firebase.samples.apps.mlkit.common.FrameMetadata
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
-import com.google.firebase.samples.apps.mlkit.kotlin.VisionProcessorBase
 
 /** Cloud Landmark Detector Demo.  */
 class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisionCloudLandmark>>() {

@@ -11,9 +11,9 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
-import com.google.firebase.samples.apps.mlkit.R;
-import com.google.firebase.samples.apps.mlkit.common.CameraSource;
-import com.google.firebase.samples.apps.mlkit.common.CameraSource.SizePair;
+import com.example.monumental.R;
+import com.example.monumental.common.CameraSource;
+import com.example.monumental.common.CameraSource.SizePair;
 
 import java.util.HashMap;
 import java.util.List;

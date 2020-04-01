@@ -1,9 +1,9 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudimagelabeling
+package com.example.monumental.cloudimagelabeling
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
+import com.example.monumental.common.GraphicOverlay
 
 /** Graphic instance for rendering detected label.  */
 class CloudLabelGraphic(private val overlay: GraphicOverlay, private val labels: List<String>) :

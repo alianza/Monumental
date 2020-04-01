@@ -1,10 +1,10 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudtextrecognition
+package com.example.monumental.cloudtextrecognition
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.example.monumental.common.GraphicOverlay
 import com.google.firebase.ml.vision.document.FirebaseVisionDocumentText
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic

@@ -31,7 +31,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
 import com.google.android.gms.common.images.Size;
-import com.google.firebase.samples.apps.mlkit.common.preference.PreferenceUtils;
+
+import com.example.monumental.common.preference.PreferenceUtils;
 
 import java.io.IOException;
 import java.lang.Thread.State;
@@ -54,7 +55,7 @@ public class CameraSource {
   @SuppressLint("InlinedApi")
   public static final int CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT;
 
-  public static final int IMAGE_FORMAT = ImageFormat.NV21;
+  private static final int IMAGE_FORMAT = ImageFormat.NV21;
   public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 480;
   public static final int DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 360;
 
@@ -73,7 +74,7 @@ public class CameraSource {
    */
   private static final float ASPECT_RATIO_TOLERANCE = 0.01f;
 
-  protected Activity activity;
+  private Activity activity;
 
   private Camera camera;
 
@@ -138,7 +139,7 @@ public class CameraSource {
   // ==============================================================================================
 
   /** Stops the camera and releases the resources of the camera and underlying detector. */
-  public void release() {
+  void release() {
     synchronized (processorLock) {
       stop();
       processingRunnable.release();
@@ -158,7 +159,7 @@ public class CameraSource {
    */
   @SuppressLint("MissingPermission")
   @RequiresPermission(Manifest.permission.CAMERA)
-  public synchronized CameraSource start() throws IOException {
+  synchronized CameraSource start() throws IOException {
     if (camera != null) {
       return this;
     }
@@ -183,7 +184,7 @@ public class CameraSource {
    * @throws IOException if the supplied surface holder could not be used as the preview display
    */
   @RequiresPermission(Manifest.permission.CAMERA)
-  public synchronized CameraSource start(SurfaceHolder surfaceHolder) throws IOException {
+  synchronized CameraSource start(SurfaceHolder surfaceHolder) throws IOException {
     if (camera != null) {
       return this;
     }
@@ -209,7 +210,7 @@ public class CameraSource {
    * <p>Call {@link #release()} instead to completely shut down this camera source and release the
    * resources of the underlying detector.
    */
-  public synchronized void stop() {
+  synchronized void stop() {
     processingRunnable.setActive(false);
     if (processingThread != null) {
       try {
@@ -252,7 +253,7 @@ public class CameraSource {
   }
 
   /** Returns the preview size that is currently in use by the underlying camera. */
-  public Size getPreviewSize() {
+  Size getPreviewSize() {
     return previewSize;
   }
 
@@ -260,7 +261,7 @@ public class CameraSource {
    * Returns the selected camera; one of {@link #CAMERA_FACING_BACK} or {@link
    * #CAMERA_FACING_FRONT}.
    */
-  public int getCameraFacing() {
+  int getCameraFacing() {
     return facing;
   }
 

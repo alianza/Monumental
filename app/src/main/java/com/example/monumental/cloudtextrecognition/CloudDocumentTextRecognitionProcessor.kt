@@ -1,15 +1,15 @@
-package com.google.firebase.samples.apps.mlkit.kotlin.cloudtextrecognition
+package com.example.monumental.cloudtextrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.monumental.VisionProcessorBase
+import com.example.monumental.common.FrameMetadata
+import com.example.monumental.common.GraphicOverlay
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.document.FirebaseVisionDocumentText
 import com.google.firebase.ml.vision.document.FirebaseVisionDocumentTextRecognizer
-import com.google.firebase.samples.apps.mlkit.common.FrameMetadata
-import com.google.firebase.samples.apps.mlkit.common.GraphicOverlay
-import com.google.firebase.samples.apps.mlkit.kotlin.VisionProcessorBase
 
 /** Processor for the cloud document text detector demo.  */
 class CloudDocumentTextRecognitionProcessor : VisionProcessorBase<FirebaseVisionDocumentText>() {
