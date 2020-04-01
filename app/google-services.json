@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "29036054859",
+    "firebase_url": "https://monumental-bro.firebaseio.com",
+    "project_id": "monumental-bro",
+    "storage_bucket": "monumental-bro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29036054859:android:cb92b9da3d2864d69d40ce",
+        "android_client_info": {
+          "package_name": "com.example.monumental"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29036054859-luf4ub28hpdapqf46atdmlvrc3orcbvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjWiLICkVrVkb7KVbj_CYUK1sQO-bQBRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29036054859-luf4ub28hpdapqf46atdmlvrc3orcbvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
