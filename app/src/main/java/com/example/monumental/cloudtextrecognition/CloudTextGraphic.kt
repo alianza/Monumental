@@ -10,7 +10,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
  */
-class CloudTextGraphic(
+abstract class CloudTextGraphic(
     overlay: GraphicOverlay,
     private val element: FirebaseVisionText.Element?
 ) : GraphicOverlay.Graphic(overlay) {
@@ -27,12 +27,12 @@ class CloudTextGraphic(
     }
 
     /** Draws the text block annotations for position, size, and raw value on the supplied canvas.  */
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         element?.let { ele ->
             val rect = ele.boundingBox
             rect?.let {
-                canvas.drawRect(it, rectPaint)
-                canvas.drawText(ele.text, it.left.toFloat(), it.bottom.toFloat(), textPaint)
+                canvas?.drawRect(it, rectPaint)
+                canvas?.drawText(ele.text, it.left.toFloat(), it.bottom.toFloat(), textPaint)
             }
         } ?: kotlin.run { throw IllegalStateException("Attempting to draw a null text.") }
     }

@@ -37,10 +37,10 @@ class CloudDocumentTextRecognitionProcessor : VisionProcessorBase<FirebaseVision
                 for (l in words.indices) {
                     val symbols = words[l].symbols
                     for (m in symbols.indices) {
-                        val cloudDocumentTextGraphic = CloudDocumentTextGraphic(
+                        val cloudDocumentTextGraphic = object: CloudDocumentTextGraphic(
                             graphicOverlay,
                             symbols[m]
-                        )
+                        ) {}
                         graphicOverlay.add(cloudDocumentTextGraphic)
                         graphicOverlay.postInvalidate()
                     }

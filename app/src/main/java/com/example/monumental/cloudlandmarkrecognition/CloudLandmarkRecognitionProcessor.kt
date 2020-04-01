@@ -41,7 +41,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
 
         results.forEach {
             Log.d(TAG, "cloud landmark: $it")
-            val cloudLandmarkGraphic = CloudLandmarkGraphic(graphicOverlay, it)
+            val cloudLandmarkGraphic = object: CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
         }
         graphicOverlay.postInvalidate()

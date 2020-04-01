@@ -35,10 +35,10 @@ class CloudTextRecognitionProcessor : VisionProcessorBase<FirebaseVisionText>() 
             for (j in lines.indices) {
                 val elements = lines[j].elements
                 for (l in elements.indices) {
-                    val cloudTextGraphic = CloudTextGraphic(
+                    val cloudTextGraphic = object: CloudTextGraphic(
                         graphicOverlay,
                         elements[l]
-                    )
+                    ) {}
                     graphicOverlay.add(cloudTextGraphic)
                     graphicOverlay.postInvalidate()
                 }

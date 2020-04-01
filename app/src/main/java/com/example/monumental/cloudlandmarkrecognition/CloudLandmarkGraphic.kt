@@ -8,7 +8,7 @@ import com.example.monumental.common.GraphicOverlay
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 
 /** Graphic instance for rendering detected landmark.  */
-class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: FirebaseVisionCloudLandmark) :
+abstract class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: FirebaseVisionCloudLandmark) :
     GraphicOverlay.Graphic(overlay) {
 
     private val rectPaint = Paint().apply {
@@ -25,7 +25,7 @@ class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: Fireba
     /**
      * Draws the landmark block annotations for position, size, and raw value on the supplied canvas.
      */
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         landmark.landmark.let { lm ->
             landmark.boundingBox?.let { boundingBox ->
                 // Draws the bounding box around the LandmarkBlock.
@@ -35,10 +35,10 @@ class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmark: Fireba
                     top = translateY(top)
                     right = translateX(right)
                     bottom = translateY(bottom)
-                    canvas.drawRect(this, rectPaint)
+                    canvas?.drawRect(this, rectPaint)
 
                     // Renders the landmark at the bottom of the box.
-                    canvas.drawText(lm, left, bottom, landmarkPaint)
+                    canvas?.drawText(lm, right, bottom, landmarkPaint)
                 }
             }
         }

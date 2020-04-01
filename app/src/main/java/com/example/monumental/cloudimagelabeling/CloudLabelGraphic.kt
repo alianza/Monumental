@@ -6,7 +6,7 @@ import android.graphics.Paint
 import com.example.monumental.common.GraphicOverlay
 
 /** Graphic instance for rendering detected label.  */
-class CloudLabelGraphic(private val overlay: GraphicOverlay, private val labels: List<String>) :
+abstract class CloudLabelGraphic(private val overlay: GraphicOverlay, private val labels: List<String>) :
     GraphicOverlay.Graphic(overlay) {
 
     private val textPaint = Paint().apply {
@@ -15,12 +15,12 @@ class CloudLabelGraphic(private val overlay: GraphicOverlay, private val labels:
     }
 
     @Synchronized
-    override fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas?) {
         val x = overlay.width / 4.0f
         var y = overlay.height / 4.0f
 
         for (label in labels) {
-            canvas.drawText(label, x, y, textPaint)
+            canvas?.drawText(label, x, y, textPaint)
             y -= 62.0f
         }
     }

@@ -36,25 +36,29 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
 
     @Synchronized
     override fun process(
-        data: ByteBuffer,
-        frameMetadata: FrameMetadata,
-        graphicOverlay: GraphicOverlay
+        data: ByteBuffer?,
+        frameMetadata: FrameMetadata?,
+        graphicOverlay: GraphicOverlay?
     ) {
         latestImage = data
         latestImageMetaData = frameMetadata
         if (processingImage == null && processingMetaData == null) {
-            processLatestImage(graphicOverlay)
+            if (graphicOverlay != null) {
+                processLatestImage(graphicOverlay)
+            }
         }
     }
 
     // Bitmap version
-    override fun process(bitmap: Bitmap, graphicOverlay: GraphicOverlay) {
-        detectInVisionImage(
-            null, /* bitmap */
-            FirebaseVisionImage.fromBitmap(bitmap),
-            null,
-            graphicOverlay
-        )
+    override fun process(bitmap: Bitmap?, graphicOverlay: GraphicOverlay?) {
+        if (graphicOverlay != null) {
+            detectInVisionImage(
+                null, /* bitmap */
+                FirebaseVisionImage.fromBitmap(bitmap!!),
+                null,
+                graphicOverlay
+            )
+        }
     }
 
     @Synchronized

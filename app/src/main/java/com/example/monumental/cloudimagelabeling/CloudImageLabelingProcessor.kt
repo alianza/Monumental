@@ -43,7 +43,7 @@ class CloudImageLabelingProcessor : VisionProcessorBase<List<FirebaseVisionImage
             }
         }
 
-        val cloudLabelGraphic = CloudLabelGraphic(graphicOverlay, labelsStr)
+        val cloudLabelGraphic = object: CloudLabelGraphic(graphicOverlay, labelsStr) {}
         graphicOverlay.add(cloudLabelGraphic)
         graphicOverlay.postInvalidate()
     }
