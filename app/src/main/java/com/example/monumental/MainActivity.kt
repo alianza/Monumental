@@ -24,11 +24,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.Surface
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.PopupMenu
+import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
+import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.common.preference.SettingsActivity
 import com.example.monumental.common.preference.SettingsActivity.LaunchSource
@@ -62,11 +63,14 @@ class MainActivity : AppCompatActivity() {
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
 
+    lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+
+    private var m_intSpinnerInitiCount = 0
+    private val NO_OF_EVENTS = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
-
         requestPermissions(
             arrayOf(
                 Manifest.permission.INTERNET,
@@ -125,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                     takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
+                    GraphicOverlay(applicationContext, null).clear()
                 }
             }
         }
@@ -149,6 +154,43 @@ class MainActivity : AppCompatActivity() {
             val inflater = popup.menuInflater
             inflater.inflate(R.menu.camera_button_menu, popup.menu)
             popup.show()
+        }
+
+        resultsSpinnerAdapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.planets_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            ResultsSpinner.adapter = adapter
+        }
+
+        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                Toast.makeText(parent.context, "Spinner item $position!", Toast.LENGTH_SHORT).show()
+                println("Spinner item $position!")
+
+                val textView = ResultsSpinner.selectedView as TextView
+                val result = textView.text.toString()
+
+                println("Clicked result: $result")
+
+                //trying to avoid undesired spinner selection changed event, a known problem
+                if (m_intSpinnerInitiCount < NO_OF_EVENTS) {
+                    m_intSpinnerInitiCount++;
+                } else {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.google.com/search?q=$result")
+                        )
+                    )
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) { }
         }
 
         if (previewPane == null) {
@@ -180,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onResume")
         createImageProcessor()
         camera?.startPreview()
-        tryReloadAndDetectInImage()
+//        tryReloadAndDetectInImage()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -242,6 +284,13 @@ class MainActivity : AppCompatActivity() {
             imageUri = data!!.data
             tryReloadAndDetectInImage()
         }
+    }
+
+    fun addSearchResults() {
+        println("Open result in browser...")
+//        resultsSpinnerAdapter.clear()
+//        resultsSpinnerAdapter.addAll(graphicOverlay.titles)
+//        resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
     private fun tryReloadAndDetectInImage() {
@@ -444,5 +493,4 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_IMAGE_CAPTURE = 1001
         private const val REQUEST_CHOOSE_IMAGE = 1002
     }
-
 }

@@ -38,6 +38,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
     ) {
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
+        val resultNames: MutableList<String> = ArrayList()
 
         for (result in results) {
             Log.d(TAG, "Landmark: ${result.landmark}")
@@ -47,8 +48,37 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
             Log.d(TAG, "cloud landmark: $it")
             val cloudLandmarkGraphic = object: CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
+            resultNames.add(it.landmark)
         }
         graphicOverlay.postInvalidate()
+
+        try {
+            println("First result: ${results.first().landmark}")
+        } catch (e: NoSuchElementException) {
+            println("Empty landmark list $e")
+        }
+
+
+//        MainActivity().getInstance()?.resultsSpinnerAdapter?.clear()
+//        MainActivity().getInstance()?.resultsSpinnerAdapter?.addAll(resultNames)
+//        MainActivity().getInstance()?.resultsSpinnerAdapter?.notifyDataSetChanged()
+
+//        try {
+//           if (results.first().landmark !== "") {
+//               MainActivity().openResultSearch(results.first().landmark)
+//           }
+//        } catch (e: Throwable) {
+//            println("Can't open search result. $e")
+//        }
+
+//        startActivity(
+//            context,
+//            Intent(
+//                Intent.ACTION_VIEW,
+//                Uri.parse("https://www.google.com/search?q=${results.first().landmark}")
+//            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+//            null
+//        )
     }
 
     override fun onFailure(e: Exception) {

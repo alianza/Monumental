@@ -52,8 +52,7 @@ class GraphicOverlay(
     private var widthScaleFactor = 1.0f
     private var previewHeight = 0
     private var heightScaleFactor = 1.0f
-    private var facing =
-        CAMERA_FACING_BACK
+    private var facing = CAMERA_FACING_BACK
     private val graphics: MutableList<Graphic> = ArrayList()
 
     /**
