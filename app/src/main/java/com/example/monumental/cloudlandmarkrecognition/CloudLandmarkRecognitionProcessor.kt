@@ -39,6 +39,10 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
 
+        for (result in results) {
+            Log.d(TAG, "Landmark: ${result.landmark}")
+        }
+
         results.forEach {
             Log.d(TAG, "cloud landmark: $it")
             val cloudLandmarkGraphic = object: CloudLandmarkGraphic(graphicOverlay, it) {}
