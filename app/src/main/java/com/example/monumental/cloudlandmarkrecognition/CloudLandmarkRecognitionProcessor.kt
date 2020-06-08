@@ -2,6 +2,7 @@ package com.example.monumental.cloudlandmarkrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.ArrayAdapter
 import com.example.monumental.VisionProcessorBase
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
@@ -12,7 +13,7 @@ import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
-/** Cloud Landmark Detector Demo.  */
+/** Cloud Landmark Detector */
 class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisionCloudLandmark>>() {
 
     private val detector: FirebaseVisionCloudLandmarkDetector
@@ -34,8 +35,10 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         originalCameraImage: Bitmap?,
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
-        graphicOverlay: GraphicOverlay
+        graphicOverlay: GraphicOverlay,
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
     ) {
+        results.distinctBy { result -> result.landmark }
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
         val resultNames: MutableList<String> = ArrayList()
@@ -46,7 +49,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
 
         results.forEach {
             Log.d(TAG, "cloud landmark: $it")
-            val cloudLandmarkGraphic = object: CloudLandmarkGraphic(graphicOverlay, it) {}
+            val cloudLandmarkGraphic = object : CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
             resultNames.add(it.landmark)
         }
@@ -58,27 +61,11 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
             println("Empty landmark list $e")
         }
 
+        resultNames.add(0, "More info!")
 
-//        MainActivity().getInstance()?.resultsSpinnerAdapter?.clear()
-//        MainActivity().getInstance()?.resultsSpinnerAdapter?.addAll(resultNames)
-//        MainActivity().getInstance()?.resultsSpinnerAdapter?.notifyDataSetChanged()
-
-//        try {
-//           if (results.first().landmark !== "") {
-//               MainActivity().openResultSearch(results.first().landmark)
-//           }
-//        } catch (e: Throwable) {
-//            println("Can't open search result. $e")
-//        }
-
-//        startActivity(
-//            context,
-//            Intent(
-//                Intent.ACTION_VIEW,
-//                Uri.parse("https://www.google.com/search?q=${results.first().landmark}")
-//            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-//            null
-//        )
+        resultsSpinnerAdapter.clear()
+        resultsSpinnerAdapter.addAll(resultNames.distinct())
+        resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
     override fun onFailure(e: Exception) {
