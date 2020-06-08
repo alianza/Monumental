@@ -4,11 +4,12 @@ package com.example.monumental
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
@@ -16,17 +17,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.util.Pair
-import android.view.Menu
-import android.view.MenuItem
-import android.view.Surface
-import android.view.View
-import android.widget.*
+import android.view.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setPadding
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
@@ -65,8 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
 
-    private var m_intSpinnerInitiCount = 0
-    private val NO_OF_EVENTS = 1
+
+    var check = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,66 +122,106 @@ class MainActivity : AppCompatActivity() {
             }
 
             takeImageButton.setOnClickListener {
-                if (pictureFile == null) {
+                if (pictureFile == null && imageUri == null) {
                     camera?.takePicture(null, null, picture)
                     takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
                 } else {
                     pictureFile = null
+                    imageUri = null
                     takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
-                    GraphicOverlay(applicationContext, null).clear()
+                    val graphicOverlay = GraphicOverlay(this, null)
+                    graphicOverlay.clear()
+                    previewOverlay.clear()
+                    resultsSpinnerAdapter.clear()
+                    resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
+                    resultsSpinnerAdapter.notifyDataSetChanged()
                 }
             }
         }
 
-        getImageButton.setOnClickListener { view ->
-            // Menu for selecting either: a) take new photo b) select from existing
-            val popup = PopupMenu(this, view)
-            popup.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.select_images_from_local -> {
-                        startChooseImageIntentForResult()
-                        true
-                    }
-                    R.id.take_photo_using_camera -> {
-                        startCameraIntentForResult()
-                        true
-                    }
-                    else -> false
-                }
-            }
-
-            val inflater = popup.menuInflater
-            inflater.inflate(R.menu.camera_button_menu, popup.menu)
-            popup.show()
+        getImageButton.setOnClickListener {
+            startChooseImageIntentForResult()
         }
 
-        resultsSpinnerAdapter = ArrayAdapter.createFromResource(
+        val initialList: List<CharSequence> = mutableListOf(getString(R.string.more_info))
+
+        resultsSpinnerAdapter = object : ArrayAdapter<CharSequence>(
             this,
-            R.array.planets_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            ResultsSpinner.adapter = adapter
+            R.layout.spinner_item, initialList
+        ) {
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun areAllItemsEnabled(): Boolean {
+                return false
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                var v = convertView
+
+                if (v == null) {
+                    val mContext: Context = this.context
+                    val vi =
+                        mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    v = vi.inflate(R.layout.spinner_item, null)
+                }
+                val tv = v!!.findViewById<View>(android.R.id.text1) as TextView
+                val `val`: String = java.lang.String.valueOf(initialList[position])
+                tv.text = `val`.replace(":False", "")
+
+                when (position) {
+                    0 -> {
+                        if (ResultsSpinner.adapter.count == 1) {
+                            tv.text = getString(R.string.no_landmark_tip)
+                            tv.isSingleLine = false
+                        } else {
+                            tv.text = getString(R.string.choose_dropdown)
+                            tv.isSingleLine = true
+                        }
+                        tv.setTextColor(Color.GRAY)
+                        tv.textSize = 18.0F
+                        tv.setPadding(24)
+                    }
+                    else -> {
+                        tv.setTextColor(resources.getColor(R.color.colorPrimary))
+                        tv.textSize = 16.0F
+                        tv.setPadding(24, 16, 24, 16)
+                        tv.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                    }
+                }
+
+                return v
+            }
         }
+
+        // Specify the layout to use when the list of choices appears
+        resultsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        // Apply the adapter to the spinner
+        ResultsSpinner.adapter = resultsSpinnerAdapter
 
         ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                Toast.makeText(parent.context, "Spinner item $position!", Toast.LENGTH_SHORT).show()
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                ResultsSpinner.setSelection(0)
                 println("Spinner item $position!")
 
-                val textView = ResultsSpinner.selectedView as TextView
-                val result = textView.text.toString()
+                if (++check > 1 && position != 0) {
+                    val textView = ResultsSpinner.selectedView as TextView?
+                    val result = textView?.text.toString()
 
-                println("Clicked result: $result")
-
-                //trying to avoid undesired spinner selection changed event, a known problem
-                if (m_intSpinnerInitiCount < NO_OF_EVENTS) {
-                    m_intSpinnerInitiCount++;
-                } else {
+                    println("Clicked result: $result")
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
@@ -190,7 +231,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) { }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
         if (previewPane == null) {
@@ -252,22 +293,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startCameraIntentForResult() {
-        // Clean up last time's image
-        imageUri = null
-        previewPane?.setImageBitmap(null)
-
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        takePictureIntent.resolveActivity(packageManager)?.let {
-            val values = ContentValues()
-            values.put(MediaStore.Images.Media.TITLE, "New Picture")
-            values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        }
-    }
-
     private fun startChooseImageIntentForResult() {
         val intent = Intent()
         intent.type = "image/*"
@@ -277,20 +302,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            tryReloadAndDetectInImage()
-        } else if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
             // In this case, imageUri is returned by the chooser, save it.
             imageUri = data!!.data
+            takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
-    }
-
-    fun addSearchResults() {
-        println("Open result in browser...")
-//        resultsSpinnerAdapter.clear()
-//        resultsSpinnerAdapter.addAll(graphicOverlay.titles)
-//        resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
     private fun tryReloadAndDetectInImage() {
@@ -302,7 +319,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("ImageUri", imageUri.toString())
 
             // Clear the overlay first
-            previewOverlay?.clear()
+            previewOverlay.clear()
 
             val imageBitmap = if (Build.VERSION.SDK_INT < 29) {
                 getBitmap(contentResolver, imageUri)
@@ -332,7 +349,7 @@ class MainActivity : AppCompatActivity() {
 
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
-                imageProcessor?.process(it, previewOverlay)
+                imageProcessor?.process(it, previewOverlay, resultsSpinnerAdapter)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
