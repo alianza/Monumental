@@ -26,6 +26,7 @@ import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.WindowManager
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresPermission
 import com.example.monumental.common.preference.PreferenceUtils
 import com.google.android.gms.common.images.Size
@@ -40,7 +41,7 @@ import kotlin.math.ceil
  * sending those frames to child classes' detectors / classifiers as fast as it is able to process.
  */
 @SuppressLint("MissingPermission")
-class CameraSource(private val activity: Activity, private val graphicOverlay: GraphicOverlay) {
+class CameraSource(private val activity: Activity, private val graphicOverlay: GraphicOverlay, private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>) {
     private var camera: Camera? = null
 
     /**
@@ -575,7 +576,8 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
                                 .setRotation(rotation)
                                 .setCameraFacing(cameraFacing)
                                 .build(),
-                            graphicOverlay
+                            graphicOverlay,
+                            resultsSpinnerAdapter
                         )
                     }
                 } catch (t: Exception) {
