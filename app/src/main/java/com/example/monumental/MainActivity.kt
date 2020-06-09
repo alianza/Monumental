@@ -43,7 +43,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
 
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private var selectedSize: String = SIZE_PREVIEW
@@ -64,8 +63,7 @@ class MainActivity : AppCompatActivity() {
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
 
-    lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
-
+    private lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
 
     var check = 0
 
@@ -225,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://www.google.com/search?q=$result")
+                            Uri.parse("https://www.google.com/search?q=$result#topstuff")
                         )
                     )
                 }

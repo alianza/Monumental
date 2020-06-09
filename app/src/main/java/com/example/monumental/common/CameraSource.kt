@@ -33,6 +33,7 @@ import com.google.android.gms.common.images.Size
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.ceil
 
 /**
@@ -276,18 +277,16 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         // Use YV12 so that we can exercise YV12->NV21 auto-conversion logic for OCR detection
         parameters.previewFormat = IMAGE_FORMAT
         setRotation(camera, parameters, requestedCameraId)
-        if (requestedAutoFocus) {
-            if (parameters
-                    .supportedFocusModes
-                    .contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
-            ) {
-                parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
-            } else {
-                Log.i(
-                    TAG,
-                    "Camera auto focus is not supported on this device."
-                )
-            }
+        if (parameters
+                .supportedFocusModes
+                .contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
+        ) {
+            parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
+        } else {
+            Log.i(
+                TAG,
+                "Camera auto focus is not supported on this device."
+            )
         }
         camera.parameters = parameters
 
@@ -419,7 +418,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         // should guarantee that there will be an array to work with.
         val byteArray = ByteArray(bufferSize)
         val buffer = ByteBuffer.wrap(byteArray)
-        check(!(!buffer.hasArray() || !buffer.array()!!.contentEquals(byteArray))) {
+        check(!(!buffer.hasArray() || !buffer.array().contentEquals(byteArray))) {
             // I don't think that this will ever happen.  But if it does, then we wouldn't be
             // passing the preview content to the underlying detector later.
             "Failed to create valid buffer for camera source."
@@ -672,7 +671,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
             for (sizePair in validPreviewSizes) {
                 val size = sizePair.preview
                 val diff =
-                    Math.abs(size.width - desiredWidth) + Math.abs(size.height - desiredHeight)
+                    abs(size.width - desiredWidth) + abs(size.height - desiredHeight)
                 if (diff < minDiff) {
                     selectedPair = sizePair
                     minDiff = diff
@@ -709,7 +708,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
                 for (pictureSize in supportedPictureSizes) {
                     val pictureAspectRatio =
                         pictureSize.width.toFloat() / pictureSize.height.toFloat()
-                    if (Math.abs(previewAspectRatio - pictureAspectRatio) < ASPECT_RATIO_TOLERANCE) {
+                    if (abs(previewAspectRatio - pictureAspectRatio) < ASPECT_RATIO_TOLERANCE) {
                         validPreviewSizes.add(
                             SizePair(
                                 previewSize,
@@ -772,7 +771,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
                     desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]
                 val deltaMax =
                     desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
-                val diff = Math.abs(deltaMin) + Math.abs(deltaMax)
+                val diff = abs(deltaMin) + abs(deltaMax)
                 if (diff < minDiff) {
                     selectedFpsRange = range
                     minDiff = diff

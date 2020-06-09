@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.common.preference
 
 import android.os.Bundle
