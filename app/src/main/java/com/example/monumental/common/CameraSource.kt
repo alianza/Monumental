@@ -13,7 +13,6 @@
 // limitations under the License.
 package com.example.monumental.common
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -24,10 +23,8 @@ import android.hardware.Camera.CameraInfo
 import android.hardware.Camera.PreviewCallback
 import android.util.Log
 import android.view.Surface
-import android.view.SurfaceHolder
 import android.view.WindowManager
 import android.widget.ArrayAdapter
-import androidx.annotation.RequiresPermission
 import com.example.monumental.common.preference.PreferenceUtils
 import com.google.android.gms.common.images.Size
 import java.io.IOException
@@ -62,7 +59,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
     var previewSize: Size? = null
         private set
     private val requestedFps = 30.0f
-    private val requestedAutoFocus = true
 
     // These instances need to be held onto to avoid GC of their underlying resources.  Even though
     // these aren't used outside of the method that creates them, they still must have hard
@@ -102,69 +98,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
     // ==============================================================================================
     // Public
     // ==============================================================================================
-    /** Stops the camera and releases the resources of the camera and underlying detector.  */
-    fun release() {
-        synchronized(processorLock) {
-            stop()
-            processingRunnable.release()
-            cleanScreen()
-            if (frameProcessor != null) {
-                frameProcessor!!.stop()
-            }
-        }
-    }
-
-    /**
-     * Opens the camera and starts sending preview frames to the underlying detector. The preview
-     * frames are not displayed.
-     *
-     * @throws IOException if the camera's preview texture or display could not be initialized
-     */
-    @SuppressLint("MissingPermission")
-    @RequiresPermission(Manifest.permission.CAMERA)
-    @Synchronized
-    @Throws(
-        IOException::class
-    )
-    fun start(): CameraSource {
-        if (camera != null) {
-            return this
-        }
-        camera = createCamera()
-        dummySurfaceTexture =
-            SurfaceTexture(DUMMY_TEXTURE_NAME)
-        camera!!.setPreviewTexture(dummySurfaceTexture)
-        usingSurfaceTexture = true
-        camera!!.startPreview()
-        processingThread = Thread(processingRunnable)
-        processingRunnable.setActive(true)
-        processingThread!!.start()
-        return this
-    }
-
-    /**
-     * Opens the camera and starts sending preview frames to the underlying detector. The supplied
-     * surface holder is used for the preview so frames can be displayed to the user.
-     *
-     * @param surfaceHolder the surface holder to use for the preview frames
-     * @throws IOException if the supplied surface holder could not be used as the preview display
-     */
-    @RequiresPermission(Manifest.permission.CAMERA)
-    @Synchronized
-    @Throws(IOException::class)
-    fun start(surfaceHolder: SurfaceHolder?): CameraSource {
-        if (camera != null) {
-            return this
-        }
-        camera = createCamera()
-        camera!!.setPreviewDisplay(surfaceHolder)
-        camera!!.startPreview()
-        processingThread = Thread(processingRunnable)
-        processingRunnable.setActive(true)
-        processingThread!!.start()
-        usingSurfaceTexture = false
-        return this
-    }
 
     /**
      * Closes the camera and stops sending frames to the underlying frame detector.
@@ -214,13 +147,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
 
         // Release the reference to any image buffers, since these will no longer be in use.
         bytesToByteBuffer.clear()
-    }
-
-    /** Changes the facing of the camera.  */
-    @Synchronized
-    fun setFacing(facing: Int) {
-        require(!(facing != CAMERA_FACING_BACK && facing != CAMERA_FACING_FRONT)) { "Invalid camera: $facing" }
-        cameraFacing = facing
     }
 
     /**
@@ -418,7 +344,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         // should guarantee that there will be an array to work with.
         val byteArray = ByteArray(bufferSize)
         val buffer = ByteBuffer.wrap(byteArray)
-        check(!(!buffer.hasArray() || !buffer.array().contentEquals(byteArray))) {
+        check(!(!buffer.hasArray() || !buffer.array()!!.contentEquals(byteArray))) {
             // I don't think that this will ever happen.  But if it does, then we wouldn't be
             // passing the preview content to the underlying detector later.
             "Failed to create valid buffer for camera source."
@@ -436,16 +362,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
             camera: Camera
         ) {
             processingRunnable.setNextFrame(data, camera)
-        }
-    }
-
-    fun setMachineLearningFrameProcessor(processor: VisionImageProcessor?) {
-        synchronized(processorLock) {
-            cleanScreen()
-            if (frameProcessor != null) {
-                frameProcessor!!.stop()
-            }
-            frameProcessor = processor
         }
     }
 

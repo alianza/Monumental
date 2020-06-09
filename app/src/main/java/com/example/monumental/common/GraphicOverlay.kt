@@ -128,25 +128,6 @@ class GraphicOverlay(
         synchronized(lock) { graphics.add(graphic) }
     }
 
-    /** Removes a graphic from the overlay.  */
-    fun remove(graphic: Graphic) {
-        synchronized(lock) { graphics.remove(graphic) }
-        postInvalidate()
-    }
-
-    /**
-     * Sets the camera attributes for size and facing direction, which informs how to transform image
-     * coordinates later.
-     */
-    fun setCameraInfo(previewWidth: Int, previewHeight: Int, facing: Int) {
-        synchronized(lock) {
-            this.previewWidth = previewWidth
-            this.previewHeight = previewHeight
-            this.facing = facing
-        }
-        postInvalidate()
-    }
-
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

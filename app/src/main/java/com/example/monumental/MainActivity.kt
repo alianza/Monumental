@@ -12,7 +12,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.hardware.Camera
-import android.hardware.Camera.CameraInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -432,32 +431,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setCameraDisplayOrientation(
-        activity: Activity,
-        cameraId: Int,
-        camera: Camera
-    ) {
-        val info = CameraInfo()
-        Camera.getCameraInfo(cameraId, info)
-        val rotation = activity.windowManager.defaultDisplay
-            .rotation
-        var degrees = 0
-        when (rotation) {
-            Surface.ROTATION_0 -> degrees = 0
-            Surface.ROTATION_90 -> degrees = 90
-            Surface.ROTATION_180 -> degrees = 180
-            Surface.ROTATION_270 -> degrees = 270
-        }
-        var result: Int
-        if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360
-            result = (360 - result) % 360 // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360
-        }
-        camera.setDisplayOrientation(result)
-    }
-
     /** Create a file Uri for saving an image */
     private fun getOutputMediaFileUri(): Uri {
         return Uri.fromFile(getOutputMediaFile())
@@ -505,7 +478,6 @@ class MainActivity : AppCompatActivity() {
             "com.googletest.firebase.ml.demo.KEY_IMAGE_MAX_HEIGHT"
         private const val KEY_SELECTED_SIZE = "com.googletest.firebase.ml.demo.KEY_SELECTED_SIZE"
 
-        private const val REQUEST_IMAGE_CAPTURE = 1001
         private const val REQUEST_CHOOSE_IMAGE = 1002
     }
 }
