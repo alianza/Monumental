@@ -16,15 +16,10 @@ class SettingsActivity : AppCompatActivity() {
         val titleResId: Int,
         val prefFragmentClass: Class<out PreferenceFragment?>
     ) {
-        LIVE_PREVIEW(
-            R.string.pref_screen_title_live_preview,
-            LivePreviewPreferenceFragment::class.java
-        ),
         STILL_IMAGE(
             R.string.pref_screen_title_still_image,
             StillImagePreferenceFragment::class.java
         );
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
