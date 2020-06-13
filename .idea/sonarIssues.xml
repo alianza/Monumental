@@ -8,16 +8,6 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/build.gradle">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/MainActivity.kt">
           <value>
             <set />
@@ -28,27 +18,32 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/BitmapUtils.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/CameraPreview.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/CameraSource.kt">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/GraphicOverlay.kt">
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/VisionImageProcessor.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/monumental/common/preference/PreferenceUtils.kt">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/spinner_dropwdown_item.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/values/arrays.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/xml/preference_still_image.xml">
           <value>
             <set />
           </value>

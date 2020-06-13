@@ -11,13 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.common
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.ImageFormat
-import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.hardware.Camera.PreviewCallback
@@ -25,9 +26,7 @@ import android.util.Log
 import android.view.Surface
 import android.view.WindowManager
 import android.widget.ArrayAdapter
-import com.example.monumental.common.preference.PreferenceUtils
 import com.google.android.gms.common.images.Size
-import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
 import kotlin.math.abs
@@ -59,11 +58,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
     var previewSize: Size? = null
         private set
     private val requestedFps = 30.0f
-
-    // These instances need to be held onto to avoid GC of their underlying resources.  Even though
-    // these aren't used outside of the method that creates them, they still must have hard
-    // references maintained to them.
-    private var dummySurfaceTexture: SurfaceTexture? = null
 
     // True if a SurfaceTexture is being used for the preview, false if a SurfaceHolder is being
     // used for the preview.  We want to be compatible back to Gingerbread, but SurfaceTexture
@@ -98,142 +92,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
     // ==============================================================================================
     // Public
     // ==============================================================================================
-
-    /**
-     * Closes the camera and stops sending frames to the underlying frame detector.
-     *
-     *
-     * This camera source may be restarted again by calling [.start] or [ ][.start].
-     *
-     *
-     * Call [.release] instead to completely shut down this camera source and release the
-     * resources of the underlying detector.
-     */
-    @Synchronized
-    fun stop() {
-        processingRunnable.setActive(false)
-        if (processingThread != null) {
-            try {
-                // Wait for the thread to complete to ensure that we can't have multiple threads
-                // executing at the same time (i.e., which would happen if we called start too
-                // quickly after stop).
-                processingThread!!.join()
-            } catch (e: InterruptedException) {
-                Log.d(
-                    TAG,
-                    "Frame processing thread interrupted on release."
-                )
-            }
-            processingThread = null
-        }
-        if (camera != null) {
-            camera!!.stopPreview()
-            camera!!.setPreviewCallbackWithBuffer(null)
-            try {
-                if (usingSurfaceTexture) {
-                    camera!!.setPreviewTexture(null)
-                } else {
-                    camera!!.setPreviewDisplay(null)
-                }
-            } catch (e: Exception) {
-                Log.e(
-                    TAG,
-                    "Failed to clear camera preview: $e"
-                )
-            }
-            camera!!.release()
-            camera = null
-        }
-
-        // Release the reference to any image buffers, since these will no longer be in use.
-        bytesToByteBuffer.clear()
-    }
-
-    /**
-     * Opens the camera and applies the user settings.
-     *
-     * @throws IOException if camera cannot be found or preview cannot be processed
-     */
-    @SuppressLint("InlinedApi")
-    @Throws(IOException::class)
-    private fun createCamera(): Camera {
-        val requestedCameraId =
-            getIdForRequestedCamera(cameraFacing)
-        if (requestedCameraId == -1) {
-            throw IOException("Could not find requested camera.")
-        }
-        val camera = Camera.open(requestedCameraId)
-        var sizePair =
-            PreferenceUtils.getCameraPreviewSizePair(activity, requestedCameraId)
-        if (sizePair == null) {
-            sizePair = selectSizePair(
-                camera,
-                DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH,
-                DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT
-            )
-        }
-        if (sizePair == null) {
-            throw IOException("Could not find suitable preview size.")
-        }
-        previewSize = sizePair.preview
-        Log.v(
-            TAG,
-            "Camera preview size: $previewSize"
-        )
-        val previewFpsRange =
-            selectPreviewFpsRange(
-                camera,
-                requestedFps
-            )
-                ?: throw IOException("Could not find suitable preview frames per second range.")
-        val parameters = camera.parameters
-        val pictureSize = sizePair.picture
-        if (pictureSize != null) {
-            Log.v(
-                TAG,
-                "Camera picture size: $pictureSize"
-            )
-            parameters.setPictureSize(pictureSize.width, pictureSize.height)
-        }
-        parameters.setPreviewSize(previewSize!!.width, previewSize!!.height)
-        parameters.setPreviewFpsRange(
-            previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
-            previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
-        )
-        // Use YV12 so that we can exercise YV12->NV21 auto-conversion logic for OCR detection
-        parameters.previewFormat = IMAGE_FORMAT
-        setRotation(camera, parameters, requestedCameraId)
-        if (parameters
-                .supportedFocusModes
-                .contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
-        ) {
-            parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
-        } else {
-            Log.i(
-                TAG,
-                "Camera auto focus is not supported on this device."
-            )
-        }
-        camera.parameters = parameters
-
-        // Four frame buffers are needed for working with the camera:
-        //
-        //   one for the frame that is currently being executed upon in doing detection
-        //   one for the next pending frame to process immediately upon completing detection
-        //   two for the frames that the camera uses to populate future preview images
-        //
-        // Through trial and error it appears that two free buffers, in addition to the two buffers
-        // used in this code, are needed for the camera to work properly.  Perhaps the camera has
-        // one thread for acquiring images, and another thread for calling into user code.  If only
-        // three buffers are used, then the camera will spew thousands of warning messages when
-        // detection takes a non-trivial amount of time.
-        camera.setPreviewCallbackWithBuffer(CameraPreviewCallback())
-        camera.addCallbackBuffer(createPreviewBuffer(previewSize))
-        camera.addCallbackBuffer(createPreviewBuffer(previewSize))
-        camera.addCallbackBuffer(createPreviewBuffer(previewSize))
-        camera.addCallbackBuffer(createPreviewBuffer(previewSize))
-        return camera
-    }
 
     /**
      * Stores a preview size and a corresponding same-aspect-ratio picture size. To avoid distorted
@@ -344,6 +202,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         // should guarantee that there will be an array to work with.
         val byteArray = ByteArray(bufferSize)
         val buffer = ByteBuffer.wrap(byteArray)
+        @Suppress("UNNECESSARY_NOT_NULL_ASSERTION") // Either way warning
         check(!(!buffer.hasArray() || !buffer.array()!!.contentEquals(byteArray))) {
             // I don't think that this will ever happen.  But if it does, then we wouldn't be
             // passing the preview content to the underlying detector later.
@@ -383,15 +242,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
 
         // These pending variables hold the state associated with the new frame awaiting processing.
         private var pendingFrameData: ByteBuffer? = null
-
-        /**
-         * Releases the underlying receiver. This is only safe to do after the associated thread has
-         * completed, which is managed in camera source's release method above.
-         */
-        @SuppressLint("Assert")
-        fun release() {
-            assert(processingThread!!.state == Thread.State.TERMINATED)
-        }
 
         /** Marks the runnable as active/not active. Signals any blocked threads to continue.  */
         fun setActive(active: Boolean) {
@@ -508,11 +358,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         }
     }
 
-    /** Cleans up graphicOverlay and child classes can do their cleanups as well .  */
-    private fun cleanScreen() {
-        graphicOverlay.clear()
-    }
-
     companion object {
         @SuppressLint("InlinedApi")
         val CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK
@@ -523,13 +368,6 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
         const val DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH = 480
         const val DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT = 360
         private const val TAG = "MIDemoApp:CameraSource"
-
-        /**
-         * The dummy surface texture must be assigned a chosen name. Since we never use an OpenGL context,
-         * we can choose any ID we want here. The dummy surface texture is not a crazy hack - it is
-         * actually how the camera team recommends using the camera without a preview.
-         */
-        private const val DUMMY_TEXTURE_NAME = 100
 
         /**
          * If the absolute difference between a preview size aspect ratio and a picture size aspect ratio
@@ -606,7 +444,7 @@ class CameraSource(private val activity: Activity, private val graphicOverlay: G
          * be set to a size that is the same aspect ratio as the preview size we choose. Otherwise, the
          * preview images may be distorted on some devices.
          */
-        fun generateValidPreviewSizeList(camera: Camera): List<SizePair> {
+        private fun generateValidPreviewSizeList(camera: Camera): List<SizePair> {
             val parameters = camera.parameters
             val supportedPreviewSizes =
                 parameters.supportedPreviewSizes

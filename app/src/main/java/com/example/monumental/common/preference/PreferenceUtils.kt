@@ -1,9 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.common.preference
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.preference.PreferenceManager
-import androidx.annotation.StringRes
 import androidx.core.util.Preconditions
 import com.example.monumental.R
 import com.example.monumental.common.CameraSource
@@ -47,20 +48,6 @@ object PreferenceUtils {
         } catch (e: Exception) {
             null
         }
-    }
-
-    /**
-     * Mode type preference is backed by [android.preference.ListPreference] which only support
-     * storing its entry value as string type, so we need to retrieve as string and then convert to
-     * integer.
-     */
-    private fun getModeTypePreferenceValue(
-        context: Context, @StringRes prefKeyResId: Int, defaultValue: Int
-    ): Int {
-        val sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context)
-        val prefKey = context.getString(prefKeyResId)
-        return sharedPreferences.getString(prefKey, defaultValue.toString())!!.toInt()
     }
 
 }

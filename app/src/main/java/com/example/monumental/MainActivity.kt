@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 try {
-                    val fos = FileOutputStream(pictureFile)
+                    val fos = FileOutputStream(pictureFile as File)
                     fos.write(data)
                     fos.close()
                 } catch (e: FileNotFoundException) {
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                     val mContext: Context = this.context
                     val vi =
                         mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    v = vi.inflate(R.layout.spinner_item, null)
+                    v = vi.inflate(R.layout.spinner_item, parent, false)
                 }
                 val tv = v!!.findViewById<View>(android.R.id.text1) as TextView
                 val `val`: String = java.lang.String.valueOf(initialList[position])
@@ -459,7 +459,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Create a media file name
-        val timeStamp = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z").format(Date())
+        val timeStamp = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
         return File("${mediaStorageDir.path}${File.separator}IMG_$timeStamp.jpg")
     }
 

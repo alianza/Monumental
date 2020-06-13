@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.common
 
 import android.graphics.*
@@ -45,7 +47,7 @@ object BitmapUtils {
         return null
     }
 
-    // Rotates a bitmap if it is converted from a bytebuffer.
+    // Rotates a bitmap if it is converted from a byteBuffer.
     private fun rotateBitmap(bitmap: Bitmap, rotation: Int, facing: Int): Bitmap {
         val matrix = Matrix()
         var rotationDegree = 0

@@ -11,8 +11,10 @@ import android.view.SurfaceView
 import java.io.IOException
 
 /** A basic Camera preview class */
-class CameraPreview(context: Context, private val mCamera: Camera) :
+class CameraPreview(context: Context, private val mCamera: Camera?) :
         SurfaceView(context), SurfaceHolder.Callback {
+
+    constructor(context: Context) : this(context, null)
 
     private val mHolder: SurfaceHolder = holder.apply {
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -24,7 +26,7 @@ class CameraPreview(context: Context, private val mCamera: Camera) :
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        mCamera.apply {
+        mCamera?.apply {
             try {
                 setPreviewDisplay(holder)
                 startPreview()
@@ -48,7 +50,7 @@ class CameraPreview(context: Context, private val mCamera: Camera) :
 
         // stop preview before making changes
         try {
-            mCamera.stopPreview()
+            mCamera?.stopPreview()
         } catch (e: Exception) {
             // ignore: tried to stop a non-existent preview
         }
@@ -57,7 +59,7 @@ class CameraPreview(context: Context, private val mCamera: Camera) :
         // reformatting changes here
 
         // start preview with new settings
-        mCamera.apply {
+        mCamera?.apply {
             try {
                 setPreviewDisplay(mHolder)
                 startPreview()
