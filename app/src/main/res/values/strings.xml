@@ -22,24 +22,6 @@
   <string name="pref_title_object_detector_enable_classification">Enable classification</string>
   <string name="pref_key_still_image_object_detector_enable_classification" translatable="false">siodec</string>
 
-  <!-- Strings for face detector landmark mode preference. -->
-  <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#LandmarkMode -->
-
-    <!-- Strings for face detector contour mode preference. -->
-  <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#ContourMode -->
-
-    <!-- Strings for face detector classification mode preference. -->
-  <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#ClassificationMode -->
-
-    <!-- Strings for face detector performance mode preference. -->
-  <!-- The following entry values must match the ones in FirebaseVisionFaceDetectorOptions#PerformanceMode -->
-
-    <!-- Strings for face detector face tracking preference. -->
-
-  <!-- Strings for face detector min face size preference. -->
-
-  <!-- Strings for automl remote model name preference. -->
-
   <!-- Strings for automl model choices preference. -->
   <string name="preview">Preview</string>
   <string name="choose_dropdown">Choose landmark to get more info!</string>

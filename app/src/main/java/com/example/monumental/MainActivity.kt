@@ -66,6 +66,10 @@ class MainActivity : AppCompatActivity() {
 
     var check = 0
 
+    /**
+     * onCreate method to set layout, request required permissions, start camera(preview),
+     * set eventListeners
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -144,6 +148,13 @@ class MainActivity : AppCompatActivity() {
 
         val initialList: List<CharSequence> = mutableListOf(getString(R.string.more_info))
 
+//        // ResultsSpinnerAdapter
+//        resultsSpinnerAdapter = ResultsSpinnerAdapter(
+//            initialList,
+//            applicationContext,
+//            R.layout.spinner_item
+//        )
+
         resultsSpinnerAdapter = object : ArrayAdapter<CharSequence>(
             this,
             R.layout.spinner_item, initialList
@@ -204,6 +215,8 @@ class MainActivity : AppCompatActivity() {
         // Apply the adapter to the spinner
         ResultsSpinner.adapter = resultsSpinnerAdapter
 
+        resultsSpinnerAdapter.notifyDataSetChanged()
+
         ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -223,6 +236,7 @@ class MainActivity : AppCompatActivity() {
                         Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse("https://www.google.com/search?q=$result#topstuff")
+//                            Uri.parse("http://google.com/maps/search/$result")
                         )
                     )
                 }
@@ -290,6 +304,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Choose image activity
+     */
     private fun startChooseImageIntentForResult() {
         val intent = Intent()
         intent.type = "image/*"
@@ -297,6 +314,9 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
     }
 
+    /**
+     * Activity result, take image and try detect landmarks
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
@@ -307,6 +327,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Reload and detect in current image
+     */
     private fun tryReloadAndDetectInImage() {
         try {
             if (imageUri == null) {
@@ -412,6 +435,9 @@ class MainActivity : AppCompatActivity() {
         return Pair(targetWidth, targetHeight)
     }
 
+    /**
+     * Create the image processor
+     */
     private fun createImageProcessor() {
         imageProcessor = CloudLandmarkRecognitionProcessor()
     }
@@ -450,11 +476,9 @@ class MainActivity : AppCompatActivity() {
 
         // Create the storage directory if it does not exist
         mediaStorageDir.apply {
-            if (!exists()) {
-                if (!mkdirs()) {
-                    Log.d("Monumental", "failed to create directory")
-                    return null
-                }
+            if (!exists() && !mkdirs()) {
+                Log.d("Monumental", "failed to create directory")
+                return null
             }
         }
 

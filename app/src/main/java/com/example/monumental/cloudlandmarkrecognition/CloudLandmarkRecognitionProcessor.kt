@@ -18,6 +18,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
 
     private val detector: FirebaseVisionCloudLandmarkDetector
 
+    /** Set options for Cloud Landmark Detector */
     init {
         val options = FirebaseVisionCloudDetectorOptions.Builder()
             .setMaxResults(10)
@@ -31,6 +32,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         return detector.detectInImage(image)
     }
 
+    /** Cloud Landmark Detector onSuccess callback */
     override fun onSuccess(
         originalCameraImage: Bitmap?,
         results: List<FirebaseVisionCloudLandmark>,
@@ -38,6 +40,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         graphicOverlay: GraphicOverlay,
         resultsSpinnerAdapter: ArrayAdapter<CharSequence>
     ) {
+        // Gather distinct results
         results.distinctBy { result -> result.landmark }
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
@@ -47,6 +50,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
             Log.d(TAG, "Landmark: ${result.landmark}")
         }
 
+        // Add graphics overlay and log for each landmark result
         results.forEach {
             Log.d(TAG, "cloud landmark: $it")
             val cloudLandmarkGraphic = object : CloudLandmarkGraphic(graphicOverlay, it) {}
@@ -55,19 +59,23 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         }
         graphicOverlay.postInvalidate()
 
+        // Print first result
         try {
             println("First result: ${results.first().landmark}")
         } catch (e: NoSuchElementException) {
             println("Empty landmark list $e")
         }
 
+        // Add resultsnames
         resultNames.add(0, "More info!")
 
+        // Clear results spinner, add results and notify adapter of changed data
         resultsSpinnerAdapter.clear()
         resultsSpinnerAdapter.addAll(resultNames.distinct())
         resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
+    /** Cloud Landmark Detector onFailure callback */
     override fun onFailure(e: Exception) {
         Log.e(TAG, "Cloud Landmark detection failed $e")
     }
