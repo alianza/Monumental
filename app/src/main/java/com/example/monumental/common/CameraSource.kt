@@ -16,7 +16,6 @@
 package com.example.monumental.common
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.util.Log
@@ -29,10 +28,10 @@ import java.nio.ByteBuffer
  * displaying extra information). This receives preview frames from the camera at a specified rate,
  * sending those frames to child classes' detectors / classifiers as fast as it is able to process.
  */
-@SuppressLint("MissingPermission")
-class CameraSource(private val activity: Activity,
-                   private val graphicOverlay: GraphicOverlay,
-                   private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>) {
+class CameraSource(
+    private val graphicOverlay: GraphicOverlay,
+    private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+) {
 
     private var camera: Camera? = null
 
@@ -59,25 +58,6 @@ class CameraSource(private val activity: Activity,
     // @GuardedBy("processorLock")
     private var frameProcessor: VisionImageProcessor? = null
 
-    /**
-     * Stores a preview size and a corresponding same-aspect-ratio picture size. To avoid distorted
-     * preview images on some devices, the picture size must be set to a size that is the same aspect
-     * ratio as the preview size or the preview may end up being distorted. If the picture size is
-     * null, then there is no picture size with the same aspect ratio as the preview size.
-     */
-    class SizePair {
-        val preview: Size
-        val picture: Size?
-
-        constructor(
-            previewSize: Size,
-            pictureSize: Size?
-        ) {
-            preview = previewSize
-            picture = pictureSize
-        }
-    }
-
     // ==============================================================================================
     // Frame processing
     // ==============================================================================================
@@ -93,7 +73,7 @@ class CameraSource(private val activity: Activity,
      * associated processing is done for the previous frame, detection on the mostly recently received
      * frame will immediately start on the same thread.
      */
-    private inner class FrameProcessingRunnable internal constructor() : Runnable {
+    private inner class FrameProcessingRunnable : Runnable {
         // This lock guards all of the member variables below.
         private val lock = Object()
         private var active = true

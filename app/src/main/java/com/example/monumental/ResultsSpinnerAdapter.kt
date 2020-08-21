@@ -35,8 +35,6 @@ class ResultsSpinnerAdapter(context: Context, resource: Int)
         }
         val tv = v!!.findViewById<View>(android.R.id.text1) as TextView
 
-        println("position $position")
-
         when (position) {
             0 -> {
                 if (this.count == 1) {

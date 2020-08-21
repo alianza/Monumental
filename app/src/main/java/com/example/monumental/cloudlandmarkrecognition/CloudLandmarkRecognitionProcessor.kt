@@ -41,18 +41,17 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         resultsSpinnerAdapter: ArrayAdapter<CharSequence>
     ) {
         // Gather distinct results
-        results.distinctBy { result -> result.landmark }
+        val distinctResults = results.distinctBy { result -> result.landmark }
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
         val resultNames: MutableList<String> = ArrayList()
 
-        for (result in results) {
-            Log.d(TAG, "Landmark: ${result.landmark}")
+        for (distinctResult in distinctResults) {
+            Log.d(TAG, "Landmark: ${distinctResult.landmark}")
         }
 
         // Add graphics overlay and log for each landmark result
-        results.forEach {
-            Log.d(TAG, "cloud landmark: $it")
+        distinctResults.forEach {
             val cloudLandmarkGraphic = object : CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
             resultNames.add(it.landmark)
@@ -71,7 +70,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
 
         // Clear results spinner, add results and notify adapter of changed data
         resultsSpinnerAdapter.clear()
-        resultsSpinnerAdapter.addAll(resultNames.distinct())
+        resultsSpinnerAdapter.addAll(resultNames)
         resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
