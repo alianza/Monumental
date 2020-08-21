@@ -128,7 +128,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         results: T,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        spinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
     )
 
     protected abstract fun onFailure(e: Exception)

@@ -9,10 +9,8 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.view.setPadding
 
-class ResultsSpinnerAdapter(
-    private val initialList: List<CharSequence>,
-    context: Context, resource: Int
-) : ArrayAdapter<CharSequence>(context, resource) {
+class ResultsSpinnerAdapter(context: Context, resource: Int)
+    : ArrayAdapter<CharSequence>(context, resource) {
 
     override fun isEnabled(position: Int): Boolean {
         return position != 0
@@ -36,8 +34,6 @@ class ResultsSpinnerAdapter(
             v = vi.inflate(R.layout.spinner_item, parent, false)
         }
         val tv = v!!.findViewById<View>(android.R.id.text1) as TextView
-        val `val` = java.lang.String.valueOf(initialList[position])
-        tv.text = `val`.replace(":False", "")
 
         println("position $position")
 
@@ -55,10 +51,11 @@ class ResultsSpinnerAdapter(
                 tv.setPadding(24)
             }
             else -> {
-                tv.setTextColor(context.resources.getColor(R.color.colorPrimary))
+                tv.setTextColor(context.getColor(R.color.colorPrimary))
                 tv.textSize = 16.0F
                 tv.setPadding(24, 16, 24, 16)
                 tv.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                tv.text = getItem(position).toString()
             }
         }
 

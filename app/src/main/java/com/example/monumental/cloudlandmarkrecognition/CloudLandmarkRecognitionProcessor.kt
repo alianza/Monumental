@@ -66,7 +66,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
             println("Empty landmark list $e")
         }
 
-        // Add resultsnames
+        // Add first result
         resultNames.add(0, "More info!")
 
         // Clear results spinner, add results and notify adapter of changed data

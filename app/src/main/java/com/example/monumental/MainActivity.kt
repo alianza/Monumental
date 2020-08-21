@@ -4,12 +4,10 @@ package com.example.monumental
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.hardware.Camera
 import android.net.Uri
@@ -19,14 +17,15 @@ import android.os.Environment
 import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.util.Pair
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.setPadding
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
@@ -55,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     // Max height (portrait mode)
     private var imageMaxHeight = 0
+
     private var imageProcessor: VisionImageProcessor? = null
 
     private var pictureFile: File? = null
@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
 
+    private lateinit var picture: Camera.PictureCallback
     private lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
 
     var check = 0
@@ -73,6 +74,49 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        requestPermissions()
+
+        setupResultsSpinner()
+
+        setupCamera()
+
+        setupListeners()
+
+        createImageProcessor()
+    }
+
+    /** Inflate options menu */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.still_image_menu, menu)
+        return true
+    }
+
+    /** Settings button intent */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.settings) {
+            val intent = Intent(this, SettingsActivity::class.java)
+            intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.STILL_IMAGE)
+            startActivity(intent)
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    /** Activity result, take image and try detect landmarks */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
+            // In this case, imageUri is returned by the chooser, save it.
+            imageUri = data!!.data
+            takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
+            tryReloadAndDetectInImage()
+        }
+    }
+
+    /** Request all required permissions */
+    private fun requestPermissions() {
         requestPermissions(
             arrayOf(
                 Manifest.permission.INTERNET,
@@ -80,7 +124,66 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA
             ), 1
         )
+    }
 
+    /** Setup all event listeners */
+    private fun setupListeners() {
+        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                ResultsSpinner.setSelection(0)
+                println("Spinner item $position!")
+
+                if (++check > 1 && position != 0) {
+                    val textView = ResultsSpinner.selectedView as TextView?
+                    var result = textView?.text.toString()
+
+                    result = result.replace(" ", "+")
+
+                    println("Clicked result: $result")
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.google.com/search?q=$result#topstuff")
+    //                            Uri.parse("http://google.com/maps/search/$result")
+                        )
+                    )
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        takeImageButton.setOnClickListener {
+            if (pictureFile == null && imageUri == null) {
+                camera?.takePicture(null, null, picture)
+                takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
+            } else {
+                pictureFile = null
+                imageUri = null
+                takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
+                camera?.startPreview()
+                previewPane.setImageBitmap(null)
+                val graphicOverlay = GraphicOverlay(this, null)
+                graphicOverlay.clear()
+                previewOverlay.clear()
+                resultsSpinnerAdapter.clear()
+                resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
+                resultsSpinnerAdapter.notifyDataSetChanged()
+            }
+        }
+
+        getImageButton.setOnClickListener {
+            startChooseImageIntentForResult()
+        }
+    }
+
+    /** Setup the camera */
+    private fun setupCamera() {
         if (hasCamera()) {
             camera = getCameraInstance()
 
@@ -89,7 +192,7 @@ class MainActivity : AppCompatActivity() {
             val params: Camera.Parameters? = camera?.parameters
             params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             params?.setRotation(90)
-//                params?.flashMode = Camera.Parameters.FLASH_MODE_ON
+                    params?.flashMode = Camera.Parameters.FLASH_MODE_ON
             camera?.parameters = params
 
             camera?.setDisplayOrientation(90)
@@ -101,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 preview.addView(it)
             }
 
-            val picture = Camera.PictureCallback { data, _ ->
+            picture = Camera.PictureCallback { data, _ ->
                 pictureFile = getOutputMediaFile() ?: run {
                     Log.d(TAG, ("Error creating media file, check storage permissions"))
                     return@PictureCallback
@@ -121,192 +224,26 @@ class MainActivity : AppCompatActivity() {
                 camera?.stopPreview()
                 tryReloadAndDetectInImage()
             }
-
-            takeImageButton.setOnClickListener {
-                if (pictureFile == null && imageUri == null) {
-                    camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
-                } else {
-                    pictureFile = null
-                    imageUri = null
-                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
-                    camera?.startPreview()
-                    previewPane.setImageBitmap(null)
-                    val graphicOverlay = GraphicOverlay(this, null)
-                    graphicOverlay.clear()
-                    previewOverlay.clear()
-                    resultsSpinnerAdapter.clear()
-                    resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
-                    resultsSpinnerAdapter.notifyDataSetChanged()
-                }
-            }
         }
 
-        getImageButton.setOnClickListener {
-            startChooseImageIntentForResult()
-        }
+        isLandScape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
 
-        val initialList: List<CharSequence> = mutableListOf(getString(R.string.more_info))
-
-//        // ResultsSpinnerAdapter
-//        resultsSpinnerAdapter = ResultsSpinnerAdapter(
-//            initialList,
-//            applicationContext,
-//            R.layout.spinner_item
-//        )
-
-        resultsSpinnerAdapter = object : ArrayAdapter<CharSequence>(
-            this,
-            R.layout.spinner_item, initialList
-        ) {
-
-            override fun isEnabled(position: Int): Boolean {
-                return position != 0
-            }
-
-            override fun areAllItemsEnabled(): Boolean {
-                return false
-            }
-
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                var v = convertView
-
-                if (v == null) {
-                    val mContext: Context = this.context
-                    val vi =
-                        mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    v = vi.inflate(R.layout.spinner_item, parent, false)
-                }
-                val tv = v!!.findViewById<View>(android.R.id.text1) as TextView
-                val `val`: String = java.lang.String.valueOf(initialList[position])
-                tv.text = `val`.replace(":False", "")
-
-                when (position) {
-                    0 -> {
-                        if (ResultsSpinner.adapter.count == 1) {
-                            tv.text = getString(R.string.no_landmark_tip)
-                            tv.isSingleLine = false
-                        } else {
-                            tv.text = getString(R.string.choose_dropdown)
-                            tv.isSingleLine = true
-                        }
-                        tv.setTextColor(Color.GRAY)
-                        tv.textSize = 18.0F
-                        tv.setPadding(24)
-                    }
-                    else -> {
-                        tv.setTextColor(resources.getColor(R.color.colorPrimary))
-                        tv.textSize = 16.0F
-                        tv.setPadding(24, 16, 24, 16)
-                        tv.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-                    }
-                }
-
-                return v
-            }
-        }
+    /** setup the resultsSpinner(Adapter) */
+    private fun setupResultsSpinner() {
+        resultsSpinnerAdapter = ResultsSpinnerAdapter(applicationContext, R.layout.spinner_item)
 
         // Specify the layout to use when the list of choices appears
         resultsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         // Apply the adapter to the spinner
         ResultsSpinner.adapter = resultsSpinnerAdapter
 
+        resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
+
         resultsSpinnerAdapter.notifyDataSetChanged()
-
-        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                ResultsSpinner.setSelection(0)
-                println("Spinner item $position!")
-
-                if (++check > 1 && position != 0) {
-                    val textView = ResultsSpinner.selectedView as TextView?
-                    val result = textView?.text.toString()
-
-                    println("Clicked result: $result")
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://www.google.com/search?q=$result#topstuff")
-//                            Uri.parse("http://google.com/maps/search/$result")
-                        )
-                    )
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        if (previewPane == null) {
-            Log.d(TAG, "Preview is null")
-        }
-
-        if (previewOverlay == null) {
-            Log.d(TAG, "graphicOverlay is null")
-        }
-
-        createImageProcessor()
-
-        isLandScape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        savedInstanceState?.let {
-            imageUri = it.getParcelable(KEY_IMAGE_URI)
-            imageMaxWidth = it.getInt(KEY_IMAGE_MAX_WIDTH)
-            imageMaxHeight = it.getInt(KEY_IMAGE_MAX_HEIGHT)
-            selectedSize = it.getString(KEY_SELECTED_SIZE, "")
-
-            imageUri?.let { _ ->
-                tryReloadAndDetectInImage()
-            }
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
-        createImageProcessor()
-        camera?.startPreview()
-//        tryReloadAndDetectInImage()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.still_image_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.STILL_IMAGE)
-            startActivity(intent)
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    public override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        with(outState) {
-            putParcelable(KEY_IMAGE_URI, imageUri)
-            putInt(KEY_IMAGE_MAX_WIDTH, imageMaxWidth)
-            putInt(KEY_IMAGE_MAX_HEIGHT, imageMaxHeight)
-            putString(KEY_SELECTED_SIZE, selectedSize)
-        }
-    }
-
-    /**
-     * Choose image activity
-     */
+    /** Choose image activity */
     private fun startChooseImageIntentForResult() {
         val intent = Intent()
         intent.type = "image/*"
@@ -314,22 +251,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
     }
 
-    /**
-     * Activity result, take image and try detect landmarks
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
-            // In this case, imageUri is returned by the chooser, save it.
-            imageUri = data!!.data
-            takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
-            tryReloadAndDetectInImage()
-        }
-    }
-
-    /**
-     * Reload and detect in current image
-     */
+    /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
         try {
             if (imageUri == null) {
@@ -376,8 +298,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Returns max image width, always for portrait mode. Caller needs to swap width / height for
-    // landscape mode.
+    /** Returns max image width, always for portrait mode. Caller needs to swap width / height for
+    landscape mode. */
     private fun getImageMaxWidth(): Int {
         if (imageMaxWidth == 0) {
             // Calculate the max width in portrait mode. This is done lazily since we need to wait for
@@ -392,8 +314,8 @@ class MainActivity : AppCompatActivity() {
         return imageMaxWidth
     }
 
-    // Returns max image height, always for portrait mode. Caller needs to swap width / height for
-    // landscape mode.
+    /** Returns max image height, always for portrait mode. Caller needs to swap width / height for
+    landscape mode. */
     private fun getImageMaxHeight(): Int {
         if (imageMaxHeight == 0) {
             // Calculate the max width in portrait mode. This is done lazily since we need to wait for
@@ -408,7 +330,7 @@ class MainActivity : AppCompatActivity() {
         return imageMaxHeight
     }
 
-    // Gets the targeted width / height.
+    /** Gets the targeted width / height. */
     private fun getTargetedWidthHeight(): Pair<Int, Int> {
         val targetWidth: Int
         val targetHeight: Int
@@ -435,9 +357,7 @@ class MainActivity : AppCompatActivity() {
         return Pair(targetWidth, targetHeight)
     }
 
-    /**
-     * Create the image processor
-     */
+    /** Create the image processor */
     private fun createImageProcessor() {
         imageProcessor = CloudLandmarkRecognitionProcessor()
     }
@@ -488,19 +408,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-
         private const val TAG = "MainActivity"
 
         private const val SIZE_PREVIEW = "w:max" // Available on-screen width.
         private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
         private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio
-
-        private const val KEY_IMAGE_URI = "com.googletest.firebase.ml.demo.KEY_IMAGE_URI"
-        private const val KEY_IMAGE_MAX_WIDTH =
-            "com.googletest.firebase.ml.demo.KEY_IMAGE_MAX_WIDTH"
-        private const val KEY_IMAGE_MAX_HEIGHT =
-            "com.googletest.firebase.ml.demo.KEY_IMAGE_MAX_HEIGHT"
-        private const val KEY_SELECTED_SIZE = "com.googletest.firebase.ml.demo.KEY_SELECTED_SIZE"
 
         private const val REQUEST_CHOOSE_IMAGE = 1002
     }
