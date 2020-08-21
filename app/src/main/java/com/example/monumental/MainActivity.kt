@@ -20,18 +20,13 @@ import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionImageProcessor
-import com.example.monumental.common.preference.SettingsActivity
-import com.example.monumental.common.preference.SettingsActivity.LaunchSource
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileNotFoundException
@@ -94,10 +89,8 @@ class MainActivity : AppCompatActivity() {
 
     /** Settings button intent */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            intent.putExtra(SettingsActivity.EXTRA_LAUNCH_SOURCE, LaunchSource.STILL_IMAGE)
-            startActivity(intent)
+        if (item.itemId == R.id.flash) {
+            toggleFlash(item)
             return true
         }
 
@@ -192,7 +185,6 @@ class MainActivity : AppCompatActivity() {
             val params: Camera.Parameters? = camera?.parameters
             params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             params?.setRotation(90)
-                    params?.flashMode = Camera.Parameters.FLASH_MODE_ON
             camera?.parameters = params
 
             camera?.setDisplayOrientation(90)
@@ -249,6 +241,22 @@ class MainActivity : AppCompatActivity() {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
+    }
+
+    /** Toggles the camera flash */
+    private fun toggleFlash(item: MenuItem) {
+        val params: Camera.Parameters? = camera?.parameters
+        if (params!!.flashMode == Camera.Parameters.FLASH_MODE_ON) {
+            params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+            item.icon = applicationContext.getDrawable(R.drawable.ic_baseline_flash_on_24)
+            Toast.makeText(applicationContext, "Flash off", Toast.LENGTH_SHORT).show()
+        } else {
+            params.flashMode = Camera.Parameters.FLASH_MODE_ON
+            item.icon = applicationContext.getDrawable(R.drawable.ic_baseline_flash_off_24)
+            Toast.makeText(applicationContext, "Flash on", Toast.LENGTH_SHORT).show()
+        }
+        camera?.parameters = params
+        println("Toggled flash to: " + params.flashMode)
     }
 
     /** Reload and detect in current image */
