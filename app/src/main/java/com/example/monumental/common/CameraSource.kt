@@ -21,6 +21,7 @@ import android.hardware.Camera.CameraInfo
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer
 
@@ -32,7 +33,8 @@ import java.nio.ByteBuffer
 class CameraSource(
     private val graphicOverlay: GraphicOverlay,
     private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
-    private val progressBarHolder: FrameLayout
+    private val progressBarHolder: FrameLayout,
+    private val tvNoResults: TextView
 ) {
 
     private var camera: Camera? = null
@@ -151,7 +153,8 @@ class CameraSource(
                                 .build(),
                             graphicOverlay,
                             resultsSpinnerAdapter,
-                            progressBarHolder
+                            progressBarHolder,
+                            tvNoResults
                         )
                     }
                 } catch (t: Exception) {

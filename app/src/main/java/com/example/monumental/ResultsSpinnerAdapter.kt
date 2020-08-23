@@ -45,13 +45,14 @@ class ResultsSpinnerAdapter(context: Context, resource: Int)
                     tv.isSingleLine = true
                 }
                 tv.setTextColor(Color.GRAY)
-                tv.textSize = 18.0F
+                tv.textSize = 22.0F
                 tv.setPadding(24)
+                tv.isSingleLine = false
             }
             else -> {
                 tv.setTextColor(context.getColor(R.color.colorPrimary))
-                tv.textSize = 16.0F
-                tv.setPadding(24, 16, 24, 16)
+                tv.textSize = 18.0F
+                tv.setPadding(24)
                 tv.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                 tv.text = getItem(position).toString()
             }

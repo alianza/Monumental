@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.text.TextPaint
 import com.example.monumental.common.GraphicOverlay
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 
@@ -15,11 +16,14 @@ abstract class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmar
         color = TEXT_COLOR
         style = Paint.Style.STROKE
         strokeWidth = STROKE_WIDTH
+        setShadowLayer(2F, 0F, 0F, SHADOW_COLOR)
     }
 
-    private val landmarkPaint = Paint().apply {
+    private val landmarkPaint = TextPaint(TextPaint.ANTI_ALIAS_FLAG).apply {
         color = TEXT_COLOR
         textSize = TEXT_SIZE
+        setShadowLayer(16F, 0F, 0F, SHADOW_COLOR)
+        setShadowLayer(2F, 0F, 0F, SHADOW_COLOR)
     }
 
     /**
@@ -35,10 +39,10 @@ abstract class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmar
                     top = translateY(top)
                     right = translateX(right)
                     bottom = translateY(bottom)
-                    canvas?.drawRect(this, rectPaint)
+                    canvas?.drawRoundRect(this, 12F, 12F, rectPaint)
 
-                    // Renders the landmark at the bottom of the box.
-                    canvas?.drawText(lm, right, bottom, landmarkPaint)
+                    // Renders the landmark at the bottom of the box (with some displacement).
+                    canvas?.drawText(lm, right + 6, bottom - 6, landmarkPaint)
                 }
             }
         }
@@ -46,6 +50,7 @@ abstract class CloudLandmarkGraphic(overlay: GraphicOverlay, private val landmar
 
     companion object {
         private const val TEXT_COLOR = Color.WHITE
+        private const val SHADOW_COLOR = Color.BLACK
         private const val TEXT_SIZE = 54.0f
         private const val STROKE_WIDTH = 4.0f
     }

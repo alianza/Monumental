@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
             // In this case, imageUri is returned by the chooser, save it.
             progressBarHolder.visibility = View.VISIBLE
+            tvNoResults.visibility = View.GONE
             imageUri = data!!.data
             takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
@@ -221,7 +222,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         takeImageButton.setOnClickListener {
-            // Check for required permissions first
+            tvNoResults.visibility = View.GONE
+            // Check for required permissions
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                 if (pictureFile == null && imageUri == null) {
                     progressBarHolder.visibility = View.VISIBLE
@@ -332,7 +334,13 @@ class MainActivity : AppCompatActivity() {
 
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
-                imageProcessor?.process(it, previewOverlay, resultsSpinnerAdapter, progressBarHolder)
+                imageProcessor?.process(
+                    it,
+                    previewOverlay,
+                    resultsSpinnerAdapter,
+                    progressBarHolder,
+                    tvNoResults
+                )
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")

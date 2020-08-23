@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.example.monumental.VisionProcessorBase
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
@@ -41,7 +42,8 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
         resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
-        progressBarHolder: FrameLayout
+        progressBarHolder: FrameLayout,
+        tvNoResults: TextView
     ) {
         // Gather distinct results
         val distinctResults = results.distinctBy { result -> result.landmark }
@@ -65,6 +67,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         try {
             println("First result: ${results.first().landmark}")
         } catch (e: NoSuchElementException) {
+            tvNoResults.visibility = View.VISIBLE
             println("Empty landmark list $e")
         }
 

@@ -16,6 +16,7 @@ package com.example.monumental.common
 import android.graphics.Bitmap
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.google.firebase.ml.common.FirebaseMLException
 import java.nio.ByteBuffer
 
@@ -28,7 +29,8 @@ interface VisionImageProcessor {
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
         resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
-        progressBarHolder: FrameLayout
+        progressBarHolder: FrameLayout,
+        tvNoResults: TextView
     )
 
     /** Processes the bitmap images.  */
@@ -36,7 +38,8 @@ interface VisionImageProcessor {
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
         resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
-        progressBarHolder: FrameLayout
+        progressBarHolder: FrameLayout,
+        tvNoResults: TextView
     )
 
     /** Stops the underlying machine learning model and release resources.  */
