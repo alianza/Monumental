@@ -20,6 +20,7 @@ import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer
 
@@ -30,7 +31,8 @@ import java.nio.ByteBuffer
  */
 class CameraSource(
     private val graphicOverlay: GraphicOverlay,
-    private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+    private val resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+    private val progressBarHolder: FrameLayout
 ) {
 
     private var camera: Camera? = null
@@ -80,14 +82,6 @@ class CameraSource(
 
         // These pending variables hold the state associated with the new frame awaiting processing.
         private var pendingFrameData: ByteBuffer? = null
-
-        /** Marks the runnable as active/not active. Signals any blocked threads to continue.  */
-        fun setActive(active: Boolean) {
-            synchronized(lock) {
-                this.active = active
-                lock.notifyAll()
-            }
-        }
 
         /**
          * As long as the processing thread is active, this executes detection on frames continuously.
@@ -156,7 +150,8 @@ class CameraSource(
                                 .setCameraFacing(cameraFacing)
                                 .build(),
                             graphicOverlay,
-                            resultsSpinnerAdapter
+                            resultsSpinnerAdapter,
+                            progressBarHolder
                         )
                     }
                 } catch (t: Exception) {
@@ -173,12 +168,9 @@ class CameraSource(
     }
 
     companion object {
-        @SuppressLint("InlinedApi")
-        val CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK
+        const val CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK
 
-        @SuppressLint("InlinedApi")
-        val CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT
-        private const val TAG = "MIDemoApp:CameraSource"
+        private const val TAG = "CameraSource"
     }
 
     init {

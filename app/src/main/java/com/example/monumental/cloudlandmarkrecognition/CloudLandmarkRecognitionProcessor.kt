@@ -2,7 +2,9 @@ package com.example.monumental.cloudlandmarkrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import com.example.monumental.VisionProcessorBase
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
@@ -38,7 +40,8 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     ) {
         // Gather distinct results
         val distinctResults = results.distinctBy { result -> result.landmark }
@@ -72,10 +75,12 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         resultsSpinnerAdapter.clear()
         resultsSpinnerAdapter.addAll(resultNames)
         resultsSpinnerAdapter.notifyDataSetChanged()
+        progressBarHolder.visibility = View.GONE
     }
 
     /** Cloud Landmark Detector onFailure callback */
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Exception, progressBarHolder: FrameLayout) {
+        progressBarHolder.visibility = View.GONE
         Log.e(TAG, "Cloud Landmark detection failed $e")
     }
 

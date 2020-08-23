@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">Monumental</string>
     <string name="menu_item_flash">Flash</string>
-    <string name="choose_picture_btn">Choose Picture</string>
+    <string name="choose_picture_btn">Choose image</string>
     <string name="take_picture_btn">Take Picture</string>
     <string name="preview">Preview</string>
-    <string name="choose_dropdown">Choose landmark to get more info!</string>
-    <string name="no_landmark_tip">Select or take a picture of a landmark to get more info!</string>
+    <string name="choose_dropdown">Choose a landmark to get more info!</string>
+    <string name="no_landmark_tip">Select or capture a landmark to get more info!</string>
     <string name="more_info">More info!</string>
 </resources>

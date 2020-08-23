@@ -2,6 +2,7 @@ package com.example.monumental
 
 import android.graphics.Bitmap
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import androidx.annotation.GuardedBy
 import com.example.monumental.common.BitmapUtils
 import com.example.monumental.common.FrameMetadata
@@ -41,38 +42,55 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer?,
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     ) {
         latestImage = data
         latestImageMetaData = frameMetadata
         if (processingImage == null && processingMetaData == null) {
             if (graphicOverlay != null) {
-                processLatestImage(graphicOverlay, resultsSpinnerAdapter)
+                processLatestImage(graphicOverlay, resultsSpinnerAdapter, progressBarHolder)
             }
         }
     }
 
     // Bitmap version
-    override fun process(bitmap: Bitmap?, graphicOverlay: GraphicOverlay?, resultsSpinnerAdapter: ArrayAdapter<CharSequence>) {
+    override fun process(
+        bitmap: Bitmap?,
+        graphicOverlay: GraphicOverlay?,
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
+    ) {
         if (graphicOverlay != null) {
             detectInVisionImage(
                 null, /* bitmap */
                 FirebaseVisionImage.fromBitmap(bitmap!!),
                 null,
                 graphicOverlay,
-                resultsSpinnerAdapter
+                resultsSpinnerAdapter,
+                progressBarHolder
             )
         }
     }
 
     @Synchronized
-    private fun processLatestImage(graphicOverlay: GraphicOverlay, resultsSpinnerAdapter: ArrayAdapter<CharSequence>) {
+    private fun processLatestImage(
+        graphicOverlay: GraphicOverlay,
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
+    ) {
         processingImage = latestImage
         processingMetaData = latestImageMetaData
         latestImage = null
         latestImageMetaData = null
         if (processingImage != null && processingMetaData != null) {
-            processImage(processingImage!!, processingMetaData!!, graphicOverlay, resultsSpinnerAdapter)
+            processImage(
+                processingImage!!,
+                processingMetaData!!,
+                graphicOverlay,
+                resultsSpinnerAdapter,
+                progressBarHolder
+            )
         }
     }
 
@@ -80,7 +98,8 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     ) {
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
@@ -92,7 +111,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         val bitmap = BitmapUtils.getBitmap(data, frameMetadata)
         detectInVisionImage(
             bitmap, FirebaseVisionImage.fromByteBuffer(data, metadata), frameMetadata,
-            graphicOverlay, resultsSpinnerAdapter
+            graphicOverlay, resultsSpinnerAdapter, progressBarHolder
         )
     }
 
@@ -101,16 +120,17 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         image: FirebaseVisionImage,
         metadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     ) {
         detectInImage(image)
             .addOnSuccessListener { results ->
                 val notNullOriginalCameraImage = originalCameraImage
                         ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
                 val notNullMetadata = metadata ?: FrameMetadata.Builder().build()
-                onSuccess(notNullOriginalCameraImage, results, notNullMetadata, graphicOverlay, resultsSpinnerAdapter)
+                onSuccess(notNullOriginalCameraImage, results, notNullMetadata, graphicOverlay, resultsSpinnerAdapter, progressBarHolder)
             }
-            .addOnFailureListener { e -> onFailure(e) }
+            .addOnFailureListener { e -> onFailure(e, progressBarHolder) }
     }
 
     override fun stop() {}
@@ -128,16 +148,18 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         results: T,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     )
 
-    protected abstract fun onFailure(e: Exception)
+    protected abstract fun onFailure(e: Exception, progressBarHolder: FrameLayout)
 
     abstract fun onSuccess(
         originalCameraImage: Bitmap?,
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        progressBarHolder: FrameLayout
     )
 }

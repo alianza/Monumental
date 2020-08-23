@@ -3,9 +3,11 @@
 package com.example.monumental
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -39,47 +41,28 @@ import kotlin.math.max
 class MainActivity : AppCompatActivity() {
 
     private var selectedSize: String = SIZE_PREVIEW
-
     private var isLandScape: Boolean = false
-
     private var imageUri: Uri? = null
-
     // Max width (portrait mode)
     private var imageMaxWidth = 0
-
     // Max height (portrait mode)
     private var imageMaxHeight = 0
-
     private var imageProcessor: VisionImageProcessor? = null
-
     private var pictureFile: File? = null
-
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
+    var check = 0
 
     private lateinit var picture: Camera.PictureCallback
     private lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
 
-    var check = 0
-
-    /**
-     * onCreate method to set layout, request required permissions, start camera(preview),
-     * set eventListeners
-     */
+    /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
 
-        requestPermissions()
-
-        setupResultsSpinner()
-
-        setupCamera()
-
-        setupListeners()
-
-        createImageProcessor()
+        initViews()
     }
 
     /** Inflate options menu */
@@ -103,10 +86,30 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
             // In this case, imageUri is returned by the chooser, save it.
+            progressBarHolder.visibility = View.VISIBLE
             imageUri = data!!.data
             takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
+    }
+
+    /** Request permissions result */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        // When permissions granted, start the camera(preview)
+        when(requestCode) {
+            1 -> {
+                setupCamera()
+            }
+        }
+    }
+
+    /** Start everything up */
+    private fun initViews() {
+        requestPermissions()
+        setupResultsSpinner()
+        setupCamera()
+        setupListeners()
+        createImageProcessor()
     }
 
     /** Request all required permissions */
@@ -118,62 +121,21 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA
             ), 1
         )
+
     }
 
-    /** Setup all event listeners */
-    private fun setupListeners() {
-        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                ResultsSpinner.setSelection(0)
-                println("Spinner item $position!")
+    /** setup the resultsSpinner(Adapter) */
+    private fun setupResultsSpinner() {
+        resultsSpinnerAdapter = ResultsSpinnerAdapter(applicationContext, R.layout.spinner_item)
 
-                if (++check > 1 && position != 0) {
-                    val textView = ResultsSpinner.selectedView as TextView?
-                    var result = textView?.text.toString()
+        // Specify the layout to use when the list of choices appears
+        resultsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        // Apply the adapter to the spinner
+        ResultsSpinner.adapter = resultsSpinnerAdapter
 
-                    result = result.replace(" ", "+")
+        resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
 
-                    println("Clicked result: $result")
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://www.google.com/search?q=$result#topstuff")
-    //                            Uri.parse("http://google.com/maps/search/$result")
-                        )
-                    )
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        takeImageButton.setOnClickListener {
-            if (pictureFile == null && imageUri == null) {
-                camera?.takePicture(null, null, picture)
-                takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
-            } else {
-                pictureFile = null
-                imageUri = null
-                takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
-                camera?.startPreview()
-                previewPane.setImageBitmap(null)
-                val graphicOverlay = GraphicOverlay(this, null)
-                graphicOverlay.clear()
-                previewOverlay.clear()
-                resultsSpinnerAdapter.clear()
-                resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
-                resultsSpinnerAdapter.notifyDataSetChanged()
-            }
-        }
-
-        getImageButton.setOnClickListener {
-            startChooseImageIntentForResult()
-        }
+        resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
     /** Setup the camera */
@@ -222,18 +184,87 @@ class MainActivity : AppCompatActivity() {
         isLandScape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
-    /** setup the resultsSpinner(Adapter) */
-    private fun setupResultsSpinner() {
-        resultsSpinnerAdapter = ResultsSpinnerAdapter(applicationContext, R.layout.spinner_item)
+    /** Setup all event listeners */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupListeners() {
+        ResultsSpinner.setOnTouchListener { _, _ ->
+            // If only one landmark result
+            if (ResultsSpinner.adapter.count == 2) {
+                val landmark = ResultsSpinner.adapter.getItem(1).toString()
+                startLandmarkInfoIntent(landmark)
+            }
+            return@setOnTouchListener false
+        }
 
-        // Specify the layout to use when the list of choices appears
-        resultsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        // Apply the adapter to the spinner
-        ResultsSpinner.adapter = resultsSpinnerAdapter
+        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                ResultsSpinner.setSelection(0)
+                println("Spinner item $position!")
 
-        resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
+                if (++check > 1 && position != 0) {
+                    val textView = ResultsSpinner.selectedView as TextView?
+                    var result = textView?.text.toString()
 
-        resultsSpinnerAdapter.notifyDataSetChanged()
+                    result = result.replace(" ", "+")
+
+                    println("Clicked result: $result")
+                    startLandmarkInfoIntent(result)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        takeImageButton.setOnClickListener {
+            // Check for required permissions first
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+                if (pictureFile == null && imageUri == null) {
+                    progressBarHolder.visibility = View.VISIBLE
+                    camera?.takePicture(null, null, picture)
+                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
+                } else {
+                    pictureFile = null
+                    imageUri = null
+                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
+                    camera?.startPreview()
+                    previewPane.setImageBitmap(null)
+                    val graphicOverlay = GraphicOverlay(this, null)
+                    graphicOverlay.clear()
+                    previewOverlay.clear()
+                    resultsSpinnerAdapter.clear()
+                    resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
+                    resultsSpinnerAdapter.notifyDataSetChanged()
+                }
+            } else {
+                // No permissions granted, request them again
+                requestPermissions()
+            }
+        }
+
+        getImageButton.setOnClickListener {
+            startChooseImageIntentForResult()
+        }
+    }
+
+    private fun startLandmarkInfoIntent(result: String) {
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.google.com/search?q=$result#topstuff")
+                //Uri.parse("http://google.com/maps/search/$result")
+            )
+        )
+        ResultsSpinner.setSelection(0)
+    }
+
+    /** Create the image processor */
+    private fun createImageProcessor() {
+        imageProcessor = CloudLandmarkRecognitionProcessor()
     }
 
     /** Choose image activity */
@@ -264,6 +295,7 @@ class MainActivity : AppCompatActivity() {
     private fun tryReloadAndDetectInImage() {
         try {
             if (imageUri == null) {
+                progressBarHolder.visibility = View.GONE
                 return
             }
 
@@ -300,10 +332,11 @@ class MainActivity : AppCompatActivity() {
 
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
-                imageProcessor?.process(it, previewOverlay, resultsSpinnerAdapter)
+                imageProcessor?.process(it, previewOverlay, resultsSpinnerAdapter, progressBarHolder)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
+            progressBarHolder.visibility = View.GONE
         }
     }
 
@@ -364,11 +397,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         return Pair(targetWidth, targetHeight)
-    }
-
-    /** Create the image processor */
-    private fun createImageProcessor() {
-        imageProcessor = CloudLandmarkRecognitionProcessor()
     }
 
     /** Check if this device has a camera */
