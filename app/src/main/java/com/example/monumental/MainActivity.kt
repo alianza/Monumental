@@ -25,6 +25,7 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data
-            takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
+            takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext ,R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
     }
@@ -228,11 +229,11 @@ class MainActivity : AppCompatActivity() {
                 if (pictureFile == null && imageUri == null) {
                     progressBarHolder.visibility = View.VISIBLE
                     camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_autorenew_black_24dp))
+                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_autorenew_black_24dp))
                 } else {
                     pictureFile = null
                     imageUri = null
-                    takeImageButton.setImageDrawable(getDrawable(R.drawable.ic_camera_black_24dp))
+                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_camera_black_24dp))
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
                     val graphicOverlay = GraphicOverlay(this, null)
@@ -253,7 +254,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         previewOverlay.setOnClickListener {
-            ResultsSpinner.performClick()
+            // If only one landmark result
+            if (ResultsSpinner.adapter.count == 2) {
+                val landmark = ResultsSpinner.adapter.getItem(1).toString()
+                startLandmarkInfoIntent(landmark)
+            } else {
+                ResultsSpinner.performClick()
+            }
         }
     }
 
@@ -285,11 +292,11 @@ class MainActivity : AppCompatActivity() {
         val params: Camera.Parameters? = camera?.parameters
         if (params!!.flashMode == Camera.Parameters.FLASH_MODE_ON) {
             params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-            item.icon = applicationContext.getDrawable(R.drawable.ic_baseline_flash_on_24)
+            item.icon = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
             Toast.makeText(applicationContext, "Flash off", Toast.LENGTH_SHORT).show()
         } else {
             params.flashMode = Camera.Parameters.FLASH_MODE_ON
-            item.icon = applicationContext.getDrawable(R.drawable.ic_baseline_flash_off_24)
+            item.icon = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
             Toast.makeText(applicationContext, "Flash on", Toast.LENGTH_SHORT).show()
         }
         camera?.parameters = params
