@@ -261,8 +261,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://www.google.com/search?q=$result#topstuff")
-                //Uri.parse("http://google.com/maps/search/$result")
+                Uri.parse(getString(R.string.info_url, result))
             )
         )
         ResultsSpinner.setSelection(0)
