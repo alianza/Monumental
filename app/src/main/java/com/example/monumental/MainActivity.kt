@@ -251,6 +251,10 @@ class MainActivity : AppCompatActivity() {
         getImageButton.setOnClickListener {
             startChooseImageIntentForResult()
         }
+
+        previewOverlay.setOnClickListener {
+            ResultsSpinner.performClick()
+        }
     }
 
     private fun startLandmarkInfoIntent(result: String) {
