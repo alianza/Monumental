@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Splash"
         tools:targetApi="q">
+        <activity android:name=".WebViewActivity">
 
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -27,12 +29,11 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <!-- Include the host attribute if you want your app to respond
-                     only to URLs with your app's domain. -->
                 <data android:host="www.google.com" android:scheme="http" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- The BROWSABLE category is required to get links from web pages. -->

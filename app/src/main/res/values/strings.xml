@@ -10,6 +10,6 @@
     <string name="more_info">More info!</string>
     <string name="no_landmarks">No landmarks found</string>
     <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
-<!--    Alternate info url (to google maps)-->
-<!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
+    <!--    Alternate info url (to google maps)-->
+    <!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
 </resources>

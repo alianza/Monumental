@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.hardware.Camera
 import android.net.Uri
@@ -25,7 +26,9 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.akshay.mindorks_cct.CustomTabHelper
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
@@ -44,8 +47,10 @@ class MainActivity : AppCompatActivity() {
     private var selectedSize: String = SIZE_PREVIEW
     private var isLandScape: Boolean = false
     private var imageUri: Uri? = null
+
     // Max width (portrait mode)
     private var imageMaxWidth = 0
+
     // Max height (portrait mode)
     private var imageMaxHeight = 0
     private var imageProcessor: VisionImageProcessor? = null
@@ -53,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
     var check = 0
+    private var customTabHelper: CustomTabHelper = CustomTabHelper()
 
     private lateinit var picture: Camera.PictureCallback
     private lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
@@ -90,15 +96,24 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data
-            takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext ,R.drawable.ic_autorenew_black_24dp))
+            takeImageButton.setImageDrawable(
+                ContextCompat.getDrawable(
+                    applicationContext,
+                    R.drawable.ic_autorenew_black_24dp
+                )
+            )
             tryReloadAndDetectInImage()
         }
     }
 
     /** Request permissions result */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         // When permissions granted, start the camera(preview)
-        when(requestCode) {
+        when (requestCode) {
             1 -> {
                 setupCamera()
             }
@@ -229,11 +244,21 @@ class MainActivity : AppCompatActivity() {
                 if (pictureFile == null && imageUri == null) {
                     progressBarHolder.visibility = View.VISIBLE
                     camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_autorenew_black_24dp))
+                    takeImageButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            applicationContext,
+                            R.drawable.ic_autorenew_black_24dp
+                        )
+                    )
                 } else {
                     pictureFile = null
                     imageUri = null
-                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_camera_black_24dp))
+                    takeImageButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            applicationContext,
+                            R.drawable.ic_camera_black_24dp
+                        )
+                    )
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
                     val graphicOverlay = GraphicOverlay(this, null)
@@ -265,12 +290,49 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startLandmarkInfoIntent(result: String) {
-        startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(getString(R.string.info_url, result))
+        val builder = CustomTabsIntent.Builder()
+
+        // modify toolbar color
+        builder.setToolbarColor(ContextCompat.getColor(this@MainActivity, R.color.colorPrimary))
+
+        // add share button to overflow menu
+        builder.addDefaultShareMenuItem()
+
+        // modify back button icon
+        builder.setCloseButtonIcon(
+            BitmapFactory.decodeResource(
+                resources,
+                R.drawable.baseline_arrow_back_black_24dp
             )
         )
+
+        // Hide url bar
+//        builder.enableUrlBarHiding()
+
+        // show website title
+        builder.setShowTitle(true)
+
+        // animation for enter and exit of tab
+        builder.setStartAnimations(this, R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
+        builder.setExitAnimations(this, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
+
+        val customTabsIntent = builder.build()
+
+        // check if chrome is available
+        val packageName =
+            customTabHelper.getPackageNameToUse(this, getString(R.string.info_url, result))
+
+        if (packageName == null) {
+            // if chrome not available open in web view
+            val intentOpenUri = Intent(this, WebViewActivity::class.java)
+            intentOpenUri.putExtra(WebViewActivity.URL, getString(R.string.info_url, result))
+            intentOpenUri.putExtra(WebViewActivity.NAME, result)
+            startActivity(intentOpenUri)
+            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
+        } else {
+            customTabsIntent.intent.setPackage(packageName)
+            customTabsIntent.launchUrl(this, Uri.parse(getString(R.string.info_url, result)))
+        }
         ResultsSpinner.setSelection(0)
     }
 
@@ -292,11 +354,13 @@ class MainActivity : AppCompatActivity() {
         val params: Camera.Parameters? = camera?.parameters
         if (params!!.flashMode == Camera.Parameters.FLASH_MODE_ON) {
             params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-            item.icon = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
+            item.icon =
+                ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
             Toast.makeText(applicationContext, "Flash off", Toast.LENGTH_SHORT).show()
         } else {
             params.flashMode = Camera.Parameters.FLASH_MODE_ON
-            item.icon = ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
+            item.icon =
+                ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
             Toast.makeText(applicationContext, "Flash on", Toast.LENGTH_SHORT).show()
         }
         camera?.parameters = params
@@ -458,7 +522,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Create a media file name
-        val timeStamp = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
+        val timeStamp =
+            SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
         return File("${mediaStorageDir.path}${File.separator}IMG_$timeStamp.jpg")
     }
 
