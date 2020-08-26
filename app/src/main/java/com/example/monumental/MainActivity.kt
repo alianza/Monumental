@@ -28,7 +28,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import com.akshay.mindorks_cct.CustomTabHelper
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
