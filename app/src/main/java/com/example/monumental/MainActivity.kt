@@ -165,7 +165,10 @@ class MainActivity : AppCompatActivity() {
             preview = camera?.let { CameraPreview(this, it) }
 
             val params: Camera.Parameters? = camera?.parameters
-            params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            // Check for focus mode support
+            if (camera?.parameters?.supportedFocusModes!!.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            }
             params?.setRotation(90)
             camera?.parameters = params
 
@@ -352,19 +355,26 @@ class MainActivity : AppCompatActivity() {
     /** Toggles the camera flash */
     private fun toggleFlash(item: MenuItem) {
         val params: Camera.Parameters? = camera?.parameters
-        if (params!!.flashMode == Camera.Parameters.FLASH_MODE_ON) {
-            params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-            item.icon =
-                ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
-            Toast.makeText(applicationContext, "Flash off", Toast.LENGTH_SHORT).show()
+
+        // Check for flash support
+        if (params!!.supportedFlashModes != null) {
+            if (params.flashMode == Camera.Parameters.FLASH_MODE_ON) {
+                params.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                item.icon =
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
+                Toast.makeText(applicationContext, getString(R.string.flash_off), Toast.LENGTH_SHORT).show()
+            } else {
+                params.flashMode = Camera.Parameters.FLASH_MODE_ON
+                item.icon =
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
+                Toast.makeText(applicationContext, getString(R.string.flash_on), Toast.LENGTH_SHORT).show()
+            }
+            camera?.parameters = params
         } else {
-            params.flashMode = Camera.Parameters.FLASH_MODE_ON
+            Toast.makeText(applicationContext, getString(R.string.flash_not_supported), Toast.LENGTH_SHORT).show()
             item.icon =
                 ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
-            Toast.makeText(applicationContext, "Flash on", Toast.LENGTH_SHORT).show()
         }
-        camera?.parameters = params
-        println("Toggled flash to: " + params.flashMode)
     }
 
     /** Reload and detect in current image */
