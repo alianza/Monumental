@@ -23,8 +23,11 @@ import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.FrameLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private var customTabHelper: CustomTabHelper = CustomTabHelper()
 
     private lateinit var picture: Camera.PictureCallback
-    private lateinit var resultsSpinnerAdapter: ArrayAdapter<CharSequence>
+    private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
 
     /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {

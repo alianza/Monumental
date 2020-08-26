@@ -14,9 +14,9 @@
 package com.example.monumental.common
 
 import android.graphics.Bitmap
-import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.example.monumental.ResultsSpinnerAdapter
 import com.google.firebase.ml.common.FirebaseMLException
 import java.nio.ByteBuffer
 
@@ -28,7 +28,7 @@ interface VisionImageProcessor {
         data: ByteBuffer?,
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        resultsSpinnerAdapter: ResultsSpinnerAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     )
@@ -37,7 +37,7 @@ interface VisionImageProcessor {
     fun process(
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        resultsSpinnerAdapter: ResultsSpinnerAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     )

@@ -9,8 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.view.setPadding
 
-class ResultsSpinnerAdapter(context: Context, resource: Int)
-    : ArrayAdapter<CharSequence>(context, resource) {
+class ResultsSpinnerAdapter(context: Context, resource: Int) : ArrayAdapter<CharSequence>(context, resource) {
 
     override fun isEnabled(position: Int): Boolean {
         return position != 0

@@ -3,9 +3,9 @@ package com.example.monumental.cloudlandmarkrecognition
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.example.monumental.ResultsSpinnerAdapter
 import com.example.monumental.VisionProcessorBase
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
@@ -41,7 +41,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ArrayAdapter<CharSequence>,
+        resultsSpinnerAdapter: ResultsSpinnerAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
