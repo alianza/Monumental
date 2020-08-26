@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     private var pictureFile: File? = null
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
+    // Recyclerview click offset check
     var check = 0
     private var customTabHelper: CustomTabHelper = CustomTabHelper()
 
@@ -294,6 +295,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Create the image processor */
+    private fun createImageProcessor() {
+        imageProcessor = CloudLandmarkRecognitionProcessor()
+    }
+
     private fun startLandmarkInfoIntent(result: String) {
         val builder = CustomTabsIntent.Builder()
 
@@ -337,11 +343,6 @@ class MainActivity : AppCompatActivity() {
             customTabsIntent.launchUrl(this, Uri.parse(getString(R.string.info_url, result)))
         }
         ResultsSpinner.setSelection(0)
-    }
-
-    /** Create the image processor */
-    private fun createImageProcessor() {
-        imageProcessor = CloudLandmarkRecognitionProcessor()
     }
 
     /** Choose image activity */
