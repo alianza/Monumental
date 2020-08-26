@@ -306,9 +306,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        // Hide url bar
-//        builder.enableUrlBarHiding()
-
         // show website title
         builder.setShowTitle(true)
 
@@ -323,13 +320,14 @@ class MainActivity : AppCompatActivity() {
             customTabHelper.getPackageNameToUse(this, getString(R.string.info_url, result))
 
         if (packageName == null) {
-            // if chrome not available open in web view
+            // If chrome not available open in web view
             val intentOpenUri = Intent(this, WebViewActivity::class.java)
             intentOpenUri.putExtra(WebViewActivity.URL, getString(R.string.info_url, result))
             intentOpenUri.putExtra(WebViewActivity.NAME, result)
             startActivity(intentOpenUri)
             overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
         } else {
+            // Open chrome custom tab
             customTabsIntent.intent.setPackage(packageName)
             customTabsIntent.launchUrl(this, Uri.parse(getString(R.string.info_url, result)))
         }

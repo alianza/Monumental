@@ -39,8 +39,6 @@ class WebViewActivity : AppCompatActivity() {
             this.finish()
             overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
         }
-//        window.enterTransition = Explode()
-//        window.exitTransition = Explode()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
