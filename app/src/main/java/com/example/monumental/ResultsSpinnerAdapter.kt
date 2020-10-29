@@ -11,6 +11,17 @@ import androidx.core.view.setPadding
 
 class ResultsSpinnerAdapter(context: Context, resource: Int) : ArrayAdapter<CharSequence>(context, resource) {
 
+    init {
+        // Specify the layout to use when the list of choices appears
+        setDropDownViewResource(R.layout.spinner_dropdown_item)
+
+        // Add empty list item
+        addAll(mutableListOf(context.getString(R.string.more_info)))
+
+        //Refresh list
+        notifyDataSetChanged()
+    }
+
     override fun isEnabled(position: Int): Boolean {
         return position != 0
     }
@@ -19,11 +30,7 @@ class ResultsSpinnerAdapter(context: Context, resource: Int) : ArrayAdapter<Char
         return false
     }
 
-    override fun getDropDownView(
-        position: Int,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         var v = convertView
 
         if (v == null) {
@@ -58,5 +65,11 @@ class ResultsSpinnerAdapter(context: Context, resource: Int) : ArrayAdapter<Char
         }
 
         return v
+    }
+
+    fun reset() {
+        clear()
+        addAll(mutableListOf(context.getString(R.string.more_info)))
+        notifyDataSetChanged()
     }
 }

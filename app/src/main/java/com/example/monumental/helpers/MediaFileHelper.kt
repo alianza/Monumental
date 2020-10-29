@@ -1,4 +1,4 @@
-package com.example.monumental
+package com.example.monumental.helpers
 
 import android.net.Uri
 import android.os.Environment
@@ -7,6 +7,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class MediaFileHelper {
 
     /** Create a file Uri for saving an image */

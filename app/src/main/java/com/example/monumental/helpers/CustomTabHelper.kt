@@ -1,16 +1,17 @@
-package com.example.monumental
+package com.example.monumental.helpers
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsService
+import com.example.monumental.R
+import com.example.monumental.WebViewActivity
 
-/**
- * Created by akshaynandwana on
- * 08, February, 2019
- **/
 class CustomTabHelper {
 
     companion object {
@@ -21,8 +22,57 @@ class CustomTabHelper {
         const val LOCAL_PACKAGE = "com.google.android.apps.chrome"
     }
 
-    fun getPackageNameToUse(context: Context, url: String): String? {
+    fun startIntent(result: String, context: Context) {
+        val packageName =
+            getPackageNameToUse(context, context.getString(R.string.info_url, result))
 
+        // check if chrome is available
+        if (packageName == null) {
+            // If chrome not available open in web view
+            val intentOpenUri = Intent(context, WebViewActivity::class.java)
+            intentOpenUri.putExtra(WebViewActivity.URL, context.getString(R.string.info_url, result))
+            intentOpenUri.putExtra(WebViewActivity.NAME, result)
+            context.startActivity(intentOpenUri)
+            (context as Activity).overridePendingTransition(
+                R.anim.anim_slide_in_left,
+                R.anim.anim_slide_out_left
+            )
+        } else {
+            // Open chrome custom tab
+            val customTabsIntent = build(context)
+            customTabsIntent.intent.setPackage(packageName)
+            customTabsIntent.launchUrl(context, Uri.parse(context.getString(R.string.info_url, result)))
+        }
+    }
+
+    private fun build(context: Context): CustomTabsIntent {
+        val builder = CustomTabsIntent.Builder()
+
+        // modify toolbar color
+        builder.setToolbarColor(context.getColor(R.color.colorPrimary))
+
+        // add share button to overflow menu
+        builder.addDefaultShareMenuItem()
+
+        // modify back button icon
+        builder.setCloseButtonIcon(
+            BitmapFactory.decodeResource(
+                context.resources,
+                R.drawable.baseline_arrow_back_black_24dp
+            )
+        )
+
+        // show website title
+        builder.setShowTitle(true)
+
+        // animation for enter and exit of tab
+        builder.setStartAnimations(context, R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
+        builder.setExitAnimations(context, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
+
+        return builder.build()
+    }
+
+    private fun getPackageNameToUse(context: Context, url: String): String? {
         sPackageNameToUse?.let {
             return it
         }

@@ -6,16 +6,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.hardware.Camera
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -24,20 +19,19 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionImageProcessor
+import com.example.monumental.helpers.CameraHelper
+import com.example.monumental.helpers.CustomTabHelper
+import com.example.monumental.helpers.ImageHelper
+import com.example.monumental.helpers.MediaFileHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.math.max
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
+    private lateinit var cameraHelper: CameraHelper
     private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
     private lateinit var imageProcessor: VisionImageProcessor
 
@@ -74,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     /** Settings button intent */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.flash) {
-            toggleFlash(item)
+            cameraHelper.toggleFlash(item, camera!!, this)
             return true
         }
 
@@ -91,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             imageUri = data!!.data
             takeImageButton.setImageDrawable(
                 ContextCompat.getDrawable(
-                    applicationContext,
+                    this,
                     R.drawable.ic_autorenew_black_24dp
                 )
             )
@@ -103,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         // When permissions granted, start the camera(preview)
         when (requestCode) {
-            1 -> {
+            PERMISSIONS_REQUEST_CODE -> {
                 setupCamera()
             }
         }
@@ -115,11 +110,11 @@ class MainActivity : AppCompatActivity() {
         customTabHelper = CustomTabHelper()
         mediaFileHelper = MediaFileHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
+        cameraHelper = CameraHelper(this, imageHelper)
         imageProcessor = CloudLandmarkRecognitionProcessor()
 
         requestPermissions()
         setupResultsSpinner()
-        setupCamera()
         setupCamera()
         setupListeners()
     }
@@ -131,42 +126,26 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.INTERNET,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA
-            ), 1
+            ), PERMISSIONS_REQUEST_CODE
         )
 
     }
 
     /** setup the resultsSpinner(Adapter) */
     private fun setupResultsSpinner() {
-        resultsSpinnerAdapter = ResultsSpinnerAdapter(applicationContext, R.layout.spinner_item)
-
-        // Specify the layout to use when the list of choices appears
-        resultsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        resultsSpinnerAdapter = ResultsSpinnerAdapter(this, R.layout.spinner_item)
         // Apply the adapter to the spinner
         ResultsSpinner.adapter = resultsSpinnerAdapter
-
-        resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
-
-        resultsSpinnerAdapter.notifyDataSetChanged()
     }
 
     /** Setup the camera */
     private fun setupCamera() {
-        if (hasCamera()) {
-            camera = getCameraInstance()
+        if (cameraHelper.hasCamera()) {
+            camera = cameraHelper.getCameraInstance()
 
             preview = camera?.let { CameraPreview(this, it) }
 
-            val params: Camera.Parameters? = camera?.parameters
-            // Check for focus mode support
-            if (camera?.parameters?.supportedFocusModes!!.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                params?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            }
-            params?.setRotation(90)
-            camera?.parameters = params
-
-            camera?.setDisplayOrientation(90)
-            camera?.enableShutterSound(true)
+            cameraHelper.setParameters(camera!!)
 
             // Set the Preview view as the content of our activity.
             preview?.also {
@@ -180,15 +159,7 @@ class MainActivity : AppCompatActivity() {
                     return@PictureCallback
                 }
 
-                try {
-                    val fos = FileOutputStream(pictureFile as File)
-                    fos.write(data)
-                    fos.close()
-                } catch (e: FileNotFoundException) {
-                    Log.d(TAG, "File not found: ${e.message}")
-                } catch (e: IOException) {
-                    Log.d(TAG, "Error accessing file: ${e.message}")
-                }
+                cameraHelper.savePicture(pictureFile!!, data)
 
                 imageUri = mediaFileHelper.getOutputMediaFileUri()
                 camera?.stopPreview()
@@ -210,12 +181,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 ResultsSpinner.setSelection(0)
                 println("Spinner item $position!")
 
@@ -230,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) { }
         }
 
         takeImageButton.setOnClickListener {
@@ -242,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     camera?.takePicture(null, null, picture)
                     takeImageButton.setImageDrawable(
                         ContextCompat.getDrawable(
-                            applicationContext,
+                            this,
                             R.drawable.ic_autorenew_black_24dp
                         )
                     )
@@ -251,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                     imageUri = null
                     takeImageButton.setImageDrawable(
                         ContextCompat.getDrawable(
-                            applicationContext,
+                            this,
                             R.drawable.ic_camera_black_24dp
                         )
                     )
@@ -260,9 +226,7 @@ class MainActivity : AppCompatActivity() {
                     val graphicOverlay = GraphicOverlay(this, null)
                     graphicOverlay.clear()
                     previewOverlay.clear()
-                    resultsSpinnerAdapter.clear()
-                    resultsSpinnerAdapter.addAll(mutableListOf(getString(R.string.more_info)))
-                    resultsSpinnerAdapter.notifyDataSetChanged()
+                    resultsSpinnerAdapter.reset()
                 }
             } else {
                 // No permissions granted, request them again
@@ -285,48 +249,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Get landmark info */
     private fun startLandmarkInfoIntent(result: String) {
-        val builder = CustomTabsIntent.Builder()
-
-        // modify toolbar color
-        builder.setToolbarColor(ContextCompat.getColor(this@MainActivity, R.color.colorPrimary))
-
-        // add share button to overflow menu
-        builder.addDefaultShareMenuItem()
-
-        // modify back button icon
-        builder.setCloseButtonIcon(
-            BitmapFactory.decodeResource(
-                resources,
-                R.drawable.baseline_arrow_back_black_24dp
-            )
-        )
-
-        // show website title
-        builder.setShowTitle(true)
-
-        // animation for enter and exit of tab
-        builder.setStartAnimations(this, R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
-        builder.setExitAnimations(this, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
-
-        val customTabsIntent = builder.build()
-
-        // check if chrome is available
-        val packageName =
-            customTabHelper.getPackageNameToUse(this, getString(R.string.info_url, result))
-
-        if (packageName == null) {
-            // If chrome not available open in web view
-            val intentOpenUri = Intent(this, WebViewActivity::class.java)
-            intentOpenUri.putExtra(WebViewActivity.URL, getString(R.string.info_url, result))
-            intentOpenUri.putExtra(WebViewActivity.NAME, result)
-            startActivity(intentOpenUri)
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left)
-        } else {
-            // Open chrome custom tab
-            customTabsIntent.intent.setPackage(packageName)
-            customTabsIntent.launchUrl(this, Uri.parse(getString(R.string.info_url, result)))
-        }
+        customTabHelper.startIntent(result, this)
         ResultsSpinner.setSelection(0)
     }
 
@@ -336,31 +261,6 @@ class MainActivity : AppCompatActivity() {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
-    }
-
-    /** Toggles the camera flash */
-    private fun toggleFlash(item: MenuItem) {
-        val params: Camera.Parameters? = camera?.parameters
-
-        // Check for flash support
-        if (params!!.supportedFlashModes != null) {
-            if (params.flashMode == Camera.Parameters.FLASH_MODE_ON) {
-                params.flashMode = Camera.Parameters.FLASH_MODE_OFF
-                item.icon =
-                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_on_24)
-                Toast.makeText(applicationContext, getString(R.string.flash_off), Toast.LENGTH_SHORT).show()
-            } else {
-                params.flashMode = Camera.Parameters.FLASH_MODE_ON
-                item.icon =
-                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
-                Toast.makeText(applicationContext, getString(R.string.flash_on), Toast.LENGTH_SHORT).show()
-            }
-            camera?.parameters = params
-        } else {
-            Toast.makeText(applicationContext, getString(R.string.flash_not_supported), Toast.LENGTH_SHORT).show()
-            item.icon =
-                ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_flash_off_24)
-        }
     }
 
     /** Reload and detect in current image */
@@ -376,35 +276,11 @@ class MainActivity : AppCompatActivity() {
             // Clear the overlay first
             previewOverlay.clear()
 
-            val imageBitmap = if (Build.VERSION.SDK_INT < 29) {
-                getBitmap(contentResolver, imageUri)
-            } else {
-                val source = ImageDecoder.createSource(contentResolver, imageUri!!)
-                ImageDecoder.decodeBitmap(source)
-            }
-
-            // Get the dimensions of the View
-            val targetedSize = imageHelper.getTargetedWidthHeight()
-
-            val targetWidth = targetedSize.first
-            val maxHeight = targetedSize.second
-
-            // Determine how much to scale down the image
-            val scaleFactor = max(
-                imageBitmap.width.toFloat() / targetWidth.toFloat(),
-                imageBitmap.height.toFloat() / maxHeight.toFloat()
-            )
-
-            val resizedBitmap = Bitmap.createScaledBitmap(
-                imageBitmap,
-                (imageBitmap.width / scaleFactor).toInt(),
-                (imageBitmap.height / scaleFactor).toInt(),
-                true
-            )
+            val resizedBitmap: Bitmap? = cameraHelper.getBitmap(contentResolver, imageUri!!)
 
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
-                imageProcessor?.process(
+                imageProcessor.process(
                     it,
                     previewOverlay,
                     resultsSpinnerAdapter,
@@ -418,24 +294,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Check if this device has a camera */
-    private fun hasCamera(): Boolean {
-        return applicationContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
-    }
-
-    /** A safe way to get an instance of the Camera object. */
-    private fun getCameraInstance(): Camera? {
-        return try {
-            Camera.open() // attempt to get a Camera instance
-        } catch (e: Exception) {
-            // Camera is not available (in use or does not exist)
-            null // returns null if camera is unavailable
-        }
-    }
-
     companion object {
         private const val TAG = "MainActivity"
 
         private const val REQUEST_CHOOSE_IMAGE = 1002
+        private const val PERMISSIONS_REQUEST_CODE = 1
     }
 }
