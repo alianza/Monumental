@@ -8,7 +8,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -16,10 +15,8 @@ import android.hardware.Camera
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore.Images.Media.getBitmap
 import android.util.Log
-import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -40,31 +37,24 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.math.max
 
 class MainActivity : AppCompatActivity() {
 
-    private var selectedSize: String = SIZE_PREVIEW
-    private var isLandScape: Boolean = false
-    private var imageUri: Uri? = null
-
-    // Max width (portrait mode)
-    private var imageMaxWidth = 0
-
-    // Max height (portrait mode)
-    private var imageMaxHeight = 0
-    private var imageProcessor: VisionImageProcessor? = null
     private var pictureFile: File? = null
     private var camera: Camera? = null
     private var preview: CameraPreview? = null
+    private var imageUri: Uri? = null
+    private var picture: Camera.PictureCallback? = null
+
     // Recyclerview click offset check
     var check = 0
-    private var customTabHelper: CustomTabHelper = CustomTabHelper()
 
-    private lateinit var picture: Camera.PictureCallback
+    private lateinit var customTabHelper: CustomTabHelper
+    private lateinit var imageHelper: ImageHelper
+    private lateinit var mediaFileHelper: MediaFileHelper
     private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
+    private lateinit var imageProcessor: VisionImageProcessor
 
     /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,11 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Request permissions result */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         // When permissions granted, start the camera(preview)
         when (requestCode) {
             1 -> {
@@ -125,11 +111,17 @@ class MainActivity : AppCompatActivity() {
 
     /** Start everything up */
     private fun initViews() {
+
+        customTabHelper = CustomTabHelper()
+        mediaFileHelper = MediaFileHelper()
+        imageHelper = ImageHelper(previewPane, controlPanel)
+        imageProcessor = CloudLandmarkRecognitionProcessor()
+
         requestPermissions()
         setupResultsSpinner()
         setupCamera()
+        setupCamera()
         setupListeners()
-        createImageProcessor()
     }
 
     /** Request all required permissions */
@@ -183,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             picture = Camera.PictureCallback { data, _ ->
-                pictureFile = getOutputMediaFile() ?: run {
+                pictureFile = mediaFileHelper.getOutputMediaFile() ?: run {
                     Log.d(TAG, ("Error creating media file, check storage permissions"))
                     return@PictureCallback
                 }
@@ -198,13 +190,11 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "Error accessing file: ${e.message}")
                 }
 
-                imageUri = getOutputMediaFileUri()
+                imageUri = mediaFileHelper.getOutputMediaFileUri()
                 camera?.stopPreview()
                 tryReloadAndDetectInImage()
             }
         }
-
-        isLandScape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
     /** Setup all event listeners */
@@ -293,11 +283,6 @@ class MainActivity : AppCompatActivity() {
                 ResultsSpinner.performClick()
             }
         }
-    }
-
-    /** Create the image processor */
-    private fun createImageProcessor() {
-        imageProcessor = CloudLandmarkRecognitionProcessor()
     }
 
     private fun startLandmarkInfoIntent(result: String) {
@@ -399,7 +384,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Get the dimensions of the View
-            val targetedSize = getTargetedWidthHeight()
+            val targetedSize = imageHelper.getTargetedWidthHeight()
 
             val targetWidth = targetedSize.first
             val maxHeight = targetedSize.second
@@ -433,65 +418,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Returns max image width, always for portrait mode. Caller needs to swap width / height for
-    landscape mode. */
-    private fun getImageMaxWidth(): Int {
-        if (imageMaxWidth == 0) {
-            // Calculate the max width in portrait mode. This is done lazily since we need to wait for
-            // a UI layout pass to get the right values. So delay it to first time image rendering time.
-            imageMaxWidth = if (isLandScape) {
-                (previewPane.parent as View).height - controlPanel.height
-            } else {
-                (previewPane.parent as View).width
-            }
-        }
-
-        return imageMaxWidth
-    }
-
-    /** Returns max image height, always for portrait mode. Caller needs to swap width / height for
-    landscape mode. */
-    private fun getImageMaxHeight(): Int {
-        if (imageMaxHeight == 0) {
-            // Calculate the max width in portrait mode. This is done lazily since we need to wait for
-            // a UI layout pass to get the right values. So delay it to first time image rendering time.
-            imageMaxHeight = if (isLandScape) {
-                (previewPane.parent as View).width
-            } else {
-                (previewPane.parent as View).height - controlPanel.height
-            }
-        }
-
-        return imageMaxHeight
-    }
-
-    /** Gets the targeted width / height. */
-    private fun getTargetedWidthHeight(): Pair<Int, Int> {
-        val targetWidth: Int
-        val targetHeight: Int
-
-        when (selectedSize) {
-            SIZE_PREVIEW -> {
-                val maxWidthForPortraitMode = getImageMaxWidth()
-                val maxHeightForPortraitMode = getImageMaxHeight()
-                targetWidth = if (isLandScape) maxHeightForPortraitMode else maxWidthForPortraitMode
-                targetHeight =
-                    if (isLandScape) maxWidthForPortraitMode else maxHeightForPortraitMode
-            }
-            SIZE_640_480 -> {
-                targetWidth = if (isLandScape) 640 else 480
-                targetHeight = if (isLandScape) 480 else 640
-            }
-            SIZE_1024_768 -> {
-                targetWidth = if (isLandScape) 1024 else 768
-                targetHeight = if (isLandScape) 768 else 1024
-            }
-            else -> throw IllegalStateException("Unknown size")
-        }
-
-        return Pair(targetWidth, targetHeight)
-    }
-
     /** Check if this device has a camera */
     private fun hasCamera(): Boolean {
         return applicationContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
@@ -507,43 +433,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Create a file Uri for saving an image */
-    private fun getOutputMediaFileUri(): Uri {
-        return Uri.fromFile(getOutputMediaFile())
-    }
-
-    /** Create a File for saving an image */
-    private fun getOutputMediaFile(): File? {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        val mediaStorageDir = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "Monumental"
-        )
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        mediaStorageDir.apply {
-            if (!exists() && !mkdirs()) {
-                Log.d("Monumental", "failed to create directory")
-                return null
-            }
-        }
-
-        // Create a media file name
-        val timeStamp =
-            SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
-        return File("${mediaStorageDir.path}${File.separator}IMG_$timeStamp.jpg")
-    }
-
     companion object {
         private const val TAG = "MainActivity"
-
-        private const val SIZE_PREVIEW = "w:max" // Available on-screen width.
-        private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
-        private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio
 
         private const val REQUEST_CHOOSE_IMAGE = 1002
     }
