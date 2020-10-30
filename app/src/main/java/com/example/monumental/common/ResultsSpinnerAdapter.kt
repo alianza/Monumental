@@ -1,4 +1,4 @@
-package com.example.monumental
+package com.example.monumental.common
 
 import android.content.Context
 import android.graphics.Color
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.view.setPadding
+import com.example.monumental.R
 
 class ResultsSpinnerAdapter(context: Context, resource: Int) : ArrayAdapter<CharSequence>(context, resource) {
 

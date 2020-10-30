@@ -21,7 +21,6 @@ import android.hardware.Camera.CameraInfo
 import android.util.Log
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.example.monumental.ResultsSpinnerAdapter
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer
 

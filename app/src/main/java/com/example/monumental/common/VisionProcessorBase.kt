@@ -1,13 +1,9 @@
-package com.example.monumental
+package com.example.monumental.common
 
 import android.graphics.Bitmap
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.GuardedBy
-import com.example.monumental.common.BitmapUtils
-import com.example.monumental.common.FrameMetadata
-import com.example.monumental.common.GraphicOverlay
-import com.example.monumental.common.VisionImageProcessor
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.common.FirebaseVisionImage

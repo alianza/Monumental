@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
+import com.example.monumental.common.ResultsSpinnerAdapter
 import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.helpers.CameraHelper
 import com.example.monumental.helpers.CustomTabHelper
@@ -84,12 +85,7 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data
-            takeImageButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_autorenew_black_24dp
-                )
-            )
+            takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
     }
@@ -106,7 +102,6 @@ class MainActivity : AppCompatActivity() {
 
     /** Start everything up */
     private fun initViews() {
-
         customTabHelper = CustomTabHelper()
         mediaFileHelper = MediaFileHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
@@ -128,7 +123,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA
             ), PERMISSIONS_REQUEST_CODE
         )
-
     }
 
     /** setup the resultsSpinner(Adapter) */
@@ -160,7 +154,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 cameraHelper.savePicture(pictureFile!!, data)
-
                 imageUri = mediaFileHelper.getOutputMediaFileUri()
                 camera?.stopPreview()
                 tryReloadAndDetectInImage()
@@ -203,24 +196,14 @@ class MainActivity : AppCompatActivity() {
             tvNoResults.visibility = View.GONE
             // Check for required permissions
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                if (pictureFile == null && imageUri == null) {
+                if (pictureFile == null && imageUri == null) { // Take picture
                     progressBarHolder.visibility = View.VISIBLE
                     camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.drawable.ic_autorenew_black_24dp
-                        )
-                    )
-                } else {
+                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
+                } else { // Reset Picture
                     pictureFile = null
                     imageUri = null
-                    takeImageButton.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.drawable.ic_camera_black_24dp
-                        )
-                    )
+                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
                     val graphicOverlay = GraphicOverlay(this, null)
@@ -234,18 +217,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        getImageButton.setOnClickListener {
-            startChooseImageIntentForResult()
-        }
+        getImageButton.setOnClickListener { startChooseImageIntentForResult() }
 
         previewOverlay.setOnClickListener {
             // If only one landmark result
             if (ResultsSpinner.adapter.count == 2) {
                 val landmark = ResultsSpinner.adapter.getItem(1).toString()
                 startLandmarkInfoIntent(landmark)
-            } else {
-                ResultsSpinner.performClick()
-            }
+            } else { ResultsSpinner.performClick() }
         }
     }
 
@@ -266,18 +245,12 @@ class MainActivity : AppCompatActivity() {
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
         try {
-            if (imageUri == null) {
-                progressBarHolder.visibility = View.GONE
-                return
-            }
+            if (imageUri == null) { progressBarHolder.visibility = View.GONE; return }
 
             Log.d("ImageUri", imageUri.toString())
 
-            // Clear the overlay first
-            previewOverlay.clear()
-
+            previewOverlay.clear() // Clear the overlay first
             val resizedBitmap: Bitmap? = cameraHelper.getBitmap(contentResolver, imageUri!!)
-
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
                 imageProcessor.process(

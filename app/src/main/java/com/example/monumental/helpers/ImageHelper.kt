@@ -5,10 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 
-class ImageHelper(
-    private var previewPane: ImageView,
-    private var controlPanel: ConstraintLayout
-) {
+class ImageHelper(private var previewPane: ImageView, private var controlPanel: ConstraintLayout) {
 
     private var selectedSize: String = SIZE_PREVIEW
     private var isLandScape: Boolean = false
