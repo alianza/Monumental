@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     /** Activity result, take image and try detect landmarks */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
             // In this case, imageUri is returned by the chooser, save it.
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
@@ -165,8 +165,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
         ResultsSpinner.setOnTouchListener { _, _ ->
-            // If only one landmark result
-            if (ResultsSpinner.adapter.count == 2) {
+            if (ResultsSpinner.adapter.count == 2) { // If only one landmark result
                 val landmark = ResultsSpinner.adapter.getItem(1).toString()
                 startLandmarkInfoIntent(landmark)
             }
@@ -239,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
     }
 
     /** Reload and detect in current image */
@@ -270,7 +269,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
 
-        private const val REQUEST_CHOOSE_IMAGE = 1002
+        private const val REQUEST_CODE_CHOOSE_IMAGE = 1002
         private const val PERMISSIONS_REQUEST_CODE = 1
     }
 }
