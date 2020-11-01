@@ -2,10 +2,11 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/camera_preview"
@@ -108,12 +109,12 @@
             android:scaleType="fitCenter"
             android:scaleX="1"
             android:scaleY="1"
+            android:stateListAnimator="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_camera_black_24dp"
-            android:stateListAnimator="@null"/>
+            app:srcCompat="@drawable/ic_camera_black_24dp" />
 
         <Spinner
             android:id="@+id/ResultsSpinner"
@@ -155,6 +156,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="128dp">
 
     </FrameLayout>
 

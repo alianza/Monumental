@@ -58,6 +58,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
 
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, JourneyFragment.newInstance())
+//            .commitNow()
+
+
+
         initViews()
     }
 
