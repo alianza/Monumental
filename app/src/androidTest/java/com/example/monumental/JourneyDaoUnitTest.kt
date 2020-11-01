@@ -101,11 +101,9 @@ open class JourneyDaoUnitTest {
     @Test
     @Throws(Exception::class)
     fun writeJourneyAndUpdate() {
-        val testJourneyName = "Test Journey"
-
-        val journey = Journey(null, testJourneyName, true)
-
         val nameToChangeTo = "Changed name"
+
+        val journey = Journey(null, "Test Journey", true)
 
         runBlocking { db.journeyDao().insertJourney(journey) }
 
@@ -115,22 +113,24 @@ open class JourneyDaoUnitTest {
 
             val retrievedJourney = db.journeyDao().getJourney(nameToChangeTo).getOrAwaitValue()
 
-            assertThat(retrievedJourney, equalTo(journey))
+            assertThat(retrievedJourney?.name, equalTo(journey.name))
         }
     }
 
     @Test
     @Throws(Exception::class)
     fun writeJourneyAndRetrieveActive() {
-        val testJourneyName = "Test Journey"
+        val journey1 = Journey(null, "Test Journey 1", false)
+        val journey2 = Journey(null, "Test Journey 2", true)
 
-        val journey = Journey(null, testJourneyName, true)
-
-        runBlocking { db.journeyDao().insertJourney(journey) }
+        runBlocking {
+            db.journeyDao().insertJourney(journey1)
+            db.journeyDao().insertJourney(journey2)
+        }
 
         val activeJourney = db.journeyDao().getActiveJourney().getOrAwaitValue()
 
-        assertThat(activeJourney?.name, equalTo(testJourneyName))
+        assertThat(activeJourney?.name, equalTo(journey2.name))
     }
 
     @Test
