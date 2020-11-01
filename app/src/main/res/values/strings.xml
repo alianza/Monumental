@@ -15,4 +15,7 @@
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
     <string name="flash_not_supported">Flash not supported</string>
+    <string name="no_journeys">No Journeys yet… \n Create a new one…</string>
+    <string name="journeys">Journeys</string>
+    <string name="add_new_journey">Add new Journey</string>
 </resources>
