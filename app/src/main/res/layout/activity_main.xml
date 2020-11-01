@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -12,15 +12,10 @@
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:scaleType="centerCrop">
+        android:layout_marginBottom="0dp">
 
     </FrameLayout>
 
@@ -28,10 +23,6 @@
         android:id="@+id/previewPane"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
         android:contentDescription="@string/preview"
@@ -42,14 +33,9 @@
         android:id="@+id/previewOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:scaleType="centerCrop" />
+        android:layout_marginBottom="0dp" />
 
     <TextView
         android:id="@+id/tvNoResults"
@@ -73,11 +59,14 @@
         android:id="@+id/controlPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
+        android:layout_margin="0dp"
         android:background="@drawable/controlpanel_bg"
         android:elevation="56dp"
-        android:fadingEdge="vertical">
+        android:fadingEdge="vertical"
+        android:padding="-5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/getImageButton"
@@ -87,6 +76,7 @@
             android:backgroundTint="#FFFFFF"
             android:contentDescription="@string/choose_picture_btn"
             android:hapticFeedbackEnabled="false"
+            android:padding="0dp"
             android:stateListAnimator="@null"
             android:text="@string/choose_picture_btn"
             android:textAlignment="center"
@@ -124,12 +114,12 @@
             android:backgroundTint="#FFFFFF"
             android:entries="@array/initial_list"
             android:hapticFeedbackEnabled="false"
+            android:padding="0dp"
             android:spinnerMode="dialog"
             android:stateListAnimator="@null"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="normal"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/takeImageButton"
@@ -167,4 +157,4 @@
 
     </FrameLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

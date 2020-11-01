@@ -26,11 +26,7 @@ import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.ResultsSpinnerAdapter
 import com.example.monumental.common.VisionImageProcessor
-import com.example.monumental.helpers.CameraHelper
-import com.example.monumental.helpers.CustomTabHelper
-import com.example.monumental.helpers.ImageHelper
-import com.example.monumental.helpers.MediaFileHelper
-import com.example.monumental.ui.journey.JourneyFragment
+import com.example.monumental.helpers.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
@@ -50,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
     private lateinit var cameraHelper: CameraHelper
+    private lateinit var fragmentHelper: FragmentHelper
     private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
     private lateinit var imageProcessor: VisionImageProcessor
 
@@ -59,11 +56,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, JourneyFragment.newInstance())
-            .commitNow()
+        println("Set theme!")
 
         initViews()
+    }
+
+    override fun onBackPressed() {
+        if (!fragmentHelper.closeJourneyFragment()) {
+            super.onBackPressed()
+        }
     }
 
     /** Inflate options menu */
@@ -74,9 +75,15 @@ class MainActivity : AppCompatActivity() {
 
     /** Settings button intent */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.flash) {
-            cameraHelper.toggleFlash(item, camera!!, this)
-            return true
+        when (item.itemId) {
+            R.id.flash -> {
+                cameraHelper.toggleFlash(item, camera!!, this)
+                return true
+            }
+            R.id.journeys -> {
+                fragmentHelper.toggleJourneyFragment()
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -112,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         imageHelper = ImageHelper(previewPane, controlPanel)
         cameraHelper = CameraHelper(this, imageHelper)
         imageProcessor = CloudLandmarkRecognitionProcessor()
+        fragmentHelper = FragmentHelper(this as AppCompatActivity)
 
         requestPermissions()
         setupResultsSpinner()
