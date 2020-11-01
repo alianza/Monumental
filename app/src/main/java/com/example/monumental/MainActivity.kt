@@ -30,6 +30,7 @@ import com.example.monumental.helpers.CameraHelper
 import com.example.monumental.helpers.CustomTabHelper
 import com.example.monumental.helpers.ImageHelper
 import com.example.monumental.helpers.MediaFileHelper
+import com.example.monumental.ui.journey.JourneyFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
@@ -58,11 +59,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
 
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, JourneyFragment.newInstance())
-//            .commitNow()
-
-
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, JourneyFragment.newInstance())
+            .commitNow()
 
         initViews()
     }

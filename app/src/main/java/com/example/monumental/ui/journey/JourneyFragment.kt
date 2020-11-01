@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.monumental.R
+import com.example.monumental.model.Journey
 
 class JourneyFragment : Fragment() {
 
@@ -15,6 +17,8 @@ class JourneyFragment : Fragment() {
     }
 
     private lateinit var viewModel: JourneyViewModel
+
+    private var journeys = arrayListOf<Journey>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,9 +29,11 @@ class JourneyFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(JourneyViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(JourneyViewModel::class.java)
 
-
+        viewModel.journeys.observe(this, Observer { journeys ->
+            journeys?.forEach { it -> println(it.name) }
+        })
     }
 
 }
