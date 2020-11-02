@@ -8,13 +8,18 @@
     android:background="#FFFFFF"
     android:clickable="true"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".ui.journey.JourneyFragment">
 
-    <Button
+    <ImageButton
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_margin="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/close"
+        android:src="@drawable/ic_baseline_close_24"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,10 +27,6 @@
         android:id="@+id/rvJourneys"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="64dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnClose">
 
     </androidx.recyclerview.widget.RecyclerView>
@@ -47,10 +48,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:contentDescription="@string/add_new_journey"
-        android:src="@drawable/ic_baseline_add_24"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:contentDescription="@string/add_new_journey"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_add_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

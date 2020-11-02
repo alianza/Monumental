@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,11 @@ class JourneyFragment : Fragment() {
     private lateinit var viewModel: JourneyViewModel
 
     private var journeys = arrayListOf<Journey>()
-    private val journeyAdapter = JourneyAdapter(journeys, { journey: Journey -> onJourneyClick(journey)  }, {journey: Journey -> onJourneyDelete(journey)})
+    private val journeyAdapter = JourneyAdapter(journeys,
+        { journey: Journey -> JourneyClick(journey) },
+        { journey: Journey -> JourneyDelete(journey) },
+        { newName: String, journey: Journey -> JourneyEdit(newName, journey) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +47,7 @@ class JourneyFragment : Fragment() {
                 this.journeys.clear()
                 journeys.forEach { journey ->
                     this.journeys.add(journey)
-                    println(journey)
+                    println("Got: " + journey)
                 }
             }
             this.journeys.sortByDescending { it.name }
@@ -54,15 +59,27 @@ class JourneyFragment : Fragment() {
             }
         })
 
-        fab.setOnClickListener { viewModel.createJourney() }
+        fab.setOnClickListener { Journeycreate() }
         btnClose.setOnClickListener { activity?.onBackPressed() }
     }
 
-    private fun onJourneyClick(journey: Journey) {
+    private fun JourneyClick(journey: Journey) {
         println("Click!")
     }
 
-    private fun onJourneyDelete(journey: Journey) {
+    private fun JourneyDelete(journey: Journey) {
+        viewModel.deleteJourney(journey)
         println("Delete!")
+    }
+
+    private fun JourneyEdit(newName: String, journey: Journey) {
+        journey.name = newName
+        viewModel.updateJourney(journey)
+        println("Updatename: " + journey.name)
+    }
+
+    private fun Journeycreate() {
+        viewModel.createJourney()
+        Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
     }
 }

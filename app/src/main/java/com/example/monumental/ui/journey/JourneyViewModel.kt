@@ -24,7 +24,13 @@ class JourneyViewModel(application: Application) : AndroidViewModel(application)
 
     fun createJourney() {
         mainScope.launch {
-            journeyRepository.insertJourney(Journey("New Journey!"))
+            journeyRepository.insertJourney(Journey(null,"New Journey!"))
+        }
+    }
+
+    fun updateJourney(journey: Journey) {
+        mainScope.launch {
+            journeyRepository.updateJourney(journey)
         }
     }
 }
