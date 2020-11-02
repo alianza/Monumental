@@ -48,11 +48,11 @@ class MainActivity : AppCompatActivity() {
     // Recyclerview click offset check
     var check = 0
 
+    lateinit var fragmentHelper: FragmentHelper
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
     private lateinit var cameraHelper: CameraHelper
-    private lateinit var fragmentHelper: FragmentHelper
     private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
     private lateinit var imageProcessor: VisionImageProcessor
 
@@ -89,8 +89,8 @@ class MainActivity : AppCompatActivity() {
             R.id.journeys -> {
                 fragmentHelper.toggleJourneyFragment()
 
-                item.icon = if(fragmentHelper.journeyFragmentIsOpen) {
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24) }
+                item.icon = if(fragmentHelper.journeyFragmentIsOpen)
+                { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24) }
                 else { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24) }
 
                 return true
