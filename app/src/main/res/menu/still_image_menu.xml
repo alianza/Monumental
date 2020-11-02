@@ -6,10 +6,10 @@
       android:id="@+id/flash"
       android:icon="@drawable/ic_baseline_flash_on_24"
       android:title="@string/menu_item_flash"
-      app:showAsAction="always"/>
+      app:showAsAction="ifRoom"/>
   <item
       android:id="@+id/journeys"
       android:icon="@drawable/ic_baseline_explore_24"
       android:title="@string/journeys"
-      app:showAsAction="always"/>
+      app:showAsAction="ifRoom"/>
 </menu>

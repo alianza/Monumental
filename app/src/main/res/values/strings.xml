@@ -18,4 +18,11 @@
     <string name="no_journeys">No Journeys yet… \n Create a new one…</string>
     <string name="journeys">Journeys</string>
     <string name="add_new_journey">Add new Journey</string>
+    <string name="delete_journey">Delete Journey</string>
+    <string name="journey_name">Journey name...</string>
+    <string name="close">Close</string>
+    <string name="edit_journey_name">Edit Journey name</string>
+    <string name="done_editing_journey_name">Done editing Journey name</string>
+    <string name="new_journey">New Journey created!</string>
+    <string name="jouney_updated">Journey Updated!</string>
 </resources>
