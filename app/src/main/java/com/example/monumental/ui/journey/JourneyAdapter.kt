@@ -1,6 +1,8 @@
 package com.example.monumental.ui.journey
 
 import android.content.Context
+import android.os.Handler
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,9 +45,26 @@ class JourneyAdapter(
             itemView.setOnClickListener { onJourneyClick(journeys[adapterPosition]) }
             itemView.btnRemove.setOnClickListener { onJourneyDelete(journeys[adapterPosition]) }
 
-            itemView.ivEdit.setOnClickListener { editJourney(itemView) }
+            itemView.etName.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                    // If the event is a key-down event on the "enter" button
+                    if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                        itemView.ivDone.performClick()
+                        return true
+                    }
+                    return false
+                }
+            })
 
-            itemView.ivDone.setOnClickListener { updateJourney(itemView) }
+            itemView.ivEdit.setOnClickListener { Handler().postDelayed(
+                { editJourney(itemView) },
+                250
+            ) }
+
+            itemView.ivDone.setOnClickListener { Handler().postDelayed(
+                { updateJourney(itemView) },
+                250
+            ) }
         }
 
         fun bind(journey: Journey) {
@@ -65,7 +84,7 @@ class JourneyAdapter(
 
             onJourneyEdit(itemView.etName.text.toString(), journeys[adapterPosition])
 
-            Toast.makeText(context, context.getString(R.string.jouney_updated), Toast.LENGTH_SHORT)
+            Toast.makeText(context, context.getString(R.string.journey_updated), Toast.LENGTH_SHORT)
                 .show()
         }
 
