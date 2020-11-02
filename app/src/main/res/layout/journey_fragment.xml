@@ -57,4 +57,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <FrameLayout
+        android:id="@+id/landmark_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="128dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvJourneys"
+        app:layout_constraintEnd_toEndOf="@+id/rvJourneys"
+        app:layout_constraintStart_toStartOf="@+id/rvJourneys"
+        app:layout_constraintTop_toTopOf="@+id/rvJourneys">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

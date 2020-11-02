@@ -12,7 +12,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
 
     fun openJourneyFragment() {
         context.supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, journeyFragment)
+            .replace(R.id.journey_fragment_container, journeyFragment)
             .commitNow()
         journeyFragmentIsOpen = true
     }
