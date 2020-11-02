@@ -1,6 +1,7 @@
 package com.example.monumental.ui.journey
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.monumental.MainActivity
 import com.example.monumental.R
 import com.example.monumental.model.Journey
-import com.example.monumental.ui.landmark.LandmarkFragment
 import kotlinx.android.synthetic.main.journey_fragment.*
 
 
@@ -22,8 +23,10 @@ class JourneyFragment : Fragment() {
     }
 
     private lateinit var viewModel: JourneyViewModel
+    private val actionDelayVal = 250L
 
     private var journeys = arrayListOf<Journey>()
+
     private val journeyAdapter = JourneyAdapter(journeys,
         { journey: Journey -> journeyClick(journey) },
         { journey: Journey -> journeyDelete(journey) },
@@ -41,6 +44,16 @@ class JourneyFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(JourneyViewModel::class.java)
 
+        initViews()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        fab.setOnClickListener { journeyCreate() }
+        btnClose.setOnClickListener { closeFragment() }
+    }
+
+    private fun initViews() {
         rvJourneys.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         rvJourneys.adapter = journeyAdapter
 
@@ -60,28 +73,20 @@ class JourneyFragment : Fragment() {
                 tvNoJourneys.visibility = View.GONE
             }
         })
-
-        fab.setOnClickListener { journeyCreate() }
-        btnClose.setOnClickListener { activity?.onBackPressed() }
     }
 
     private fun journeyClick(journey: Journey) {
         println("Click! " + journey.name)
-
-        val fm = activity!!.supportFragmentManager
-        val arguments = Bundle()
-        arguments.putInt("VALUE1", 0)
-        arguments.putInt("VALUE2", 100)
-
-        val myFragment = LandmarkFragment.newInstance()
-        myFragment.arguments = arguments
-
-        fm.beginTransaction().replace(R.id.landmark_fragment_container, myFragment).commit()
+        Handler().postDelayed({
+            (activity as MainActivity?)?.fragmentHelper?.openLandmarkFragment(journey.id!!)
+        }, actionDelayVal)
     }
 
     private fun journeyDelete(journey: Journey) {
         println("Delete!")
-        viewModel.deleteJourney(journey)
+        Handler().postDelayed({
+            viewModel.deleteJourney(journey)
+        }, actionDelayVal)
     }
 
     private fun journeyEdit(newName: String, journey: Journey) {
@@ -93,5 +98,9 @@ class JourneyFragment : Fragment() {
     private fun journeyCreate() {
         viewModel.createJourney()
         Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun closeFragment() {
+        (activity as MainActivity?)?.fragmentHelper?.closeJourneyFragment()
     }
 }
