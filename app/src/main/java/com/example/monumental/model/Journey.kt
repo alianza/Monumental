@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Journey(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "name") val name: String
+    @ColumnInfo(name = "id") val id: Int?,
+    @ColumnInfo(name = "name") var name: String
 //    @ColumnInfo(name = "landmarks") val landmarks: List<Landmark>?
 )

@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(foreignKeys = [ForeignKey(entity = Journey::class,
-    parentColumns = arrayOf("name"),
-    childColumns = arrayOf("journey_name"),
+    parentColumns = arrayOf("id"),
+    childColumns = arrayOf("journey_id"),
     onDelete = ForeignKey.NO_ACTION)]
 )
 data class Landmark(
@@ -18,5 +18,5 @@ data class Landmark(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "img_uri") val img_uri: String?,
     @ColumnInfo(name = "date") val date: Date?,
-    @ColumnInfo(name = "journey_name") val journey_name: String?
+    @ColumnInfo(name = "journey_id") val journey_id: Int?
 )
