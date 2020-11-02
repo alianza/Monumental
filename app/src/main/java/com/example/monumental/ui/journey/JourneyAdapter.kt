@@ -43,30 +43,9 @@ class JourneyAdapter(
             itemView.setOnClickListener { onJourneyClick(journeys[adapterPosition]) }
             itemView.btnRemove.setOnClickListener { onJourneyDelete(journeys[adapterPosition]) }
 
-            itemView.ivEdit.setOnClickListener {
-                itemView.ivEdit.visibility = View.INVISIBLE
-                itemView.tvName.visibility = View.INVISIBLE
-                itemView.ivDone.visibility = View.VISIBLE
-                itemView.etName.visibility = View.VISIBLE
+            itemView.ivEdit.setOnClickListener { editJourney(itemView) }
 
-                itemView.etName.setText(itemView.tvName.text)
-                itemView.etName.requestFocus()
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                imm?.showSoftInput(itemView.etName, InputMethodManager.SHOW_IMPLICIT)
-
-            }
-
-            itemView.ivDone.setOnClickListener {
-                itemView.ivEdit.visibility = View.VISIBLE
-                itemView.tvName.visibility = View.VISIBLE
-                itemView.ivDone.visibility = View.INVISIBLE
-                itemView.etName.visibility = View.INVISIBLE
-
-                onJourneyEdit(itemView.etName.text.toString(), journeys[adapterPosition])
-
-                Toast.makeText(context, context.getString(R.string.jouney_updated), Toast.LENGTH_SHORT).show()
-
-            }
+            itemView.ivDone.setOnClickListener { updateJourney(itemView) }
         }
 
         fun bind(journey: Journey) {
@@ -76,6 +55,30 @@ class JourneyAdapter(
 //            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
             println("Bind!")
             println(itemView.etName.text.toString() + " : " + journey.name)
+        }
+
+        private fun updateJourney(itemView: View) {
+            itemView.ivEdit.visibility = View.VISIBLE
+            itemView.tvName.visibility = View.VISIBLE
+            itemView.ivDone.visibility = View.INVISIBLE
+            itemView.etName.visibility = View.INVISIBLE
+
+            onJourneyEdit(itemView.etName.text.toString(), journeys[adapterPosition])
+
+            Toast.makeText(context, context.getString(R.string.jouney_updated), Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        private fun editJourney(itemView: View) {
+            itemView.ivEdit.visibility = View.INVISIBLE
+            itemView.tvName.visibility = View.INVISIBLE
+            itemView.ivDone.visibility = View.VISIBLE
+            itemView.etName.visibility = View.VISIBLE
+
+            itemView.etName.setText(itemView.tvName.text)
+            itemView.etName.requestFocus()
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.showSoftInput(itemView.etName, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 }

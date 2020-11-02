@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
 import com.example.monumental.model.Journey
+import com.example.monumental.ui.landmark.LandmarkFragment
 import kotlinx.android.synthetic.main.journey_fragment.*
+
 
 class JourneyFragment : Fragment() {
 
@@ -23,9 +25,9 @@ class JourneyFragment : Fragment() {
 
     private var journeys = arrayListOf<Journey>()
     private val journeyAdapter = JourneyAdapter(journeys,
-        { journey: Journey -> JourneyClick(journey) },
-        { journey: Journey -> JourneyDelete(journey) },
-        { newName: String, journey: Journey -> JourneyEdit(newName, journey) }
+        { journey: Journey -> journeyClick(journey) },
+        { journey: Journey -> journeyDelete(journey) },
+        { newName: String, journey: Journey -> journeyEdit(newName, journey) }
     )
 
     override fun onCreateView(
@@ -47,10 +49,10 @@ class JourneyFragment : Fragment() {
                 this.journeys.clear()
                 journeys.forEach { journey ->
                     this.journeys.add(journey)
-                    println("Got: " + journey)
+                    println("Got: $journey")
                 }
             }
-            this.journeys.sortByDescending { it.name }
+//            this.journeys.sortByDescending { it.name }
             journeyAdapter.notifyDataSetChanged()
             if (this.journeys.isEmpty()) {
                 tvNoJourneys.visibility = View.VISIBLE
@@ -59,26 +61,36 @@ class JourneyFragment : Fragment() {
             }
         })
 
-        fab.setOnClickListener { Journeycreate() }
+        fab.setOnClickListener { journeyCreate() }
         btnClose.setOnClickListener { activity?.onBackPressed() }
     }
 
-    private fun JourneyClick(journey: Journey) {
-        println("Click!")
+    private fun journeyClick(journey: Journey) {
+        println("Click! " + journey.name)
+
+        val fm = activity!!.supportFragmentManager
+        val arguments = Bundle()
+        arguments.putInt("VALUE1", 0)
+        arguments.putInt("VALUE2", 100)
+
+        val myFragment = LandmarkFragment.newInstance()
+        myFragment.arguments = arguments
+
+        fm.beginTransaction().replace(R.id.landmark_fragment_container, myFragment).commit()
     }
 
-    private fun JourneyDelete(journey: Journey) {
-        viewModel.deleteJourney(journey)
+    private fun journeyDelete(journey: Journey) {
         println("Delete!")
+        viewModel.deleteJourney(journey)
     }
 
-    private fun JourneyEdit(newName: String, journey: Journey) {
+    private fun journeyEdit(newName: String, journey: Journey) {
+        println("Updatename: " + journey.name)
         journey.name = newName
         viewModel.updateJourney(journey)
-        println("Updatename: " + journey.name)
     }
 
-    private fun Journeycreate() {
+    private fun journeyCreate() {
         viewModel.createJourney()
         Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
     }
