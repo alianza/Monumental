@@ -56,18 +56,12 @@ class FragmentHelper(private val context: AppCompatActivity) {
 
     fun toggleJourneyFragment() {
         if (journeyFragmentIsOpen) {
+            if (landmarkFragmentIsOpen) {
+                closeLandmarkFragment()
+            }
             closeJourneyFragment()
         } else {
             openJourneyFragment()
         }
-    }
-
-    fun closeFragments() {
-
-    }
-
-    fun refreshJourneyFragment() {
-        closeJourneyFragment()
-        openJourneyFragment()
     }
 }
