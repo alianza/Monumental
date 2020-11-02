@@ -5,18 +5,23 @@ package com.example.monumental
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.hardware.Camera
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +35,7 @@ import com.example.monumental.helpers.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -82,11 +88,39 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.journeys -> {
                 fragmentHelper.toggleJourneyFragment()
+
+                item.icon = if(fragmentHelper.journeyFragmentIsOpen) {
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24) }
+                else { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24) }
+
                 return true
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Handle touch events and hide keyboard when moving focus from editText
+     *
+     * @param event
+     * @return
+     */
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if (view is EditText) {
+                val outRect = Rect()
+                view.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    view.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     /** Activity result, take image and try detect landmarks */
@@ -97,13 +131,22 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data
-            takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
+            takeImageButton.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_autorenew_black_24dp
+                )
+            )
             tryReloadAndDetectInImage()
         }
     }
 
     /** Request permissions result */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         // When permissions granted, start the camera(preview)
         when (requestCode) {
             PERMISSIONS_REQUEST_CODE -> {
@@ -186,7 +229,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 ResultsSpinner.setSelection(0)
                 println("Spinner item $position!")
 
@@ -211,11 +259,21 @@ class MainActivity : AppCompatActivity() {
                 if (pictureFile == null && imageUri == null) { // Take picture
                     progressBarHolder.visibility = View.VISIBLE
                     camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
+                    takeImageButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_autorenew_black_24dp
+                        )
+                    )
                 } else { // Reset Picture
                     pictureFile = null
                     imageUri = null
-                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
+                    takeImageButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_camera_black_24dp
+                        )
+                    )
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
                     val graphicOverlay = GraphicOverlay(this, null)
@@ -251,7 +309,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
+            REQUEST_CODE_CHOOSE_IMAGE
+        )
     }
 
     /** Reload and detect in current image */
