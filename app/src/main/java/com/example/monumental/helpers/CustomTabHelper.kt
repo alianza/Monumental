@@ -10,7 +10,7 @@ import android.text.TextUtils
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsService
 import com.example.monumental.R
-import com.example.monumental.WebViewActivity
+import com.example.monumental.ui.webView.WebViewActivity
 
 class CustomTabHelper {
 
