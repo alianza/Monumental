@@ -60,7 +60,7 @@ class GraphicOverlay(
      * this and implement the [Graphic.draw] method to define the graphics element. Add
      * instances to the overlay using [GraphicOverlay.add].
      */
-    abstract class Graphic(private val overlay: GraphicOverlay?) {
+    abstract class Graphic(private val overlay: GraphicOverlay) {
 
         /**
          * Draw the graphic on the supplied canvas. Drawing should use the following methods to convert
@@ -81,23 +81,23 @@ class GraphicOverlay(
          * Adjusts a horizontal value of the supplied value from the preview scale to the view scale.
          */
         fun scaleX(horizontal: Float): Float {
-            return horizontal * overlay!!.widthScaleFactor
+            return horizontal * overlay.widthScaleFactor
         }
 
         /** Adjusts a vertical value of the supplied value from the preview scale to the view scale.  */
         fun scaleY(vertical: Float): Float {
-            return vertical * overlay!!.heightScaleFactor
+            return vertical * overlay.heightScaleFactor
         }
 
         /** Returns the application context of the app.  */
-        val applicationContext: Context?
-            get() = overlay?.context?.applicationContext
+        val applicationContext: Context
+            get() = overlay.context.applicationContext
 
         /**
          * Adjusts the x coordinate from the preview's coordinate system to the view coordinate system.
          */
         fun translateX(x: Float): Float {
-            return if (overlay!!.facing == CAMERA_FACING_BACK) {
+            return if (overlay.facing == CAMERA_FACING_BACK) {
                 overlay.width - scaleX(x)
             } else {
                 scaleX(x)
@@ -112,9 +112,8 @@ class GraphicOverlay(
         }
 
         fun postInvalidate() {
-            overlay?.postInvalidate()
+            overlay.postInvalidate()
         }
-
     }
 
     /** Removes all graphics from the overlay.  */
@@ -131,11 +130,22 @@ class GraphicOverlay(
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        println("PrvWdth: " + previewWidth)
+        println("PrvHght: " + previewHeight)
+        println("ThisWdth: " + this.width)
+        println("ThisHght: " + this.height)
+
+//        previewWidth = this.width
+//        previewHeight = this.height
+
         synchronized(lock) {
-            if (previewWidth != 0 && previewHeight != 0) {
-                widthScaleFactor = width.toFloat() / previewWidth
-                heightScaleFactor = height.toFloat() / previewHeight
-            }
+//            if (previewWidth != 0 && previewHeight != 0) {
+//                widthScaleFactor = this.width.toFloat() / previewWidth
+//                heightScaleFactor = this.height.toFloat() / previewHeight
+
+                widthScaleFactor = 1.5F
+                heightScaleFactor = 1.5F
+//            }
             for (graphic in graphics) {
                 graphic.draw(canvas)
             }
