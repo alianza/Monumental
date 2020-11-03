@@ -51,9 +51,6 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var picture: Camera.PictureCallback? = null
 
-    // Recyclerview click offset check
-    private var check = 0
-
     val actionDelayVal = 250L
 
     lateinit var fragmentHelper: FragmentHelper
@@ -197,21 +194,8 @@ class MainActivity : AppCompatActivity() {
     /** setup the resultsSpinner(Adapter) */
     private fun setupResultsRecyclerView() {
         resultsAdapter = ResultsAdapter(ArrayList(),
-            { string: String -> onLandmarkClick(string) },
-            { string: String -> onLandmarkSave(string) })
-    }
-
-    private fun onLandmarkClick(landmark: String) {
-        val result = landmark.replace(" ", "+")
-
-        println("Clicked result: $result")
-        startLandmarkInfoIntent(result)
-    }
-
-    private fun onLandmarkSave(landmark: String) {
-        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
-
-        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
+            { string: String -> onLandmarkResultClick(string) },
+            { string: String -> onLandmarkResultSave(string) })
     }
 
     /** Setup the camera */
@@ -256,6 +240,20 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+
+    private fun onLandmarkResultClick(landmark: String) {
+        val result = landmark.replace(" ", "+")
+
+        println("Clicked result: $result")
+        startLandmarkInfoIntent(result)
+    }
+
+    private fun onLandmarkResultSave(landmark: String) {
+        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
+
+        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
+    }
+
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
@@ -264,53 +262,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         resultsButton.setOnClickListener { showDialog() }
-
-//        fragmentHelper.journeyFragmentIsOpen.observe(this, { journeyFragmentIsOpen ->
-//
-//        })
-
-//        ResultsSpinner.setOnTouchListener { _, _ ->
-//            if (ResultsSpinner.adapter.count == 2) { // If only one landmark result
-//                val landmark = ResultsSpinner.adapter.getItem(1).toString()
-//                startLandmarkInfoIntent(landmark)
-//            }
-//            showDialog()
-//            return@setOnTouchListener false
-//        }
-
-//        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-//            override fun onItemSelected(
-//                parent: AdapterView<*>?,
-//                view: View?,
-//                position: Int,
-//                id: Long
-//            ) {
-//                println("Spinner item $position!")
-//                println("parent $parent")
-//                println("view $view")
-//                println("pos $position")
-//                println("id $id")
-//                ResultsSpinner.setSelection(0)
-//
-//                if (++check > 1 && position != 0) {
-////                    val container = ResultsSpinner.selectedView as ConstraintLayout?
-//                    val textView = view?.findViewById<TextView>(R.id.tvLandmarkResultName)
-//                    val btnSave = view?.findViewById<ImageView>(R.id.btnSave)
-//                    var result = textView?.text.toString()
-//
-//                    println(btnSave)
-//
-//                    viewModel.createLandmark(Landmark(null, result, imageUri.toString(), Date(), currentJourneyId))
-//
-//                    result = result.replace(" ", "+")
-//
-//                    println("Clicked result: $result")
-//                    startLandmarkInfoIntent(result)
-//                }
-//            }
-//
-//            override fun onNothingSelected(parent: AdapterView<*>?) { println("Spinner") }
-//        }
 
         takeImageButton.setOnClickListener {
             tvNoResults.visibility = View.GONE
