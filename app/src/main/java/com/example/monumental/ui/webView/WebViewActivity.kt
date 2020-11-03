@@ -1,10 +1,11 @@
-package com.example.monumental
+package com.example.monumental.ui.webView
 
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.monumental.R
 import kotlinx.android.synthetic.main.activity_webview.*
 
 class WebViewActivity : AppCompatActivity() {

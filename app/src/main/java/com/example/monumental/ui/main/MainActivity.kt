@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.monumental
+package com.example.monumental.ui.main
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -19,23 +19,22 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
+import com.example.monumental.R
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
-import com.example.monumental.common.ResultsSpinnerAdapter
 import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.helpers.*
+import com.example.monumental.model.Landmark
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
-
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +45,10 @@ class MainActivity : AppCompatActivity() {
     private var picture: Camera.PictureCallback? = null
 
     // Recyclerview click offset check
-    var check = 0
+    private var check = 0
+
+    val actionDelayVal = 250L
+    var currentJourneyId = 0
 
     lateinit var fragmentHelper: FragmentHelper
     private lateinit var customTabHelper: CustomTabHelper
@@ -55,14 +57,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraHelper: CameraHelper
     private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
     private lateinit var imageProcessor: VisionImageProcessor
+    private lateinit var viewModel: MainViewModel
 
     /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
-
-        println("Set theme!")
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         initViews()
     }
@@ -88,15 +90,12 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.journeys -> {
                 fragmentHelper.toggleJourneyFragment()
-
                 item.icon = if(fragmentHelper.journeyFragmentIsOpen)
                 { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24) }
                 else { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24) }
-
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -190,29 +189,31 @@ class MainActivity : AppCompatActivity() {
 
     /** Setup the camera */
     private fun setupCamera() {
-        if (cameraHelper.hasCamera()) {
-            camera = cameraHelper.getCameraInstance()
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+            if (cameraHelper.hasCamera()) {
+                camera = cameraHelper.getCameraInstance()
 
-            preview = camera?.let { CameraPreview(this, it) }
+                preview = camera?.let { CameraPreview(this, it) }
 
-            cameraHelper.setParameters(camera!!)
+                cameraHelper.setParameters(camera!!)
 
-            // Set the Preview view as the content of our activity.
-            preview?.also {
-                val preview: FrameLayout = findViewById(R.id.camera_preview)
-                preview.addView(it)
-            }
-
-            picture = Camera.PictureCallback { data, _ ->
-                pictureFile = mediaFileHelper.getOutputMediaFile() ?: run {
-                    Log.d(TAG, ("Error creating media file, check storage permissions"))
-                    return@PictureCallback
+                // Set the Preview view as the content of our activity.
+                preview?.also {
+                    val preview: FrameLayout = findViewById(R.id.camera_preview)
+                    preview.addView(it)
                 }
 
-                cameraHelper.savePicture(pictureFile!!, data)
-                imageUri = mediaFileHelper.getOutputMediaFileUri()
-                camera?.stopPreview()
-                tryReloadAndDetectInImage()
+                picture = Camera.PictureCallback { data, _ ->
+                    pictureFile = mediaFileHelper.getOutputMediaFile() ?: run {
+                        Log.d(TAG, ("Error creating media file, check storage permissions"))
+                        return@PictureCallback
+                    }
+
+                    cameraHelper.savePicture(pictureFile!!, data)
+                    imageUri = mediaFileHelper.getOutputMediaFileUri()
+                    camera?.stopPreview()
+                    tryReloadAndDetectInImage()
+                }
             }
         }
     }
@@ -220,6 +221,10 @@ class MainActivity : AppCompatActivity() {
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
+        viewModel.activeJourney.observe(this, {
+            currentJourneyId = it?.id!!
+        })
+
         ResultsSpinner.setOnTouchListener { _, _ ->
             if (ResultsSpinner.adapter.count == 2) { // If only one landmark result
                 val landmark = ResultsSpinner.adapter.getItem(1).toString()
@@ -235,12 +240,21 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                ResultsSpinner.setSelection(0)
                 println("Spinner item $position!")
+                println("parent $parent")
+                println("view $view")
+                println("pos $position")
+                println("id $id")
+                ResultsSpinner.setSelection(0)
 
                 if (++check > 1 && position != 0) {
-                    val textView = ResultsSpinner.selectedView as TextView?
+                    val view = ResultsSpinner.selectedView as RelativeLayout?
+                    val textView = view?.findViewById<TextView>(R.id.tvLandmarkResultName)
+                    val btnSave = view?.findViewById<ImageView>(R.id.btnSave)
+                    println(btnSave.toString())
                     var result = textView?.text.toString()
+
+                    viewModel.createLandmark(Landmark(null, result, imageUri.toString(), Date(), currentJourneyId))
 
                     result = result.replace(" ", "+")
 
@@ -249,7 +263,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) { }
+            override fun onNothingSelected(parent: AdapterView<*>?) { println("Spinner") }
         }
 
         takeImageButton.setOnClickListener {
