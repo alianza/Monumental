@@ -248,11 +248,12 @@ class MainActivity : AppCompatActivity() {
                 ResultsSpinner.setSelection(0)
 
                 if (++check > 1 && position != 0) {
-                    val view = ResultsSpinner.selectedView as RelativeLayout?
+//                    val container = ResultsSpinner.selectedView as ConstraintLayout?
                     val textView = view?.findViewById<TextView>(R.id.tvLandmarkResultName)
                     val btnSave = view?.findViewById<ImageView>(R.id.btnSave)
-                    println(btnSave.toString())
                     var result = textView?.text.toString()
+
+                    println(btnSave)
 
                     viewModel.createLandmark(Landmark(null, result, imageUri.toString(), Date(), currentJourneyId))
 
