@@ -72,6 +72,8 @@ class JourneyFragment : Fragment() {
                 tvNoJourneys.visibility = View.GONE
             }
         })
+
+        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
     }
 
     private fun setListeners() {

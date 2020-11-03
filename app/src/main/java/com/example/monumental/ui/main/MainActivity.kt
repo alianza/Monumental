@@ -79,12 +79,17 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (fragmentHelper.closeJourneyFragment()) { // if closed
-            camera?.startPreview()
-            invalidateOptionsMenu()
-            println("startPreview")
+            resetViews()
             return
         }
         super.onBackPressed()
+    }
+
+    private fun resetViews() {
+        camera?.startPreview()
+        invalidateOptionsMenu()
+        println("startPreview")
+        supportActionBar?.title = getString(R.string.app_name)
     }
 
     /** Inflate options menu */
@@ -106,9 +111,7 @@ class MainActivity : AppCompatActivity() {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
                     println("stopPreview")
                 } else { // is closed
-                    camera?.startPreview()
-                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24)
-                    println("startPreview")
+                    resetViews()
                 }
                 return true
             }

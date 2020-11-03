@@ -18,9 +18,7 @@ import kotlinx.android.synthetic.main.landmark_fragment.*
 
 class LandmarkFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = LandmarkFragment()
-    }
+    companion object { fun newInstance() = LandmarkFragment() }
 
     private lateinit var viewModel: LandmarkViewModel
 
@@ -43,16 +41,11 @@ class LandmarkFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LandmarkViewModel::class.java)
         actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
-        val bundle = this.arguments
-        if (bundle != null) {
-            journey = bundle.getParcelable("Journey")!!
-            println(journey)
-        }
+        journey = this.arguments?.getParcelable("Journey")!!
+        println("Parcel Bundle $journey")
 
         initViews()
         setListeners()
-
-//        viewModel.createLandmarkTest(landmarkId)
     }
 
     private fun initViews() {
@@ -63,7 +56,8 @@ class LandmarkFragment : Fragment() {
         rvLandmarks.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         rvLandmarks.adapter = landmarkAdapter
 
-        viewModel.landmarks.observe(viewLifecycleOwner, { landmarks ->
+        viewModel.getLandmarksByJourney(journey.id!!).observe(viewLifecycleOwner, { landmarks ->
+            println("Observe! " + landmarks)
             if (landmarks != null) {
                 this.landmarks.clear()
                 landmarks.forEach { landmark ->
@@ -71,7 +65,7 @@ class LandmarkFragment : Fragment() {
                     println("Got: $landmark")
                 }
             }
-//            this.landmarks.sortByDescending { it.name }
+            //            this.landmarks.sortByDescending { it.name }
             landmarkAdapter.notifyDataSetChanged()
             if (this.landmarks.isEmpty()) {
                 tvNoLandmarks.visibility = View.VISIBLE
@@ -80,8 +74,15 @@ class LandmarkFragment : Fragment() {
             }
         })
 
-        swCurrentJourney.text = getString(R.string.current_journey, journey.name)
-        if (journey.current) { swCurrentJourney.isChecked = true }
+        swCurrentJourney.isChecked = journey.current
+        swCurrentJourney.isSelected = journey.current
+
+        (activity as MainActivity?)?.supportActionBar?.title = journey.name
+    }
+
+    override fun onDestroy() {
+        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
+        super.onDestroy()
     }
 
     private fun setListeners() {
@@ -93,8 +94,10 @@ class LandmarkFragment : Fragment() {
     }
 
     private fun toggleActiveJourney(checked: Boolean) {
+        println("Checked! " + checked)
         if (checked) {
-
+            journey.current = swCurrentJourney.isChecked
+            viewModel.setActiveJourney(journey)
         }
     }
 
@@ -106,10 +109,11 @@ class LandmarkFragment : Fragment() {
         builder.setMessage("Are you sure?")
 
         builder.setPositiveButton("Yes") { dialog, _ ->
+            Handler().postDelayed({
             viewModel.deleteLandmark(landmark)
-            dialog.dismiss() }
+            dialog.dismiss() }, actionDelayVal) }
 
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+        builder.setNegativeButton("No", null)
 
         val alert: AlertDialog = builder.create()
         Handler().postDelayed({
