@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--    General    -->
+    <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
+    <!--    Alternate info url (to google maps)-->
+    <!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
+
     <string name="app_name">Monumental</string>
     <string name="menu_item_flash">Flash</string>
     <string name="choose_picture_btn">Choose image</string>
@@ -11,13 +15,10 @@
     <string name="more_info">More info!</string>
     <string name="no_landmarks">No landmarks found</string>
     <string name="no_saved_landmarks">No saved Landmarks…</string>
-    <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
-    <!--    Alternate info url (to google maps)-->
-    <!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
+    <string name="saved_landmark">Saved %1$s to %2$s</string>
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
     <string name="flash_not_supported">Flash not supported</string>
-
     <string name="close">Close</string>
 
     <!--    Journey Fragment    -->
