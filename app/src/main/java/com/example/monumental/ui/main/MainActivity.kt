@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var picture: Camera.PictureCallback? = null
 
+
     val actionDelayVal = 250L
 
     lateinit var fragmentHelper: FragmentHelper
@@ -74,12 +75,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (fragmentHelper.closeLandmarkFragment()) { // if closed
+            return
+        }
         if (fragmentHelper.closeJourneyFragment()) { // if closed
             camera?.startPreview()
+            invalidateOptionsMenu()
             println("startPreview")
-        } else {
-            super.onBackPressed()
+            return
         }
+        super.onBackPressed()
     }
 
     /** Inflate options menu */
@@ -249,9 +254,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onLandmarkResultSave(landmark: String) {
-        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
+        viewModel.createLandmark(
+            Landmark(
+                null,
+                landmark,
+                imageUri.toString(),
+                Date(),
+                currentJourney.id
+            )
+        )
 
-        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            this,
+            getString(R.string.saved_landmark, landmark, currentJourney.name),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     /** Setup all event listeners */
