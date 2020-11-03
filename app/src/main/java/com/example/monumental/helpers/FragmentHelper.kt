@@ -20,7 +20,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
         context.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.journey_fragment_container, journeyFragment)
-            .commitAllowingStateLoss()
+            .commitNow()
         journeyFragmentIsOpen = true
     }
 
@@ -29,7 +29,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
             context.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_FADE)
                 .remove(journeyFragment)
-                .commitAllowingStateLoss()
+                .commitNow()
             this.journeyFragmentIsOpen = false
             return true
         }
@@ -44,7 +44,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
         context.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.landmark_fragment_container, landmarkFragment)
-            .commitAllowingStateLoss()
+            .commitNow()
         landmarkFragmentIsOpen = true
     }
 
@@ -53,7 +53,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
             context.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_CLOSE)
                 .remove(landmarkFragment)
-                .commitAllowingStateLoss()
+                .commitNow()
             landmarkFragmentIsOpen = false
             landmarkFragment = LandmarkFragment.newInstance() // Refresh instance
             return true
