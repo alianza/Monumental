@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.landmark_item.view.*
 
 class LandmarkAdapter(
     var landmarks: ArrayList<Landmark>,
+    val actionDelayVal: Long,
     private val onLandmarkClick: (Landmark) -> Unit,
-    private val onLandmarkDelete: (Landmark) -> Unit,
-    private val onLandmarkEdit: (String, Landmark) -> Unit
+    private val onLandmarkDelete: (Landmark) -> Unit
 ):
     RecyclerView.Adapter<LandmarkAdapter.ViewHolder>() {
 
@@ -38,6 +38,7 @@ class LandmarkAdapter(
 
         init {
             itemView.setOnClickListener { onLandmarkClick(landmarks[adapterPosition]) }
+            itemView.btnRemove.setOnClickListener { onLandmarkDelete(landmarks[adapterPosition]) }
         }
 
         fun bind(landmark: Landmark) {
@@ -45,8 +46,6 @@ class LandmarkAdapter(
             itemView.tvName.text = landmark.name
 
 //            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
-            println("Bind!")
-//            println(itemView.etName.text.toString() + " : " + landmark.name)
         }
     }
 }
