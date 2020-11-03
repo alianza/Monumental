@@ -10,7 +10,6 @@
     android:focusableInTouchMode="true"
     tools:context=".ui.landmark.LandmarkFragment">
 
-
     <TextView
         android:id="@+id/tvNoLandmarks"
         android:layout_width="wrap_content"
@@ -55,7 +54,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnClose"
         app:layout_constraintTop_toTopOf="@+id/btnClose" />
 
-    <Switch
+    <androidx.appcompat.widget.AppCompatRadioButton
         android:id="@+id/swCurrentJourney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
