@@ -3,6 +3,7 @@ package com.example.monumental.helpers
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.monumental.R
+import com.example.monumental.model.Journey
 import com.example.monumental.ui.journey.JourneyFragment
 import com.example.monumental.ui.landmark.LandmarkFragment
 
@@ -32,9 +33,9 @@ class FragmentHelper(private val context: AppCompatActivity) {
         return false
     }
 
-    fun openLandmarkFragment(journeyId: Int) {
+    fun openLandmarkFragment(journey: Journey) {
         val arguments = Bundle()
-        arguments.putInt("JourneyId", journeyId)
+        arguments.putParcelable("Journey", journey)
 
         landmarkFragment.arguments = arguments
         context.supportFragmentManager.beginTransaction()

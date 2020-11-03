@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
+import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import com.example.monumental.ui.main.MainActivity
 import kotlinx.android.synthetic.main.landmark_fragment.*
@@ -24,11 +25,11 @@ class LandmarkFragment : Fragment() {
     private lateinit var viewModel: LandmarkViewModel
 
     private var actionDelayVal: Long = 0
-    private var journeyId: Int = -1
 
     private var landmarks = arrayListOf<Landmark>()
 
     private lateinit var landmarkAdapter: LandmarkAdapter
+    private lateinit var journey: Journey
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +45,8 @@ class LandmarkFragment : Fragment() {
 
         val bundle = this.arguments
         if (bundle != null) {
-            journeyId = bundle.getInt("JourneyId", -1)
-            println(journeyId)
+            journey = bundle.getParcelable("Journey")!!
+            println(journey)
         }
 
         initViews()
@@ -78,11 +79,23 @@ class LandmarkFragment : Fragment() {
                 tvNoLandmarks.visibility = View.GONE
             }
         })
+
+        swCurrentJourney.text = getString(R.string.current_journey, journey.name)
+        if (journey.current) { swCurrentJourney.isChecked = true }
     }
 
     private fun setListeners() {
         btnClose.setOnClickListener { closeFragment() }
         tvBack.setOnClickListener { closeFragment() }
+        swCurrentJourney.setOnCheckedChangeListener { buttonView, isChecked ->
+            toggleActiveJourney(isChecked)
+        }
+    }
+
+    private fun toggleActiveJourney(checked: Boolean) {
+        if (checked) {
+
+        }
     }
 
 
