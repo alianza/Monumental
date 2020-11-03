@@ -10,6 +10,6 @@ data class Journey(
     @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "id") val id: Int?,
-    @ColumnInfo(name = "name") var name: String
-//    @ColumnInfo(name = "landmarks") val landmarks: List<Landmark>?
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "current") var current: Boolean = false
 )
