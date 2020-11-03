@@ -19,6 +19,10 @@ class JourneyRepository(context: Context) {
         return journeyDao.getJourneys()
     }
 
+    fun getActiveJourney(): LiveData<Journey?> {
+        return journeyDao.getActiveJourney()
+    }
+
     fun getJourney(name: String): LiveData<Journey?> {
         return journeyDao.getJourney(name)
     }

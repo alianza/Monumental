@@ -16,9 +16,14 @@ interface JourneyDao {
     @Query("SELECT * FROM Journey WHERE name LIKE :name LIMIT 1")
     fun getJourney(name: String): LiveData<Journey?>
 
+    @Query("SELECT * FROM Journey WHERE current = 1 LIMIT 1")
+    fun getActiveJourney(): LiveData<Journey?>
+
     @Update
     suspend fun updateJourney(journey: Journey):Int
 
     @Delete
     suspend fun deleteJourney(journey: Journey)
+
+
 }
