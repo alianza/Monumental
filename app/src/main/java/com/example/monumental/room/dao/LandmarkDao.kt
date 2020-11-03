@@ -16,6 +16,9 @@ interface LandmarkDao {
     @Query("SELECT * FROM Landmark WHERE name LIKE :name LIMIT 1")
     fun getLandmark(name: String): LiveData<Landmark?>
 
+    @Query("SELECT * FROM Landmark WHERE journey_id = :journeyId")
+    fun getLandmarksByJourney(journeyId: Int): LiveData<List<Landmark>?>
+
     @Update
     suspend fun updateLandmark(landmark: Landmark):Int
 

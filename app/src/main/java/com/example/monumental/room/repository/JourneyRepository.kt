@@ -31,6 +31,10 @@ class JourneyRepository(context: Context) {
         journeyDao.updateJourney(journey)
     }
 
+    suspend fun setActiveJourney(journey: Journey) {
+        journeyDao.setActiveJourney(journey.id!!)
+    }
+
     suspend fun insertJourney(journey: Journey) {
         journeyDao.insertJourney(journey)
     }

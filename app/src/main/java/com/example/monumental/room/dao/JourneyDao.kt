@@ -25,5 +25,7 @@ interface JourneyDao {
     @Delete
     suspend fun deleteJourney(journey: Journey)
 
+    @Query("UPDATE Journey SET current = CASE id WHEN :journeyId THEN 1 ELSE 0 END")
+    suspend fun setActiveJourney(journeyId: Int)
 
 }

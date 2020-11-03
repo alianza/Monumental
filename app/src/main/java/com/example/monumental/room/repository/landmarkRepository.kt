@@ -19,6 +19,10 @@ class LandmarkRepository(context: Context) {
         return landmarkDao.getLandmarks()
     }
 
+    fun getLandmarksByJourney(journeyId: Int): LiveData<List<Landmark>?> {
+        return landmarkDao.getLandmarksByJourney(journeyId)
+    }
+
     fun getLandmark(name: String): LiveData<Landmark?> {
         return landmarkDao.getLandmark(name)
     }
