@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.GuardedBy
-import com.example.monumental.ui.main.ResultsSpinnerAdapter
+import com.example.monumental.ui.main.ResultsAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -39,7 +39,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer?,
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -47,7 +47,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         latestImageMetaData = frameMetadata
         if (processingImage == null && processingMetaData == null) {
             if (graphicOverlay != null) {
-                processLatestImage(graphicOverlay, resultsSpinnerAdapter, progressBarHolder, tvNoResults)
+                processLatestImage(graphicOverlay, resultsAdapter, progressBarHolder, tvNoResults)
             }
         }
     }
@@ -56,7 +56,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     override fun process(
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -66,7 +66,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                 FirebaseVisionImage.fromBitmap(bitmap!!),
                 null,
                 graphicOverlay,
-                resultsSpinnerAdapter,
+                resultsAdapter,
                 progressBarHolder,
                 tvNoResults
             )
@@ -76,7 +76,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     @Synchronized
     private fun processLatestImage(
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -89,7 +89,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                 processingImage!!,
                 processingMetaData!!,
                 graphicOverlay,
-                resultsSpinnerAdapter,
+                resultsAdapter,
                 progressBarHolder,
                 tvNoResults
             )
@@ -100,7 +100,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -117,7 +117,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
             FirebaseVisionImage.fromByteBuffer(data, metadata),
             frameMetadata,
             graphicOverlay,
-            resultsSpinnerAdapter,
+            resultsAdapter,
             progressBarHolder,
             tvNoResults
         )
@@ -128,7 +128,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         image: FirebaseVisionImage,
         metadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -142,7 +142,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                     results,
                     notNullMetadata,
                     graphicOverlay,
-                    resultsSpinnerAdapter,
+                    resultsAdapter,
                     progressBarHolder,
                     tvNoResults
                 )
@@ -165,7 +165,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         results: T,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     )
@@ -177,7 +177,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     )

@@ -21,7 +21,7 @@ import android.hardware.Camera.CameraInfo
 import android.util.Log
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.example.monumental.ui.main.ResultsSpinnerAdapter
+import com.example.monumental.ui.main.ResultsAdapter
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer
 
@@ -32,7 +32,7 @@ import java.nio.ByteBuffer
  */
 class CameraSource(
     private val graphicOverlay: GraphicOverlay,
-    private val resultsSpinnerAdapter: ResultsSpinnerAdapter,
+    private val resultsAdapter: ResultsAdapter,
     private val progressBarHolder: FrameLayout,
     private val tvNoResults: TextView
 ) {
@@ -152,7 +152,7 @@ class CameraSource(
                                 .setCameraFacing(cameraFacing)
                                 .build(),
                             graphicOverlay,
-                            resultsSpinnerAdapter,
+                            resultsAdapter,
                             progressBarHolder,
                             tvNoResults
                         )
