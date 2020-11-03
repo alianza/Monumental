@@ -26,7 +26,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
             context.supportFragmentManager.beginTransaction()
                 .remove(journeyFragment)
                 .commitNow()
-            journeyFragmentIsOpen = false
+            this.journeyFragmentIsOpen = false
             return true
         }
         return false
@@ -43,7 +43,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
         landmarkFragmentIsOpen = true
     }
 
-    fun closeLandmarkFragment():Boolean {
+    fun closeLandmarkFragment(): Boolean {
         if (landmarkFragmentIsOpen) {
             context.supportFragmentManager.beginTransaction()
                 .remove(landmarkFragment)
@@ -54,7 +54,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
         return false
     }
 
-    fun toggleJourneyFragment() {
+    fun toggleJourneyFragment():Boolean {
         if (journeyFragmentIsOpen) {
             if (landmarkFragmentIsOpen) {
                 closeLandmarkFragment()
@@ -63,5 +63,6 @@ class FragmentHelper(private val context: AppCompatActivity) {
         } else {
             openJourneyFragment()
         }
+        return journeyFragmentIsOpen
     }
 }
