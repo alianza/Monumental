@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.journey_item.view.*
 
 class JourneyAdapter(
     var journeys: ArrayList<Journey>,
+    val actionDelayVal: Long,
     private val onJourneyClick: (Journey) -> Unit,
     private val onJourneyDelete: (Journey) -> Unit,
     private val onJourneyEdit: (String, Journey) -> Unit
@@ -58,12 +59,12 @@ class JourneyAdapter(
 
             itemView.ivEdit.setOnClickListener { Handler().postDelayed(
                 { editJourney(itemView) },
-                250
+                actionDelayVal!!
             ) }
 
             itemView.ivDone.setOnClickListener { Handler().postDelayed(
                 { updateJourney(itemView) },
-                250
+                actionDelayVal!!
             ) }
         }
 

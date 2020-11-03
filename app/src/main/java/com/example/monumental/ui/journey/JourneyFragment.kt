@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.monumental.MainActivity
 import com.example.monumental.R
 import com.example.monumental.model.Journey
+import com.example.monumental.ui.main.MainActivity
 import kotlinx.android.synthetic.main.journey_fragment.*
 
 
@@ -23,15 +23,12 @@ class JourneyFragment : Fragment() {
     }
 
     private lateinit var viewModel: JourneyViewModel
-    private val actionDelayVal = 250L
+
+    private var actionDelayVal: Long = 0
 
     private var journeys = arrayListOf<Journey>()
 
-    private val journeyAdapter = JourneyAdapter(journeys,
-        { journey: Journey -> journeyClick(journey) },
-        { journey: Journey -> journeyDelete(journey) },
-        { newName: String, journey: Journey -> journeyEdit(newName, journey) }
-    )
+    private lateinit var journeyAdapter: JourneyAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,17 +40,18 @@ class JourneyFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(JourneyViewModel::class.java)
+        actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
         initViews()
         setListeners()
     }
 
-    private fun setListeners() {
-        fab.setOnClickListener { journeyCreate() }
-        btnClose.setOnClickListener { closeFragment() }
-    }
-
     private fun initViews() {
+        journeyAdapter = JourneyAdapter(journeys, actionDelayVal,
+            { journey: Journey -> journeyClick(journey) },
+            { journey: Journey -> journeyDelete(journey) },
+            { newName: String, journey: Journey -> journeyEdit(newName, journey) })
+
         rvJourneys.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         rvJourneys.adapter = journeyAdapter
 
@@ -73,6 +71,11 @@ class JourneyFragment : Fragment() {
                 tvNoJourneys.visibility = View.GONE
             }
         })
+    }
+
+    private fun setListeners() {
+        fab.setOnClickListener { journeyCreate() }
+        btnClose.setOnClickListener { closeFragment() }
     }
 
     private fun journeyClick(journey: Journey) {
