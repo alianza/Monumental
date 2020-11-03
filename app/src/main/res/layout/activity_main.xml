@@ -106,19 +106,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_camera_black_24dp" />
 
-        <Spinner
-            android:id="@+id/ResultsSpinner"
+        <Button
+            android:id="@+id/resultsButton"
             style="@android:style/Widget.Material.Light.Button"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:backgroundTint="#FFFFFF"
-            android:entries="@array/initial_list"
+            android:contentDescription="@string/more_info"
             android:hapticFeedbackEnabled="false"
             android:padding="0dp"
-            android:spinnerMode="dialog"
             android:stateListAnimator="@null"
+            android:text="@string/more_info"
             android:textAlignment="center"
+            android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="14sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
