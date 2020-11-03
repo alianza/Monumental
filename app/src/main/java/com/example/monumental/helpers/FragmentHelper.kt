@@ -13,7 +13,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
     var landmarkFragmentIsOpen = false
 
     private val journeyFragment: JourneyFragment = JourneyFragment.newInstance()
-    private val landmarkFragment: LandmarkFragment = LandmarkFragment.newInstance()
+    private var landmarkFragment: LandmarkFragment = LandmarkFragment.newInstance()
 
     fun openJourneyFragment() {
         context.supportFragmentManager.beginTransaction()
@@ -50,6 +50,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
                 .remove(landmarkFragment)
                 .commitNow()
             landmarkFragmentIsOpen = false
+            landmarkFragment = LandmarkFragment.newInstance() // Refresh instance
             return true
         }
         return false
