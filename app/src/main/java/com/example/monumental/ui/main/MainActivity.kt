@@ -5,6 +5,7 @@ package com.example.monumental.ui.main
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -19,22 +20,28 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
 import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.helpers.*
+import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_results_view.view.*
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,14 +55,14 @@ class MainActivity : AppCompatActivity() {
     private var check = 0
 
     val actionDelayVal = 250L
-    var currentJourneyId = 0
 
     lateinit var fragmentHelper: FragmentHelper
+    private lateinit var currentJourney: Journey
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
     private lateinit var cameraHelper: CameraHelper
-    private lateinit var resultsSpinnerAdapter: ResultsSpinnerAdapter
+    private lateinit var resultsAdapter: ResultsAdapter
     private lateinit var imageProcessor: VisionImageProcessor
     private lateinit var viewModel: MainViewModel
 
@@ -70,7 +77,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!fragmentHelper.closeJourneyFragment()) {
+        if (fragmentHelper.closeJourneyFragment()) { // if closed
+            camera?.startPreview()
+            println("startPreview")
+        } else {
             super.onBackPressed()
         }
     }
@@ -89,10 +99,15 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.journeys -> {
-                fragmentHelper.toggleJourneyFragment()
-                item.icon = if(fragmentHelper.journeyFragmentIsOpen)
-                { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24) }
-                else { ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24) }
+                if (fragmentHelper.toggleJourneyFragment()) { // is open
+                    camera?.stopPreview()
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
+                    println("stopPreview")
+                } else { // is closed
+                    camera?.startPreview()
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_24)
+                    println("startPreview")
+                }
                 return true
             }
         }
@@ -146,8 +161,7 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        // When permissions granted, start the camera(preview)
-        when (requestCode) {
+        when (requestCode) { // When permissions granted, start the camera(preview)
             PERMISSIONS_REQUEST_CODE -> {
                 setupCamera()
             }
@@ -164,7 +178,7 @@ class MainActivity : AppCompatActivity() {
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
 
         requestPermissions()
-        setupResultsSpinner()
+        setupResultsRecyclerView()
         setupCamera()
         setupListeners()
     }
@@ -181,10 +195,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** setup the resultsSpinner(Adapter) */
-    private fun setupResultsSpinner() {
-        resultsSpinnerAdapter = ResultsSpinnerAdapter(this, R.layout.spinner_item)
-        // Apply the adapter to the spinner
-        ResultsSpinner.adapter = resultsSpinnerAdapter
+    private fun setupResultsRecyclerView() {
+        resultsAdapter = ResultsAdapter(ArrayList(),
+            { string: String -> onLandmarkClick(string) },
+            { string: String -> onLandmarkSave(string) })
+    }
+
+    private fun onLandmarkClick(landmark: String) {
+        val result = landmark.replace(" ", "+")
+
+        println("Clicked result: $result")
+        startLandmarkInfoIntent(result)
+    }
+
+    private fun onLandmarkSave(landmark: String) {
+        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
+
+        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
     }
 
     /** Setup the camera */
@@ -218,54 +245,72 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showDialog() {
+        val dialog = AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.dialog_results_view, null)
+        view.rvResults.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
+        view.rvResults.adapter = resultsAdapter
+        if (resultsAdapter.itemCount == 0) { view.dialog_results_title.text = getString(R.string.no_landmark_tip) }
+        resultsAdapter.notifyDataSetChanged()
+        dialog.setView(view)
+        dialog.show()
+    }
+
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
         viewModel.activeJourney.observe(this, {
-            currentJourneyId = it?.id!!
+            currentJourney = it!!
         })
 
-        ResultsSpinner.setOnTouchListener { _, _ ->
-            if (ResultsSpinner.adapter.count == 2) { // If only one landmark result
-                val landmark = ResultsSpinner.adapter.getItem(1).toString()
-                startLandmarkInfoIntent(landmark)
-            }
-            return@setOnTouchListener false
-        }
+        resultsButton.setOnClickListener { showDialog() }
 
-        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                println("Spinner item $position!")
-                println("parent $parent")
-                println("view $view")
-                println("pos $position")
-                println("id $id")
-                ResultsSpinner.setSelection(0)
+//        fragmentHelper.journeyFragmentIsOpen.observe(this, { journeyFragmentIsOpen ->
+//
+//        })
 
-                if (++check > 1 && position != 0) {
-//                    val container = ResultsSpinner.selectedView as ConstraintLayout?
-                    val textView = view?.findViewById<TextView>(R.id.tvLandmarkResultName)
-                    val btnSave = view?.findViewById<ImageView>(R.id.btnSave)
-                    var result = textView?.text.toString()
+//        ResultsSpinner.setOnTouchListener { _, _ ->
+//            if (ResultsSpinner.adapter.count == 2) { // If only one landmark result
+//                val landmark = ResultsSpinner.adapter.getItem(1).toString()
+//                startLandmarkInfoIntent(landmark)
+//            }
+//            showDialog()
+//            return@setOnTouchListener false
+//        }
 
-                    println(btnSave)
-
-                    viewModel.createLandmark(Landmark(null, result, imageUri.toString(), Date(), currentJourneyId))
-
-                    result = result.replace(" ", "+")
-
-                    println("Clicked result: $result")
-                    startLandmarkInfoIntent(result)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) { println("Spinner") }
-        }
+//        ResultsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+//            override fun onItemSelected(
+//                parent: AdapterView<*>?,
+//                view: View?,
+//                position: Int,
+//                id: Long
+//            ) {
+//                println("Spinner item $position!")
+//                println("parent $parent")
+//                println("view $view")
+//                println("pos $position")
+//                println("id $id")
+//                ResultsSpinner.setSelection(0)
+//
+//                if (++check > 1 && position != 0) {
+////                    val container = ResultsSpinner.selectedView as ConstraintLayout?
+//                    val textView = view?.findViewById<TextView>(R.id.tvLandmarkResultName)
+//                    val btnSave = view?.findViewById<ImageView>(R.id.btnSave)
+//                    var result = textView?.text.toString()
+//
+//                    println(btnSave)
+//
+//                    viewModel.createLandmark(Landmark(null, result, imageUri.toString(), Date(), currentJourneyId))
+//
+//                    result = result.replace(" ", "+")
+//
+//                    println("Clicked result: $result")
+//                    startLandmarkInfoIntent(result)
+//                }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>?) { println("Spinner") }
+//        }
 
         takeImageButton.setOnClickListener {
             tvNoResults.visibility = View.GONE
@@ -294,7 +339,8 @@ class MainActivity : AppCompatActivity() {
                     val graphicOverlay = GraphicOverlay(this, null)
                     graphicOverlay.clear()
                     previewOverlay.clear()
-                    resultsSpinnerAdapter.reset()
+//                    resultsSpinnerAdapter.reset()
+                    resultsAdapter.reset()
                 }
             } else {
                 // No permissions granted, request them again
@@ -306,17 +352,16 @@ class MainActivity : AppCompatActivity() {
 
         previewOverlay.setOnClickListener {
             // If only one landmark result
-            if (ResultsSpinner.adapter.count == 2) {
-                val landmark = ResultsSpinner.adapter.getItem(1).toString()
+            if (resultsAdapter.itemCount == 1) {
+                val landmark = resultsAdapter.getItem(0).toString()
                 startLandmarkInfoIntent(landmark)
-            } else { ResultsSpinner.performClick() }
+            } else { showDialog() }
         }
     }
 
     /** Get landmark info */
     private fun startLandmarkInfoIntent(result: String) {
         customTabHelper.startIntent(result, this)
-        ResultsSpinner.setSelection(0)
     }
 
     /** Choose image activity */
@@ -344,7 +389,7 @@ class MainActivity : AppCompatActivity() {
                 imageProcessor.process(
                     it,
                     previewOverlay,
-                    resultsSpinnerAdapter,
+                    resultsAdapter,
                     progressBarHolder,
                     tvNoResults
                 )

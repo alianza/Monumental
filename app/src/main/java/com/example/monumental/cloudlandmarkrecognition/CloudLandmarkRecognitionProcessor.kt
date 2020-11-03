@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionProcessorBase
-import com.example.monumental.ui.main.ResultsSpinnerAdapter
+import com.example.monumental.ui.main.ResultsAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions
@@ -41,7 +41,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsSpinnerAdapter: ResultsSpinnerAdapter,
+        resultsAdapter: ResultsAdapter,
         progressBarHolder: FrameLayout,
         tvNoResults: TextView
     ) {
@@ -71,13 +71,10 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
             println("Empty landmark list $e")
         }
 
-        // Add first result
-        resultNames.add(0, "More info!")
-
         // Clear results spinner, add results and notify adapter of changed data
-        resultsSpinnerAdapter.clear()
-        resultsSpinnerAdapter.addAll(resultNames)
-        resultsSpinnerAdapter.notifyDataSetChanged()
+        resultsAdapter.clear();
+        resultsAdapter.landmarks = ArrayList(resultNames)
+        resultsAdapter.notifyDataSetChanged()
         progressBarHolder.visibility = View.GONE
     }
 
