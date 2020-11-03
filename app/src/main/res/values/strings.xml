@@ -6,7 +6,7 @@
     <string name="choose_picture_btn">Choose image</string>
     <string name="take_picture_btn">Take Picture</string>
     <string name="preview">Preview</string>
-    <string name="choose_dropdown">Choose a landmark to get more info!</string>
+    <string name="choose_dropdown">Choose a Landmark!</string>
     <string name="no_landmark_tip">Select or capture a landmark to get more info!</string>
     <string name="more_info">More info!</string>
     <string name="no_landmarks">No landmarks found</string>
@@ -33,5 +33,7 @@
 
     <!--    Landmarks Fragment    -->
     <string name="landmark_name">Landmark name…</string>
+    <string name="go_back">Go back</string>
+    <string name="add_to_journey">Add to current Journey</string>
 
 </resources>

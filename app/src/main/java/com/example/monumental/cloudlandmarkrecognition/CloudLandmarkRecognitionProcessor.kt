@@ -7,8 +7,8 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
-import com.example.monumental.common.ResultsSpinnerAdapter
 import com.example.monumental.common.VisionProcessorBase
+import com.example.monumental.ui.main.ResultsSpinnerAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.GuardedBy
+import com.example.monumental.ui.main.ResultsSpinnerAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.common.FirebaseVisionImage

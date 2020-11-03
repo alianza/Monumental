@@ -54,7 +54,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_done_24" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnRemove"
         android:layout_width="32dp"
         android:layout_height="32dp"

@@ -16,6 +16,7 @@ package com.example.monumental.common
 import android.graphics.Bitmap
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.example.monumental.ui.main.ResultsSpinnerAdapter
 import com.google.firebase.ml.common.FirebaseMLException
 import java.nio.ByteBuffer
 
