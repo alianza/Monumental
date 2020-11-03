@@ -1,5 +1,6 @@
 package com.example.monumental.ui.journey
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -86,9 +87,21 @@ class JourneyFragment : Fragment() {
     }
 
     private fun journeyDelete(journey: Journey) {
-        println("Delete!")
-        Handler().postDelayed({
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+
+        builder.setTitle("Remove " + journey.name + "?")
+        builder.setMessage("Are you sure?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            println("Delete!")
             viewModel.deleteJourney(journey)
+            dialog.dismiss() }
+
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+
+        val alert: AlertDialog = builder.create()
+        Handler().postDelayed({
+            alert.show()
         }, actionDelayVal)
     }
 

@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.landmark_item.view.*
 
 class LandmarkAdapter(
     var landmarks: ArrayList<Landmark>,
-    val actionDelayVal: Long,
     private val onLandmarkClick: (Landmark) -> Unit,
     private val onLandmarkDelete: (Landmark) -> Unit
 ):

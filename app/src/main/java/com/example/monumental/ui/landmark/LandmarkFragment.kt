@@ -1,5 +1,6 @@
 package com.example.monumental.ui.landmark
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -54,7 +55,7 @@ class LandmarkFragment : Fragment() {
     }
 
     private fun initViews() {
-        landmarkAdapter = LandmarkAdapter(landmarks, actionDelayVal,
+        landmarkAdapter = LandmarkAdapter(landmarks,
             { landmark: Landmark -> landmarkClick(landmark) },
             { landmark: Landmark -> landmarkDelete(landmark) })
 
@@ -86,8 +87,20 @@ class LandmarkFragment : Fragment() {
 
 
     private fun landmarkDelete(landmark: Landmark) {
-        Handler().postDelayed({
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+
+        builder.setTitle("Remove " + landmark.name + "?")
+        builder.setMessage("Are you sure?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
             viewModel.deleteLandmark(landmark)
+            dialog.dismiss() }
+
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+
+        val alert: AlertDialog = builder.create()
+        Handler().postDelayed({
+            alert.show()
         }, actionDelayVal)
     }
 
@@ -96,8 +109,9 @@ class LandmarkFragment : Fragment() {
     }
 
     private fun closeFragment() {
+        btnClose.isPressed = true
         Handler().postDelayed({
-        (activity as MainActivity?)?.fragmentHelper?.closeLandmarkFragment()
+            (activity as MainActivity?)?.fragmentHelper?.closeLandmarkFragment()
         }, actionDelayVal)
     }
 

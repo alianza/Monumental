@@ -73,7 +73,6 @@ class JourneyAdapter(
             itemView.tvName.text = journey.name
 
 //            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
-            println("Bind!")
             println(itemView.etName.text.toString() + " : " + journey.name)
         }
 
