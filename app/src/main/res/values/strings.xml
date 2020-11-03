@@ -36,6 +36,6 @@
     <string name="landmark_name">Landmark name…</string>
     <string name="go_back">Go back</string>
     <string name="add_to_journey">Add to current Journey</string>
-    <string name="current_journey">%1$s current journey</string>
+    <string name="current_journey">Current journey</string>
 
 </resources>
