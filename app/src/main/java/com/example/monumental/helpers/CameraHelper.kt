@@ -2,15 +2,9 @@
 
 package com.example.monumental.helpers
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.hardware.Camera
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
@@ -20,9 +14,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.math.max
 
-class CameraHelper(private val context: Context, private val imageHelper: ImageHelper) {
+class CameraHelper(private val context: Context) {
 
     fun setParameters (cameraInstance: Camera) {
         val params: Camera.Parameters? = cameraInstance.parameters
@@ -42,6 +35,7 @@ class CameraHelper(private val context: Context, private val imageHelper: ImageH
             val fos = FileOutputStream(pictureFile)
             fos.write(data)
             fos.close()
+            println("Wrote file" + pictureFile.path)
         } catch (e: FileNotFoundException) {
             Log.d(TAG, "File not found: ${e.message}")
         } catch (e: IOException) {
@@ -87,34 +81,6 @@ class CameraHelper(private val context: Context, private val imageHelper: ImageH
             item.icon =
                 ContextCompat.getDrawable(context, R.drawable.ic_baseline_flash_off_24)
         }
-    }
-
-    fun getBitmap(contentResolver: ContentResolver, imageUri: Uri): Bitmap? {
-        val imageBitmap = if (Build.VERSION.SDK_INT < 29) {
-            MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-        } else {
-            val source = ImageDecoder.createSource(contentResolver, imageUri)
-            ImageDecoder.decodeBitmap(source)
-        }
-
-        // Get the dimensions of the View
-        val targetedSize = imageHelper.getTargetedWidthHeight()
-
-        val targetWidth = targetedSize.first
-        val maxHeight = targetedSize.second
-
-        // Determine how much to scale down the image
-        val scaleFactor = max(
-            imageBitmap.width.toFloat() / targetWidth.toFloat(),
-            imageBitmap.height.toFloat() / maxHeight.toFloat()
-        )
-
-        return Bitmap.createScaledBitmap(
-            imageBitmap,
-            (imageBitmap.width / scaleFactor).toInt(),
-            (imageBitmap.height / scaleFactor).toInt(),
-            true
-        )
     }
 
     companion object {
