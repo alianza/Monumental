@@ -20,6 +20,7 @@
     <string name="flash_on">Flash on</string>
     <string name="flash_not_supported">Flash not supported</string>
     <string name="close">Close</string>
+    <string name="date_format">%s/%s/%s</string>
 
     <!--    Journey Fragment    -->
     <string name="no_journeys">No Journeys yet… \n Create a new one…</string>
@@ -37,5 +38,7 @@
     <string name="go_back">Go back</string>
     <string name="add_to_journey">Add to current Journey</string>
     <string name="current_journey">Current journey</string>
+    <string name="landmark_image">Landmark image</string>
+    <string name="set_current_journey">Set %1$s as current journey</string>
 
 </resources>
