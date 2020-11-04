@@ -38,6 +38,7 @@ import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_results_view.view.*
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -51,15 +52,15 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var picture: Camera.PictureCallback? = null
 
-
     val actionDelayVal = 250L
 
     lateinit var fragmentHelper: FragmentHelper
+    private lateinit var cameraHelper: CameraHelper
+    private lateinit var bitmapHelper: BitmapHelper
     private lateinit var currentJourney: Journey
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
-    private lateinit var cameraHelper: CameraHelper
     private lateinit var resultsAdapter: ResultsAdapter
     private lateinit var imageProcessor: VisionImageProcessor
     private lateinit var viewModel: MainViewModel
@@ -133,8 +134,7 @@ class MainActivity : AppCompatActivity() {
                 view.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     view.clearFocus()
-                    val imm: InputMethodManager =
-                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
                 }
             }
@@ -150,12 +150,7 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data
-            takeImageButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_autorenew_black_24dp
-                )
-            )
+            takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
     }
@@ -178,9 +173,10 @@ class MainActivity : AppCompatActivity() {
         customTabHelper = CustomTabHelper()
         mediaFileHelper = MediaFileHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
-        cameraHelper = CameraHelper(this, imageHelper)
+        cameraHelper = CameraHelper(this)
         imageProcessor = CloudLandmarkRecognitionProcessor()
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
+        bitmapHelper = BitmapHelper()
 
         requestPermissions()
         setupResultsRecyclerView()
@@ -194,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             arrayOf(
                 Manifest.permission.INTERNET,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
+                Manifest.permission.CAMERA,
             ), PERMISSIONS_REQUEST_CODE
         )
     }
@@ -211,23 +207,18 @@ class MainActivity : AppCompatActivity() {
         if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
             if (cameraHelper.hasCamera()) {
                 camera = cameraHelper.getCameraInstance()
-
                 preview = camera?.let { CameraPreview(this, it) }
-
                 cameraHelper.setParameters(camera!!)
-
                 // Set the Preview view as the content of our activity.
                 preview?.also {
                     val preview: FrameLayout = findViewById(R.id.camera_preview)
                     preview.addView(it)
                 }
-
                 picture = Camera.PictureCallback { data, _ ->
                     pictureFile = mediaFileHelper.getOutputMediaFile() ?: run {
                         Log.d(TAG, ("Error creating media file, check storage permissions"))
                         return@PictureCallback
                     }
-
                     cameraHelper.savePicture(pictureFile!!, data)
                     imageUri = mediaFileHelper.getOutputMediaFileUri()
                     camera?.stopPreview()
@@ -251,35 +242,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLandmarkResultClick(landmark: String) {
         val result = landmark.replace(" ", "+")
-
-        println("Clicked result: $result")
         startLandmarkInfoIntent(result)
     }
 
     private fun onLandmarkResultSave(landmark: String) {
-        viewModel.createLandmark(
-            Landmark(
-                null,
-                landmark,
-                imageUri.toString(),
-                Date(),
-                currentJourney.id
-            )
-        )
-
-        Toast.makeText(
-            this,
-            getString(R.string.saved_landmark, landmark, currentJourney.name),
-            Toast.LENGTH_LONG
-        ).show()
+        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
+        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
     }
 
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        viewModel.activeJourney.observe(this, {
-            currentJourney = it!!
-        })
+        viewModel.activeJourney.observe(this, { currentJourney = it!! })
 
         resultsButton.setOnClickListener { showDialog() }
 
@@ -299,12 +273,7 @@ class MainActivity : AppCompatActivity() {
                 } else { // Reset Picture
                     pictureFile = null
                     imageUri = null
-                    takeImageButton.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.drawable.ic_camera_black_24dp
-                        )
-                    )
+                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
                     camera?.startPreview()
                     previewPane.setImageBitmap(null)
                     val graphicOverlay = GraphicOverlay(this, null)
@@ -340,10 +309,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(intent, "Select Picture"),
-            REQUEST_CODE_CHOOSE_IMAGE
-        )
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
     }
 
     /** Reload and detect in current image */
@@ -354,7 +320,18 @@ class MainActivity : AppCompatActivity() {
             Log.d("ImageUri", imageUri.toString())
 
             previewOverlay.clear() // Clear the overlay first
-            val resizedBitmap: Bitmap? = cameraHelper.getBitmap(contentResolver, imageUri!!)
+            val resizedBitmap: Bitmap? = bitmapHelper.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
+
+            if (imageUri!!.scheme == "content") { // if Image from device Content
+                val bos = ByteArrayOutputStream() //Convert bitmap to byte array
+                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                val bitmapData = bos.toByteArray()
+
+                pictureFile = mediaFileHelper.getOutputMediaFile()
+                cameraHelper.savePicture(pictureFile!!, bitmapData)
+                imageUri = mediaFileHelper.getOutputMediaFileUri()
+            }
+
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
                 imageProcessor.process(
