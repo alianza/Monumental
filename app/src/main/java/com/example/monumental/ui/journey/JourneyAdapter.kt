@@ -59,18 +59,21 @@ class JourneyAdapter(
 
             itemView.ivEdit.setOnClickListener { Handler().postDelayed(
                 { editJourney(itemView) },
-                actionDelayVal!!
+                actionDelayVal
             ) }
 
             itemView.ivDone.setOnClickListener { Handler().postDelayed(
                 { updateJourney(itemView) },
-                actionDelayVal!!
+                actionDelayVal
             ) }
         }
 
         fun bind(journey: Journey) {
 
             itemView.tvName.text = journey.name
+
+            itemView.rCurrent.isChecked = journey.current
+            itemView.rCurrent.isSelected = journey.current
 
 //            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
         }

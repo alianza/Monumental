@@ -19,9 +19,7 @@ import kotlinx.android.synthetic.main.journey_fragment.*
 
 class JourneyFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = JourneyFragment()
-    }
+    companion object { fun newInstance() = JourneyFragment() }
 
     private lateinit var viewModel: JourneyViewModel
 
