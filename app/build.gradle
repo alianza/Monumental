@@ -61,4 +61,9 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    // Picasso Image loading
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.bogdwellers:pinchtozoom:0.1'
 }
