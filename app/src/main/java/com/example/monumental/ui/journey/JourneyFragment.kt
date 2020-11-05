@@ -62,7 +62,7 @@ class JourneyFragment : Fragment() {
                     println("Got: $journey")
                 }
             }
-//            this.journeys.sortByDescending { it.name }
+            this.journeys.sortByDescending { it.id }
             journeyAdapter.notifyDataSetChanged()
             if (this.journeys.isEmpty()) {
                 tvNoJourneys.visibility = View.VISIBLE

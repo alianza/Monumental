@@ -74,7 +74,7 @@ class LandmarkFragment : Fragment() {
                     this.landmarks.add(landmark)
                 }
             }
-            //            this.landmarks.sortByDescending { it.name }
+            this.landmarks.sortByDescending { it.id }
             landmarkAdapter.notifyDataSetChanged()
             if (this.landmarks.isEmpty()) {
                 tvNoLandmarks.visibility = View.VISIBLE
@@ -141,16 +141,18 @@ class LandmarkFragment : Fragment() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
         val title = TextView(context)
-        title.setText(landmark.name + " " + getString(R.string.date_format,
-            landmark.date?.date.toString(),
-            (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
-            (landmark.date?.year?.plus(YEAR_OFFSET)).toString()))
+        title.text = landmark.name
         title.setPadding(20, 20, 20, 20)
         title.textSize = 20f
         title.setTextColor(resources.getColor(R.color.design_default_color_on_secondary))
         builder.setCustomTitle(title)
 
         builder.setNegativeButton("Close", null)
+
+        builder.setNeutralButton(getString(R.string.date_format,
+            landmark.date?.date.toString(),
+            (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
+            (landmark.date?.year?.plus(YEAR_OFFSET)).toString()), null)
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_landmark_view, null)
 
