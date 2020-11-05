@@ -75,22 +75,11 @@ class MainActivity : AppCompatActivity() {
         initViews()
     }
 
+    /** Catch back press event */
     override fun onBackPressed() {
-        if (fragmentHelper.closeLandmarkFragment()) { // if closed
-            return
-        }
-        if (fragmentHelper.closeJourneyFragment()) { // if closed
-            resetViews()
-            return
-        }
+        if (fragmentHelper.closeLandmarkFragment()) { return }
+        if (fragmentHelper.closeJourneyFragment()) { resetViews(); return }
         super.onBackPressed()
-    }
-
-    private fun resetViews() {
-        camera?.startPreview()
-        invalidateOptionsMenu()
-        println("startPreview")
-        supportActionBar?.title = getString(R.string.app_name)
     }
 
     /** Inflate options menu */
@@ -156,20 +145,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Request permissions result */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) { // When permissions granted, start the camera(preview)
-            PERMISSIONS_REQUEST_CODE -> {
-                setupCamera()
-            }
-        }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) { PERMISSIONS_REQUEST_CODE -> { setupCamera() } } // When permissions granted, start the camera(preview)
     }
 
     /** Start everything up */
     private fun initViews() {
+        instantiateClasses()
+        requestPermissions()
+        setupResultsRecyclerView()
+        setupCamera()
+        setupListeners()
+    }
+
+    /** Instantiate all classes */
+    private fun instantiateClasses() {
         customTabHelper = CustomTabHelper()
         mediaFileHelper = MediaFileHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
@@ -177,22 +167,13 @@ class MainActivity : AppCompatActivity() {
         imageProcessor = CloudLandmarkRecognitionProcessor()
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
         bitmapHelper = BitmapHelper()
-
-        requestPermissions()
-        setupResultsRecyclerView()
-        setupCamera()
-        setupListeners()
     }
 
     /** Request all required permissions */
     private fun requestPermissions() {
         requestPermissions(
-            arrayOf(
-                Manifest.permission.INTERNET,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-            ), PERMISSIONS_REQUEST_CODE
-        )
+            arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,), PERMISSIONS_REQUEST_CODE)
     }
 
     /** setup the resultsSpinner(Adapter) */
@@ -228,6 +209,66 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Setup all event listeners */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupListeners() {
+        viewModel.activeJourney.observe(this, { currentJourney = it!! })
+
+        resultsButton.setOnClickListener { showDialog() }
+
+        takeImageButton.setOnClickListener {
+            tvNoResults.visibility = View.GONE
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+                if (pictureFile == null && imageUri == null) { takePicture() }
+                else { resetPicture() }
+            } else {
+                requestPermissions()
+            }
+        }
+
+        getImageButton.setOnClickListener { startChooseImageIntentForResult() }
+
+        previewOverlay.setOnClickListener {
+            if (resultsAdapter.itemCount == 1) {
+                val landmark = resultsAdapter.getItem(0).toString()
+                startLandmarkInfoIntent(landmark)
+            } else { showDialog() }
+        }
+    }
+
+    /** Callback when clicked on landmark row in ResultsRecyclerView */
+    private fun onLandmarkResultClick(landmark: String) {
+        val result = landmark.replace(" ", "+")
+        startLandmarkInfoIntent(result)
+    }
+
+    /** Callback when clicked on landmark save button in ResultsRecyclerView */
+    private fun onLandmarkResultSave(landmark: String) {
+        viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
+        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
+    }
+
+    /** Resets the current taken picture */
+    private fun resetPicture() {
+        pictureFile = null
+        imageUri = null
+        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
+        camera?.startPreview()
+        previewPane.setImageBitmap(null)
+        val graphicOverlay = GraphicOverlay(this, null)
+        graphicOverlay.clear()
+        previewOverlay.clear()
+        resultsAdapter.reset()
+    }
+
+    /** Takes a picture using the Camera pictureCallback */
+    private fun takePicture() {
+        progressBarHolder.visibility = View.VISIBLE
+        camera?.takePicture(null, null, picture)
+        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
+    }
+
+    /** Displays the Landmark results dialog */
     private fun showDialog() {
         val dialog = AlertDialog.Builder(this)
         val view = layoutInflater.inflate(R.layout.dialog_results_view, null)
@@ -239,64 +280,12 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
-    private fun onLandmarkResultClick(landmark: String) {
-        val result = landmark.replace(" ", "+")
-        startLandmarkInfoIntent(result)
-    }
-
-    private fun onLandmarkResultSave(landmark: String) {
-        viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
-        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
-    }
-
-    /** Setup all event listeners */
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupListeners() {
-        viewModel.activeJourney.observe(this, { currentJourney = it!! })
-
-        resultsButton.setOnClickListener { showDialog() }
-
-        takeImageButton.setOnClickListener {
-            tvNoResults.visibility = View.GONE
-            // Check for required permissions
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                if (pictureFile == null && imageUri == null) { // Take picture
-                    progressBarHolder.visibility = View.VISIBLE
-                    camera?.takePicture(null, null, picture)
-                    takeImageButton.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.drawable.ic_autorenew_black_24dp
-                        )
-                    )
-                } else { // Reset Picture
-                    pictureFile = null
-                    imageUri = null
-                    takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
-                    camera?.startPreview()
-                    previewPane.setImageBitmap(null)
-                    val graphicOverlay = GraphicOverlay(this, null)
-                    graphicOverlay.clear()
-                    previewOverlay.clear()
-//                    resultsSpinnerAdapter.reset()
-                    resultsAdapter.reset()
-                }
-            } else {
-                // No permissions granted, request them again
-                requestPermissions()
-            }
-        }
-
-        getImageButton.setOnClickListener { startChooseImageIntentForResult() }
-
-        previewOverlay.setOnClickListener {
-            // If only one landmark result
-            if (resultsAdapter.itemCount == 1) {
-                val landmark = resultsAdapter.getItem(0).toString()
-                startLandmarkInfoIntent(landmark)
-            } else { showDialog() }
-        }
+    /** Resets the activity and starts the camera preview */
+    private fun resetViews() {
+        camera?.startPreview()
+        invalidateOptionsMenu()
+        println("startPreview")
+        supportActionBar?.title = getString(R.string.app_name)
     }
 
     /** Get landmark info */
@@ -334,13 +323,7 @@ class MainActivity : AppCompatActivity() {
 
             previewPane?.setImageBitmap(resizedBitmap)
             resizedBitmap?.let {
-                imageProcessor.process(
-                    it,
-                    previewOverlay,
-                    resultsAdapter,
-                    progressBarHolder,
-                    tvNoResults
-                )
+                imageProcessor.process(it, previewOverlay, resultsAdapter, progressBarHolder, tvNoResults)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")

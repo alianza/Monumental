@@ -18,7 +18,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var activeJourney = journeyRepository.getActiveJourney()
 
-    fun createLandmark(landmark: Landmark) {
+    fun saveLandmark(landmark: Landmark) {
         mainScope.launch {
             landmarkRepository.insertLandmark(landmark)
         }
