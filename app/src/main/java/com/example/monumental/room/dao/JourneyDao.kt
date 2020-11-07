@@ -8,7 +8,7 @@ import com.example.monumental.model.Journey
 interface JourneyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertJourney(journey: Journey)
+    suspend fun insertJourney(journey: Journey): Long
 
     @Query("SELECT * FROM Journey")
     fun getJourneys(): LiveData<List<Journey>?>

@@ -22,15 +22,19 @@ class JourneyViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun createJourney() {
-        mainScope.launch {
-            journeyRepository.insertJourney(Journey(null,"New Journey!"))
-        }
+    suspend fun createJourney(): Long {
+        return journeyRepository.insertJourney(Journey(null,"New Journey!"))
     }
 
     fun updateJourney(journey: Journey) {
         mainScope.launch {
             journeyRepository.updateJourney(journey)
+        }
+    }
+
+    fun setActiveJourney(journey: Journey) {
+        mainScope.launch {
+            journeyRepository.setActiveJourney(journey)
         }
     }
 }

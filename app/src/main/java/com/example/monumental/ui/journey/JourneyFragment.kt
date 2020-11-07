@@ -15,6 +15,9 @@ import com.example.monumental.R
 import com.example.monumental.model.Journey
 import com.example.monumental.ui.main.MainActivity
 import kotlinx.android.synthetic.main.journey_fragment.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class JourneyFragment : Fragment() {
@@ -28,6 +31,8 @@ class JourneyFragment : Fragment() {
     private lateinit var viewModel: JourneyViewModel
 
     private lateinit var journeyAdapter: JourneyAdapter
+
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +80,7 @@ class JourneyFragment : Fragment() {
     }
 
     private fun setListeners() {
-        fab.setOnClickListener { journeyCreate() }
+        fab.setOnClickListener { mainScope.launch { journeyCreate() } }
         btnClose.setOnClickListener { closeFragment() }
     }
 
@@ -111,8 +116,8 @@ class JourneyFragment : Fragment() {
         viewModel.updateJourney(journey)
     }
 
-    private fun journeyCreate() {
-        viewModel.createJourney()
+    private suspend fun journeyCreate() {
+        viewModel.setActiveJourney(Journey(viewModel.createJourney().toInt(), "", true))
         Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
     }
 
