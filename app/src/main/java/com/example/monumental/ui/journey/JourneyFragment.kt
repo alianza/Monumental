@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
@@ -38,7 +38,7 @@ class JourneyFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(JourneyViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(JourneyViewModel::class.java)
         actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
         initViews()

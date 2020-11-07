@@ -72,7 +72,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         }
 
         // Clear results spinner, add results and notify adapter of changed data
-        resultsAdapter.clear();
+        resultsAdapter.clear()
         resultsAdapter.landmarks = ArrayList(resultNames)
         resultsAdapter.notifyDataSetChanged()
         progressBarHolder.visibility = View.GONE

@@ -12,8 +12,12 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.hardware.Camera
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -25,7 +29,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
@@ -38,7 +42,6 @@ import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_results_view.view.*
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         initViews()
     }
@@ -210,7 +213,7 @@ class MainActivity : AppCompatActivity() {
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        viewModel.activeJourney.observe(this, { currentJourney = it!! })
+        viewModel.activeJourney.observe(this, { journey -> currentJourney = journey!! })
 
         resultsButton.setOnClickListener { showDialog() }
 
@@ -248,6 +251,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Resets the current taken picture */
     private fun resetPicture() {
+        progressBarHolder.visibility = View.INVISIBLE
         pictureFile = null
         imageUri = null
         takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
@@ -298,6 +302,14 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
     }
 
+    private fun isNetworkAvailable() =
+        (this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+            getNetworkCapabilities(activeNetwork)?.run {
+                           hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                        || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                        || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false
+        }
+
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
         try {
@@ -309,9 +321,7 @@ class MainActivity : AppCompatActivity() {
             val resizedBitmap: Bitmap? = bitmapHelper.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
-                val bos = ByteArrayOutputStream() //Convert bitmap to byte array
-                resizedBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                val bitmapData = bos.toByteArray()
+                val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
 
                 pictureFile = mediaFileHelper.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
@@ -319,8 +329,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             previewPane?.setImageBitmap(resizedBitmap)
-            resizedBitmap?.let {
-                imageProcessor.process(it, previewOverlay, resultsAdapter, progressBarHolder, tvNoResults)
+            if (isNetworkAvailable()) { // Has internet
+                resizedBitmap?.let { imageProcessor.process(it, previewOverlay, resultsAdapter, progressBarHolder, tvNoResults) }
+            } else { // Has NO internet
+                Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")

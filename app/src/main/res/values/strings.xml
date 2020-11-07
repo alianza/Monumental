@@ -21,6 +21,7 @@
     <string name="flash_not_supported">Flash not supported</string>
     <string name="close">Close</string>
     <string name="date_format">%s-%s-%s</string>
+    <string name="no_network">No network available, please connect.</string>
 
     <!--    Journey Fragment    -->
     <string name="no_journeys">No Journeys yet… \n Create a new one…</string>

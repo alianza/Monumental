@@ -4,16 +4,14 @@ package com.example.monumental.helpers
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.hardware.Camera
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.monumental.R
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 
 class CameraHelper(private val context: Context) {
 
@@ -41,6 +39,18 @@ class CameraHelper(private val context: Context) {
         } catch (e: IOException) {
             Log.d(TAG, "Error accessing file: ${e.message}")
         }
+    }
+
+    /**
+     * //Convert bitmap to byte array
+     *
+     * @param bitmap
+     * @return ByteArray
+     */
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        return bos.toByteArray()
     }
 
     /** Check if this device has a camera */
