@@ -92,17 +92,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.flash -> {
-                cameraHelper.toggleFlash(item, camera!!, this)
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+                    cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
                 return true
             }
             R.id.journeys -> {
                 if (fragmentHelper.toggleJourneyFragment()) { // is open
                     camera?.stopPreview()
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
-                    println("stopPreview")
-                } else { // is closed
-                    resetViews()
-                }
+                } else { resetViews() } // is closed
                 return true
             }
         }
@@ -284,7 +282,6 @@ class MainActivity : AppCompatActivity() {
     private fun resetViews() {
         camera?.startPreview()
         invalidateOptionsMenu()
-        println("startPreview")
         supportActionBar?.title = getString(R.string.app_name)
     }
 
