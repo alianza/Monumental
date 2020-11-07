@@ -56,11 +56,14 @@ class MainActivity : AppCompatActivity() {
     private var picture: Camera.PictureCallback? = null
 
     val actionDelayVal = 250L
+    private var currentJourney: Journey? = null
+    private var flashOptionsItem: MenuItem? = null
+    private var journeysOptionsItem: MenuItem? = null
+    private var dialog: AlertDialog? = null
 
     lateinit var fragmentHelper: FragmentHelper
     private lateinit var cameraHelper: CameraHelper
     private lateinit var bitmapHelper: BitmapHelper
-    private lateinit var currentJourney: Journey
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var mediaFileHelper: MediaFileHelper
@@ -88,6 +91,8 @@ class MainActivity : AppCompatActivity() {
     /** Inflate options menu */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.still_image_menu, menu)
+        this.flashOptionsItem = menu?.getItem(0)
+        this.journeysOptionsItem = menu?.getItem(1)
         return true
     }
 
@@ -136,10 +141,9 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
-            // In this case, imageUri is returned by the chooser, save it.
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.GONE
-            imageUri = data!!.data
+            imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage()
         }
@@ -213,7 +217,8 @@ class MainActivity : AppCompatActivity() {
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        viewModel.activeJourney.observe(this, { journey -> currentJourney = journey!! })
+        viewModel.activeJourney.observe(this, { journey -> if (journey == null)
+        { this.currentJourney = null } else { this.currentJourney = journey } })
 
         resultsButton.setOnClickListener { showDialog() }
 
@@ -245,8 +250,14 @@ class MainActivity : AppCompatActivity() {
 
     /** Callback when clicked on landmark save button in ResultsRecyclerView */
     private fun onLandmarkResultSave(landmark: String) {
-        viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney.id))
-        Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney.name), Toast.LENGTH_LONG).show()
+        if (currentJourney != null) {
+            viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
+            Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, getString(R.string.no_journeys_present), Toast.LENGTH_LONG).show()
+            onOptionsItemSelected(journeysOptionsItem!!)
+            this.dialog?.dismiss()
+        }
     }
 
     /** Resets the current taken picture */
@@ -279,7 +290,7 @@ class MainActivity : AppCompatActivity() {
         if (resultsAdapter.itemCount == 0) { view.dialog_results_title.text = getString(R.string.no_landmark_tip) }
         resultsAdapter.notifyDataSetChanged()
         dialog.setView(view)
-        dialog.show()
+        this.dialog = dialog.show()
     }
 
     /** Resets the activity and starts the camera preview */

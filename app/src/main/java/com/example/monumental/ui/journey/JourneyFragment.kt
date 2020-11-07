@@ -21,11 +21,11 @@ class JourneyFragment : Fragment() {
 
     companion object { fun newInstance() = JourneyFragment() }
 
-    private lateinit var viewModel: JourneyViewModel
-
     private var actionDelayVal: Long = 0
 
     private var journeys = arrayListOf<Journey>()
+
+    private lateinit var viewModel: JourneyViewModel
 
     private lateinit var journeyAdapter: JourneyAdapter
 
