@@ -6,22 +6,16 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
 import com.example.monumental.R
 import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import com.example.monumental.ui.main.MainActivity
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.landmark_fragment.*
-import java.io.File
-import java.net.URI
 
 
 class LandmarkFragment : Fragment() {
@@ -138,35 +132,7 @@ class LandmarkFragment : Fragment() {
 
 
     private fun landmarkClick(landmark: Landmark) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-
-        val title = TextView(context)
-        title.text = landmark.name
-        title.setPadding(20, 20, 20, 20)
-        title.textSize = 20f
-        title.setTextColor(resources.getColor(R.color.design_default_color_on_secondary))
-        builder.setCustomTitle(title)
-
-        builder.setNegativeButton("Close", null)
-
-        builder.setNeutralButton(getString(R.string.date_format,
-            landmark.date?.date.toString(),
-            (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
-            (landmark.date?.year?.plus(YEAR_OFFSET)).toString()), null)
-
-        val dialogView = layoutInflater.inflate(R.layout.dialog_landmark_view, null)
-
-        val imageView = dialogView.findViewById<ImageView>(R.id.ivLandmark).also {
-            it.setOnTouchListener(ImageMatrixTouchHandler(view?.context))
-        }
-
-        println("Landmark " + landmark.img_uri)
-
-        Picasso.get().load(File(URI.create(landmark.img_uri))).into(imageView)
-
-        builder.setView(dialogView)
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
+       TODO()
     }
 
     private fun closeFragment() {
