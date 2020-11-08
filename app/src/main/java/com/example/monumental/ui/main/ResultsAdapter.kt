@@ -52,7 +52,7 @@ class ResultsAdapter(
             itemView.results_container.setPadding(24)
             itemView.tvLandmarkResultName.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
 
-            println("lmname" + landmarkName)
+            println("lmname$landmarkName")
 
 //            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
         }

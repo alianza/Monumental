@@ -10,13 +10,13 @@ import com.example.monumental.ui.landmark.LandmarkFragment
 
 class FragmentHelper(private val context: AppCompatActivity) {
 
-    var journeyFragmentIsOpen = false
-    var landmarkFragmentIsOpen = false
+    private var journeyFragmentIsOpen = false
+    private var landmarkFragmentIsOpen = false
 
     private val journeyFragment: JourneyFragment = JourneyFragment.newInstance()
     private var landmarkFragment: LandmarkFragment = LandmarkFragment.newInstance()
 
-    fun openJourneyFragment() {
+    private fun openJourneyFragment() {
         context.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.journey_fragment_container, journeyFragment)

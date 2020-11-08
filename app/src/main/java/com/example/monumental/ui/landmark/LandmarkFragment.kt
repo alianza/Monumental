@@ -31,9 +31,6 @@ class LandmarkFragment : Fragment() {
     private lateinit var landmarkAdapter: LandmarkAdapter
     private lateinit var journey: Journey
 
-    private val MONTH_OFFSET = 1
-    private val YEAR_OFFSET = 1900
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
