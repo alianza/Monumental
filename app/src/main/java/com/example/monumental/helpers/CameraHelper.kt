@@ -49,7 +49,7 @@ class CameraHelper(private val context: Context) {
      */
     fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
         return bos.toByteArray()
     }
 
