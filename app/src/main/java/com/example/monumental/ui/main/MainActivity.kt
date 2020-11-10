@@ -120,12 +120,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Handle touch events and hide keyboard when moving focus from editText
-     *
-     * @param event
-     * @return
-     */
+    /** Handle touch events and hide keyboard when moving focus from editText */
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
@@ -354,7 +349,7 @@ class MainActivity : AppCompatActivity() {
             previewPane?.setImageBitmap(resizedBitmap)
             if (isNetworkAvailable()) { // Has internet
                 resizedBitmap?.let {
-                    viewModel.doDetectInBitmap(imageProcessor, it, previewOverlay, landmarksList!!)
+                    viewModel.doDetectInBitmap(imageProcessor, it, previewOverlay, landmarksList)
                 }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()

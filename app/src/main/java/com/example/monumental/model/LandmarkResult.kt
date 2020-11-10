@@ -1,4 +1,5 @@
 package com.example.monumental.model
 
-data class LandmarkResult(val name: String) {
-}
+data class LandmarkResult(
+    val name: String
+)
