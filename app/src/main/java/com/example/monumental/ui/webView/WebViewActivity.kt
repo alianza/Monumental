@@ -29,23 +29,29 @@ class WebViewActivity : AppCompatActivity() {
             }
             // Check for url in bundle
             if (bundle.getString(URL) != null) {
-                // Load webpage url
                 webview.settings.javaScriptEnabled = true
-                webview.loadUrl(Uri.parse(bundle.getString(URL)).toString())
-
+                webview.loadUrl(Uri.parse(bundle.getString(URL)).toString()) // Load webPage url
                 supportActionBar?.subtitle = Uri.parse(bundle.getString(URL)).toString()
             }
         } else {
-            // If no bundle (url) close activity
-            this.finish()
-            overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
+            this.finish() // If no bundle (url) close activity
+            doTransition()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Close activity on back press
-        this.finish()
-        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
+        this.finish() // Close activity on back press
+        doTransition()
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        this.finish() // Close activity on back press
+        doTransition()
+        super.onBackPressed()
+    }
+
+    private fun doTransition() {
+        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
     }
 }
