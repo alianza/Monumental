@@ -288,6 +288,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Choose image activity */
     private fun startChooseImageIntentForResult() {
+        tvNoResults.visibility = View.INVISIBLE
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
