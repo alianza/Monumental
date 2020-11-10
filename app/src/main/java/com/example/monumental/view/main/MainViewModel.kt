@@ -53,6 +53,4 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun getScaledBitmap(contentResolver: ContentResolver?, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         return bitmapHelper.getScaledBitmap(contentResolver!!, imageUri, imageHelper)
     }
-
-
 }

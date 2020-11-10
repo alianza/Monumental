@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
         initViews()
     }
 
@@ -105,15 +104,13 @@ class MainActivity : AppCompatActivity() {
             R.id.flash -> {
                 if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                     cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
-                return true
-            } R.id.journeys -> {
+                return true }
+            R.id.journeys -> {
                 if (fragmentHelper.toggleJourneyFragment()) { // is open
                     camera?.stopPreview()
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
                 } else { resetViews() } // is closed
-                return true
-            }
-        }
+                         return true } }
         return super.onOptionsItemSelected(item)
     }
 
@@ -186,20 +183,16 @@ class MainActivity : AppCompatActivity() {
                 camera = cameraHelper.getCameraInstance()
                 preview = camera?.let { CameraPreview(this, it) }
                 cameraHelper.setParameters(camera!!)
-                // Set the Preview view as the content of our activity.
-                preview?.also {
-                    val preview: FrameLayout = findViewById(R.id.camera_preview)
-                    preview.addView(it)
-                }
+                preview?.also { val preview: FrameLayout = findViewById(R.id.camera_preview)
+                                preview.addView(it) } // Set the Preview view as the content of our activity.
                 picture = Camera.PictureCallback { data, _ ->
                     pictureFile = viewModel.getOutputMediaFile() ?: run {
                         Log.d(TAG, ("Error creating media file, check storage permissions"))
-                        return@PictureCallback
-                    }
-                    cameraHelper.savePicture(pictureFile!!, data)
-                    imageUri = viewModel.getOutputMediaFileUri()
-                    camera?.stopPreview()
-                    tryReloadAndDetectInImage() } } }
+                        return@PictureCallback }
+                cameraHelper.savePicture(pictureFile!!, data)
+                imageUri = viewModel.getOutputMediaFileUri()
+                camera?.stopPreview()
+                tryReloadAndDetectInImage() } } }
     }
 
     /** Setup all event listeners */
@@ -211,12 +204,8 @@ class MainActivity : AppCompatActivity() {
                 landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
                 resultsAdapter.notifyDataSetChanged()
                 tvNoResults.visibility = View.INVISIBLE
-            } else {
-                if (tvNoResults.visibility == View.INVISIBLE)
-                { tvNoResults.visibility = View.VISIBLE }
-            }
-            progressBarHolder.visibility = View.GONE
-        })
+            } else { if (tvNoResults.visibility == View.INVISIBLE) { tvNoResults.visibility = View.VISIBLE } }
+            progressBarHolder.visibility = View.GONE })
 
         viewModel.activeJourney.observe(this, { journey -> if (journey == null)
         { this.currentJourney = null } else { this.currentJourney = journey } })
@@ -226,12 +215,8 @@ class MainActivity : AppCompatActivity() {
         takeImageButton.setOnClickListener {
             tvNoResults.visibility = View.INVISIBLE
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                if (pictureFile == null && imageUri == null) { takePicture() }
-                else { resetPicture() }
-            } else {
-                requestPermissions()
-            }
-        }
+                if (pictureFile == null && imageUri == null) { takePicture() } else { resetPicture() }
+            } else { requestPermissions() } }
 
         getImageButton.setOnClickListener { startChooseImageIntentForResult() }
 
@@ -239,8 +224,7 @@ class MainActivity : AppCompatActivity() {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
                 customTabHelper.startIntent(landmark, this)
-            } else { showDialog() } }
-    }
+            } else { showDialog() } } }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
@@ -320,31 +304,23 @@ class MainActivity : AppCompatActivity() {
 
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
-        try {
-            if (imageUri == null) { progressBarHolder.visibility = View.GONE; return }
-
+      try { if (imageUri == null) { progressBarHolder.visibility = View.GONE; return }
             Log.d("ImageUri", imageUri.toString())
-
             previewOverlay.clear() // Clear the overlay first
             val resizedBitmap: Bitmap? = viewModel.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
                 val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
-
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
-                imageUri = viewModel.getOutputMediaFileUri()
-            }
+                imageUri = viewModel.getOutputMediaFileUri() }
 
             previewPane?.setImageBitmap(resizedBitmap)
             if (isNetworkAvailable()) { // Has internet
-                resizedBitmap?.let {
-                    viewModel.doDetectInBitmap(it, previewOverlay, landmarksList)
-                }
+                resizedBitmap?.let { viewModel.doDetectInBitmap(it, previewOverlay, landmarksList) }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500)
-            }
+                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
             progressBarHolder.visibility = View.GONE }
@@ -352,7 +328,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-
         private const val REQUEST_CODE_CHOOSE_IMAGE = 1002
         private const val PERMISSIONS_REQUEST_CODE = 1
     }
