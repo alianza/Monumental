@@ -3,7 +3,6 @@
 package com.example.monumental.common.helpers
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.hardware.Camera
 import android.util.Log
@@ -13,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.monumental.R
 import java.io.*
 
-class CameraHelper(private val context: Context) {
+class CameraHelper {
 
     fun setParameters (cameraInstance: Camera) {
         val params: Camera.Parameters? = cameraInstance.parameters
@@ -51,11 +50,6 @@ class CameraHelper(private val context: Context) {
         val bos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
         return bos.toByteArray()
-    }
-
-    /** Check if this device has a camera */
-    fun hasCamera(): Boolean {
-        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
     /** A safe way to get an instance of the Camera object. */
