@@ -62,17 +62,17 @@ class MainActivity : AppCompatActivity() {
     private var currentJourney: Journey? = null
 
     val actionDelayVal = 250L
-    private var flashOptionsItem: MenuItem? = null
-    private var journeysOptionsItem: MenuItem? = null
     private var dialog: AlertDialog? = null
 
     lateinit var fragmentHelper: FragmentHelper
+    private lateinit var viewModel: MainViewModel
+    private lateinit var flashOptionsItem: MenuItem
+    private lateinit var journeysOptionsItem: MenuItem
     private lateinit var landmarksList: MutableLiveData<LandmarkResultList>
     private lateinit var cameraHelper: CameraHelper
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var resultsAdapter: ResultsAdapter
-    private lateinit var viewModel: MainViewModel
 
     /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,8 +93,8 @@ class MainActivity : AppCompatActivity() {
     /** Inflate options menu */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.still_image_menu, menu)
-        this.flashOptionsItem = menu?.getItem(0)
-        this.journeysOptionsItem = menu?.getItem(1)
+        this.flashOptionsItem = menu?.getItem(0)!!
+        this.journeysOptionsItem = menu.getItem(1)
         return true
     }
 
@@ -224,7 +224,8 @@ class MainActivity : AppCompatActivity() {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
                 customTabHelper.startIntent(landmark, this)
-            } else { showDialog() } } }
+            } else { showDialog() } }
+    }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
