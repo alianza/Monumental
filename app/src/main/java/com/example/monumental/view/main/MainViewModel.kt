@@ -7,10 +7,10 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.monumental.common.GraphicOverlay
-import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.common.helpers.BitmapHelper
 import com.example.monumental.common.helpers.ImageHelper
 import com.example.monumental.common.helpers.MediaFileHelper
+import com.example.monumental.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.data.room.repository.JourneyRepository
 import com.example.monumental.data.room.repository.LandmarkRepository
 import com.example.monumental.model.Landmark
@@ -24,6 +24,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val landmarkRepository = LandmarkRepository(application.applicationContext)
     private val journeyRepository = JourneyRepository(application.applicationContext)
+    private val imageProcessor = CloudLandmarkRecognitionProcessor()
     private val mediaFileHelper = MediaFileHelper()
     private val bitmapHelper = BitmapHelper()
 
@@ -37,7 +38,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun doDetectInBitmap(imageProcessor: VisionImageProcessor, bitmap: Bitmap, previewOverlay: GraphicOverlay, resultsList: MutableLiveData<LandmarkResultList>) {
+    fun doDetectInBitmap(bitmap: Bitmap, previewOverlay: GraphicOverlay, resultsList: MutableLiveData<LandmarkResultList>) {
         imageProcessor.process(bitmap, previewOverlay, resultsList)
     }
 
@@ -52,4 +53,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun getScaledBitmap(contentResolver: ContentResolver?, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         return bitmapHelper.getScaledBitmap(contentResolver!!, imageUri, imageHelper)
     }
+
+
 }

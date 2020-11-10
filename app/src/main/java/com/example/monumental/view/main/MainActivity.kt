@@ -8,6 +8,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.graphics.Rect
@@ -36,12 +37,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
-import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.common.helpers.CameraHelper
 import com.example.monumental.common.helpers.CustomTabHelper
 import com.example.monumental.common.helpers.FragmentHelper
 import com.example.monumental.common.helpers.ImageHelper
-import com.example.monumental.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import com.example.monumental.model.LandmarkResult
@@ -73,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var resultsAdapter: ResultsAdapter
-    private lateinit var imageProcessor: VisionImageProcessor
+//    private lateinit var imageProcessor: VisionImageProcessor
     private lateinit var viewModel: MainViewModel
 
     /** onCreate method to set layout, theme and initiate the views */
@@ -108,8 +107,7 @@ class MainActivity : AppCompatActivity() {
                 if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                     cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
                 return true
-            }
-            R.id.journeys -> {
+            } R.id.journeys -> {
                 if (fragmentHelper.toggleJourneyFragment()) { // is open
                     camera?.stopPreview()
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
@@ -130,10 +128,7 @@ class MainActivity : AppCompatActivity() {
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     view.clearFocus()
                     val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
-                }
-            }
-        }
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0) } } }
         return super.dispatchTouchEvent(event)
     }
 
@@ -145,8 +140,7 @@ class MainActivity : AppCompatActivity() {
             tvNoResults.visibility = View.GONE
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
-            tryReloadAndDetectInImage()
-        }
+            tryReloadAndDetectInImage() }
     }
 
     /** Request permissions result */
@@ -167,8 +161,8 @@ class MainActivity : AppCompatActivity() {
     private fun instantiateClasses() {
         customTabHelper = CustomTabHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
-        cameraHelper = CameraHelper(this)
-        imageProcessor = CloudLandmarkRecognitionProcessor()
+        cameraHelper = CameraHelper()
+//        imageProcessor = CloudLandmarkRecognitionProcessor()
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
         landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
     }
@@ -190,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     /** Setup the camera */
     private fun setupCamera() {
         if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-            if (cameraHelper.hasCamera()) {
+            if (hasCamera()) {
                 camera = cameraHelper.getCameraInstance()
                 preview = camera?.let { CameraPreview(this, it) }
                 cameraHelper.setParameters(camera!!)
@@ -207,10 +201,7 @@ class MainActivity : AppCompatActivity() {
                     cameraHelper.savePicture(pictureFile!!, data)
                     imageUri = viewModel.getOutputMediaFileUri()
                     camera?.stopPreview()
-                    tryReloadAndDetectInImage()
-                }
-            }
-        }
+                    tryReloadAndDetectInImage() } } }
     }
 
     /** Setup all event listeners */
@@ -250,8 +241,7 @@ class MainActivity : AppCompatActivity() {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
                 customTabHelper.startIntent(landmark, this)
-            } else { showDialog() }
-        }
+            } else { showDialog() } }
     }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
@@ -268,8 +258,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, getString(R.string.no_journeys_present), Toast.LENGTH_LONG).show()
             onOptionsItemSelected(journeysOptionsItem!!)
-            this.dialog?.dismiss()
-        }
+            this.dialog?.dismiss() }
     }
 
     /** Resets the current taken picture */
@@ -292,6 +281,9 @@ class MainActivity : AppCompatActivity() {
         camera?.takePicture(null, null, picture)
         takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
     }
+
+    /** Check if this device has a camera */
+    private fun hasCamera(): Boolean { return this.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) }
 
     /** Displays the Landmark results dialog */
     private fun showDialog() {
@@ -349,7 +341,7 @@ class MainActivity : AppCompatActivity() {
             previewPane?.setImageBitmap(resizedBitmap)
             if (isNetworkAvailable()) { // Has internet
                 resizedBitmap?.let {
-                    viewModel.doDetectInBitmap(imageProcessor, it, previewOverlay, landmarksList)
+                    viewModel.doDetectInBitmap(it, previewOverlay, landmarksList)
                 }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
@@ -357,8 +349,7 @@ class MainActivity : AppCompatActivity() {
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
-            progressBarHolder.visibility = View.GONE
-        }
+            progressBarHolder.visibility = View.GONE }
     }
 
     companion object {
