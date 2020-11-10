@@ -21,9 +21,9 @@
         android:theme="@style/AppTheme.Splash"
         tools:targetApi="q"
         tools:replace="android:allowBackup">
-        <activity android:name=".ui.webView.WebViewActivity" />
+        <activity android:name=".view.webView.WebViewActivity" />
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".view.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">

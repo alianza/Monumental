@@ -9,7 +9,7 @@
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".ui.journey.JourneyFragment">
+    tools:context=".view.journey.JourneyFragment">
 
     <ImageButton
         android:id="@+id/btnClose"
