@@ -38,7 +38,10 @@ import com.example.monumental.cloudlandmarkrecognition.CloudLandmarkRecognitionP
 import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionImageProcessor
-import com.example.monumental.helpers.*
+import com.example.monumental.helpers.CameraHelper
+import com.example.monumental.helpers.CustomTabHelper
+import com.example.monumental.helpers.FragmentHelper
+import com.example.monumental.helpers.ImageHelper
 import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
 import com.example.monumental.model.LandmarkResult
@@ -57,20 +60,18 @@ class MainActivity : AppCompatActivity() {
     private var preview: CameraPreview? = null
     private var imageUri: Uri? = null
     private var picture: Camera.PictureCallback? = null
+    private var currentJourney: Journey? = null
 
     val actionDelayVal = 250L
-    private var currentJourney: Journey? = null
     private var flashOptionsItem: MenuItem? = null
     private var journeysOptionsItem: MenuItem? = null
     private var dialog: AlertDialog? = null
-    private var landmarksList: MutableLiveData<LandmarkResultList> = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
 
     lateinit var fragmentHelper: FragmentHelper
+    private lateinit var landmarksList: MutableLiveData<LandmarkResultList>
     private lateinit var cameraHelper: CameraHelper
-    private lateinit var bitmapHelper: BitmapHelper
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
-    private lateinit var mediaFileHelper: MediaFileHelper
     private lateinit var resultsAdapter: ResultsAdapter
     private lateinit var imageProcessor: VisionImageProcessor
     private lateinit var viewModel: MainViewModel
@@ -170,12 +171,11 @@ class MainActivity : AppCompatActivity() {
     /** Instantiate all classes */
     private fun instantiateClasses() {
         customTabHelper = CustomTabHelper()
-        mediaFileHelper = MediaFileHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
         cameraHelper = CameraHelper(this)
         imageProcessor = CloudLandmarkRecognitionProcessor()
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
-        bitmapHelper = BitmapHelper()
+        landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
     }
 
     /** Request all required permissions */
@@ -205,12 +205,12 @@ class MainActivity : AppCompatActivity() {
                     preview.addView(it)
                 }
                 picture = Camera.PictureCallback { data, _ ->
-                    pictureFile = mediaFileHelper.getOutputMediaFile() ?: run {
+                    pictureFile = viewModel.getOutputMediaFile() ?: run {
                         Log.d(TAG, ("Error creating media file, check storage permissions"))
                         return@PictureCallback
                     }
                     cameraHelper.savePicture(pictureFile!!, data)
-                    imageUri = mediaFileHelper.getOutputMediaFileUri()
+                    imageUri = viewModel.getOutputMediaFileUri()
                     camera?.stopPreview()
                     tryReloadAndDetectInImage()
                 }
@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         previewOverlay.setOnClickListener {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
-                startLandmarkInfoIntent(landmark)
+                customTabHelper.startIntent(landmark, this)
             } else { showDialog() }
         }
     }
@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity() {
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
         val result = landmark.replace(" ", "+")
-        startLandmarkInfoIntent(result)
+        customTabHelper.startIntent(result, this)
     }
 
     /** Callback when clicked on landmark save button in ResultsRecyclerView */
@@ -317,11 +317,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.app_name)
     }
 
-    /** Get landmark info */
-    private fun startLandmarkInfoIntent(result: String) {
-        customTabHelper.startIntent(result, this)
-    }
-
     /** Choose image activity */
     private fun startChooseImageIntentForResult() {
         val intent = Intent()
@@ -346,14 +341,14 @@ class MainActivity : AppCompatActivity() {
             Log.d("ImageUri", imageUri.toString())
 
             previewOverlay.clear() // Clear the overlay first
-            val resizedBitmap: Bitmap? = bitmapHelper.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
+            val resizedBitmap: Bitmap? = viewModel.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
                 val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
 
-                pictureFile = mediaFileHelper.getOutputMediaFile()
+                pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
-                imageUri = mediaFileHelper.getOutputMediaFileUri()
+                imageUri = viewModel.getOutputMediaFileUri()
             }
 
             previewPane?.setImageBitmap(resizedBitmap)
