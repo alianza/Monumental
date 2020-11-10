@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE_IMAGE && resultCode == Activity.RESULT_OK) {
             progressBarHolder.visibility = View.VISIBLE
-            tvNoResults.visibility = View.GONE
+            tvNoResults.visibility = View.INVISIBLE
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage() }
