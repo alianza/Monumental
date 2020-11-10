@@ -8,7 +8,7 @@ import com.example.monumental.model.Journey
 import com.example.monumental.view.journey.JourneyFragment
 import com.example.monumental.view.landmark.LandmarkFragment
 
-class FragmentHelper(private val context: AppCompatActivity) {
+class FragmentHelper(private val activity: AppCompatActivity) {
 
     private var journeyFragmentIsOpen = false
     private var landmarkFragmentIsOpen = false
@@ -17,7 +17,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
     private var landmarkFragment: LandmarkFragment = LandmarkFragment.newInstance()
 
     private fun openJourneyFragment() {
-        context.supportFragmentManager.beginTransaction()
+        activity.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.journey_fragment_container, journeyFragment)
             .commitNow()
@@ -26,7 +26,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
 
     fun closeJourneyFragment(): Boolean {
         if (journeyFragmentIsOpen) {
-            context.supportFragmentManager.beginTransaction()
+            activity.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_FADE)
                 .remove(journeyFragment)
                 .commitNow()
@@ -41,7 +41,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
         arguments.putParcelable("Journey", journey)
 
         landmarkFragment.arguments = arguments
-        context.supportFragmentManager.beginTransaction()
+        activity.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.landmark_fragment_container, landmarkFragment)
             .commitNow()
@@ -50,7 +50,7 @@ class FragmentHelper(private val context: AppCompatActivity) {
 
     fun closeLandmarkFragment(): Boolean {
         if (landmarkFragmentIsOpen) {
-            context.supportFragmentManager.beginTransaction()
+            activity.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_CLOSE)
                 .remove(landmarkFragment)
                 .commitNow()

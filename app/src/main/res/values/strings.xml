@@ -25,7 +25,7 @@
 
     <!--    Journey Fragment    -->
     <string name="no_journeys">No Journeys yet… \n Create a new one…</string>
-    <string name="no_journeys_present">No journeys… Create one!</string>
+    <string name="no_current_journey">No current journey…</string>
     <string name="journeys">My Journeys</string>
     <string name="add_new_journey">Add new Journey</string>
     <string name="delete_journey">Delete Journey</string>

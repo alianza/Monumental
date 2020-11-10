@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         customTabHelper = CustomTabHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
         cameraHelper = CameraHelper()
-        fragmentHelper = FragmentHelper(this as AppCompatActivity)
+        fragmentHelper = FragmentHelper(this)
         landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
     }
 
@@ -236,9 +236,8 @@ class MainActivity : AppCompatActivity() {
     private fun onLandmarkResultSave(landmark: String) {
         if (currentJourney != null) {
             viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
-            Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, getString(R.string.no_journeys_present), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show() }
+     else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
             onOptionsItemSelected(journeysOptionsItem!!)
             this.dialog?.dismiss() }
     }
