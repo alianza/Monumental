@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var resultsAdapter: ResultsAdapter
-//    private lateinit var imageProcessor: VisionImageProcessor
     private lateinit var viewModel: MainViewModel
 
     /** onCreate method to set layout, theme and initiate the views */
@@ -162,7 +161,6 @@ class MainActivity : AppCompatActivity() {
         customTabHelper = CustomTabHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
         cameraHelper = CameraHelper()
-//        imageProcessor = CloudLandmarkRecognitionProcessor()
         fragmentHelper = FragmentHelper(this as AppCompatActivity)
         landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
     }
