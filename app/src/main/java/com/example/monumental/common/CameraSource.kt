@@ -19,9 +19,8 @@ import android.annotation.SuppressLint
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.util.Log
-import android.widget.FrameLayout
-import android.widget.TextView
-import com.example.monumental.ui.main.ResultsAdapter
+import androidx.lifecycle.MutableLiveData
+import com.example.monumental.model.LandmarkResultList
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer
 
@@ -32,9 +31,7 @@ import java.nio.ByteBuffer
  */
 class CameraSource(
     private val graphicOverlay: GraphicOverlay,
-    private val resultsAdapter: ResultsAdapter,
-    private val progressBarHolder: FrameLayout,
-    private val tvNoResults: TextView
+    private val landmarkResultList: MutableLiveData<LandmarkResultList>
 ) {
 
     private var camera: Camera? = null
@@ -152,9 +149,7 @@ class CameraSource(
                                 .setCameraFacing(cameraFacing)
                                 .build(),
                             graphicOverlay,
-                            resultsAdapter,
-                            progressBarHolder,
-                            tvNoResults
+                            landmarkResultList
                         )
                     }
                 } catch (t: Exception) {
