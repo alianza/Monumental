@@ -14,9 +14,8 @@
 package com.example.monumental.common
 
 import android.graphics.Bitmap
-import android.widget.FrameLayout
-import android.widget.TextView
-import com.example.monumental.ui.main.ResultsAdapter
+import androidx.lifecycle.MutableLiveData
+import com.example.monumental.model.LandmarkResultList
 import com.google.firebase.ml.common.FirebaseMLException
 import java.nio.ByteBuffer
 
@@ -28,18 +27,14 @@ interface VisionImageProcessor {
         data: ByteBuffer?,
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     )
 
     /** Processes the bitmap images.  */
     fun process(
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     )
 
     /** Stops the underlying machine learning model and release resources.  */

@@ -29,6 +29,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -40,6 +41,8 @@ import com.example.monumental.common.VisionImageProcessor
 import com.example.monumental.helpers.*
 import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
+import com.example.monumental.model.LandmarkResult
+import com.example.monumental.model.LandmarkResultList
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_results_view.view.*
 import java.io.File
@@ -60,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private var flashOptionsItem: MenuItem? = null
     private var journeysOptionsItem: MenuItem? = null
     private var dialog: AlertDialog? = null
+    private var landmarksList: MutableLiveData<LandmarkResultList> = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
 
     lateinit var fragmentHelper: FragmentHelper
     private lateinit var cameraHelper: CameraHelper
@@ -217,13 +221,26 @@ class MainActivity : AppCompatActivity() {
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
+        landmarksList.observe(this, { landmarkResultList ->
+            if (landmarkResultList.results.isNotEmpty()) {
+                resultsAdapter.clear()
+                landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
+                resultsAdapter.notifyDataSetChanged()
+                tvNoResults.visibility = View.INVISIBLE
+            } else {
+                if (tvNoResults.visibility == View.INVISIBLE)
+                { tvNoResults.visibility = View.VISIBLE }
+            }
+            progressBarHolder.visibility = View.GONE
+        })
+
         viewModel.activeJourney.observe(this, { journey -> if (journey == null)
         { this.currentJourney = null } else { this.currentJourney = journey } })
 
         resultsButton.setOnClickListener { showDialog() }
 
         takeImageButton.setOnClickListener {
-            tvNoResults.visibility = View.GONE
+            tvNoResults.visibility = View.INVISIBLE
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                 if (pictureFile == null && imageUri == null) { takePicture() }
                 else { resetPicture() }
@@ -341,7 +358,9 @@ class MainActivity : AppCompatActivity() {
 
             previewPane?.setImageBitmap(resizedBitmap)
             if (isNetworkAvailable()) { // Has internet
-                resizedBitmap?.let { imageProcessor.process(it, previewOverlay, resultsAdapter, progressBarHolder, tvNoResults) }
+                resizedBitmap?.let {
+                    viewModel.doDetectInBitmap(imageProcessor, it, previewOverlay, landmarksList!!)
+                }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
                 Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500)

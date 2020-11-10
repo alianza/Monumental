@@ -2,13 +2,12 @@ package com.example.monumental.cloudlandmarkrecognition
 
 import android.graphics.Bitmap
 import android.util.Log
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import com.example.monumental.common.FrameMetadata
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.VisionProcessorBase
-import com.example.monumental.ui.main.ResultsAdapter
+import com.example.monumental.model.LandmarkResult
+import com.example.monumental.model.LandmarkResultList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions
@@ -41,15 +40,13 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         // Gather distinct results
         val distinctResults = results.distinctBy { result -> result.landmark }
         graphicOverlay.clear()
         Log.d(TAG, "cloud landmark size: ${results.size}")
-        val resultNames: MutableList<String> = ArrayList()
+        val resultNames: MutableList<LandmarkResult> = ArrayList()
 
         for (distinctResult in distinctResults) {
             Log.d(TAG, "Landmark: ${distinctResult.landmark}")
@@ -59,28 +56,22 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         distinctResults.forEach {
             val cloudLandmarkGraphic = object : CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
-            resultNames.add(it.landmark)
+            resultNames.add(LandmarkResult(it.landmark))
         }
         graphicOverlay.postInvalidate()
 
-        // Print first result
         try {
             println("First result: ${results.first().landmark}")
         } catch (e: NoSuchElementException) {
-            tvNoResults.visibility = View.VISIBLE
+            resultsList.postValue(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
             println("Empty landmark list $e")
         }
-
-        // Clear results spinner, add results and notify adapter of changed data
-        resultsAdapter.clear()
-        resultsAdapter.landmarks = ArrayList(resultNames)
-        resultsAdapter.notifyDataSetChanged()
-        progressBarHolder.visibility = View.GONE
+        resultsList.postValue(LandmarkResultList(resultNames))
     }
 
     /** Cloud Landmark Detector onFailure callback */
-    override fun onFailure(e: Exception, progressBarHolder: FrameLayout) {
-        progressBarHolder.visibility = View.GONE
+    override fun onFailure(e: Exception, resultsList: MutableLiveData<LandmarkResultList>) {
+        resultsList.postValue(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
         Log.e(TAG, "Cloud Landmark detection failed $e")
     }
 

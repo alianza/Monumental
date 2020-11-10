@@ -1,10 +1,9 @@
 package com.example.monumental.common
 
 import android.graphics.Bitmap
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.GuardedBy
-import com.example.monumental.ui.main.ResultsAdapter
+import androidx.lifecycle.MutableLiveData
+import com.example.monumental.model.LandmarkResultList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -39,15 +38,13 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer?,
         frameMetadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay?,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         latestImage = data
         latestImageMetaData = frameMetadata
         if (processingImage == null && processingMetaData == null) {
             if (graphicOverlay != null) {
-                processLatestImage(graphicOverlay, resultsAdapter, progressBarHolder, tvNoResults)
+                processLatestImage(graphicOverlay, resultsList)
             }
         }
     }
@@ -56,9 +53,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     override fun process(
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         if (graphicOverlay != null) {
             detectInVisionImage(
@@ -66,9 +61,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                 FirebaseVisionImage.fromBitmap(bitmap!!),
                 null,
                 graphicOverlay,
-                resultsAdapter,
-                progressBarHolder,
-                tvNoResults
+                resultsList
             )
         }
     }
@@ -76,9 +69,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     @Synchronized
     private fun processLatestImage(
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         processingImage = latestImage
         processingMetaData = latestImageMetaData
@@ -89,9 +80,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                 processingImage!!,
                 processingMetaData!!,
                 graphicOverlay,
-                resultsAdapter,
-                progressBarHolder,
-                tvNoResults
+                resultsList
             )
         }
     }
@@ -100,9 +89,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         data: ByteBuffer,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
@@ -117,9 +104,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
             FirebaseVisionImage.fromByteBuffer(data, metadata),
             frameMetadata,
             graphicOverlay,
-            resultsAdapter,
-            progressBarHolder,
-            tvNoResults
+            resultsList
         )
     }
 
@@ -128,9 +113,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         image: FirebaseVisionImage,
         metadata: FrameMetadata?,
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     ) {
         detectInImage(image)
             .addOnSuccessListener { results ->
@@ -142,12 +125,10 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
                     results,
                     notNullMetadata,
                     graphicOverlay,
-                    resultsAdapter,
-                    progressBarHolder,
-                    tvNoResults
+                    resultsList
                 )
             }
-            .addOnFailureListener { e -> onFailure(e, progressBarHolder) }
+            .addOnFailureListener { e -> onFailure(e, resultsList) }
     }
 
     override fun stop() {}
@@ -165,20 +146,16 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         results: T,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     )
 
-    protected abstract fun onFailure(e: Exception, progressBarHolder: FrameLayout)
+    protected abstract fun onFailure(e: Exception, resultsList: MutableLiveData<LandmarkResultList>)
 
     abstract fun onSuccess(
         originalCameraImage: Bitmap?,
         results: List<FirebaseVisionCloudLandmark>,
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay,
-        resultsAdapter: ResultsAdapter,
-        progressBarHolder: FrameLayout,
-        tvNoResults: TextView
+        resultsList: MutableLiveData<LandmarkResultList>
     )
 }
