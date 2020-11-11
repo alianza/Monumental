@@ -239,7 +239,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
             Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show() }
      else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
-            onOptionsItemSelected(journeysOptionsItem!!)
+            onOptionsItemSelected(journeysOptionsItem)
             this.dialog?.dismiss() }
     }
 

@@ -56,5 +56,4 @@ class FrameMetadata private constructor(
             )
         }
     }
-
 }

@@ -25,11 +25,9 @@ class JourneyFragment : Fragment() {
     companion object { fun newInstance() = JourneyFragment() }
 
     private var actionDelayVal: Long = 0
-
     private var journeys = arrayListOf<Journey>()
 
     private lateinit var viewModel: JourneyViewModel
-
     private lateinit var journeyAdapter: JourneyAdapter
 
     private val mainScope = CoroutineScope(Dispatchers.Main)
@@ -100,7 +98,8 @@ class JourneyFragment : Fragment() {
         builder.setPositiveButton("Yes") { dialog, _ ->
             println("Delete!")
             viewModel.deleteJourney(journey)
-            dialog.dismiss() }
+            dialog.dismiss()
+        }
 
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
 

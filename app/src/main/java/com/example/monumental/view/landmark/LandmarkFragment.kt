@@ -22,9 +22,8 @@ class LandmarkFragment : Fragment() {
 
     companion object { fun newInstance() = LandmarkFragment() }
 
-    private lateinit var viewModel: LandmarkViewModel
-
     private var actionDelayVal: Long = 0
+    private lateinit var viewModel: LandmarkViewModel
 
     private var landmarks = arrayListOf<Landmark>()
 
@@ -32,7 +31,8 @@ class LandmarkFragment : Fragment() {
     private lateinit var journey: Journey
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.landmark_fragment, container, false)
@@ -105,7 +105,6 @@ class LandmarkFragment : Fragment() {
         }
     }
 
-
     private fun landmarkDelete(landmark: Landmark) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
@@ -116,7 +115,8 @@ class LandmarkFragment : Fragment() {
             Handler().postDelayed({
                 viewModel.deleteLandmark(landmark)
                 dialog.dismiss()
-            }, actionDelayVal) }
+            }, actionDelayVal)
+        }
 
         builder.setNegativeButton("No", null)
 

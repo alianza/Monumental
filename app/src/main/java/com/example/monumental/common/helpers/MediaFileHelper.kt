@@ -40,5 +40,4 @@ class MediaFileHelper {
             SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
         return File("${mediaStorageDir.path}${File.separator}IMG_$timeStamp.jpg")
     }
-
 }
