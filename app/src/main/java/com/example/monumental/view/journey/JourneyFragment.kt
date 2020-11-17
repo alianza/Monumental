@@ -85,7 +85,7 @@ class JourneyFragment : Fragment() {
     private fun journeyClick(journey: Journey) {
         println("Click! " + journey.name)
         Handler().postDelayed({
-            (activity as MainActivity?)?.fragmentHelper?.openLandmarkFragment(journey)
+            (activity as MainActivity?)?.fragmentManager?.openLandmarkFragment(journey)
         }, actionDelayVal)
     }
 
@@ -121,6 +121,6 @@ class JourneyFragment : Fragment() {
     }
 
     private fun closeFragment() {
-        (activity as MainActivity?)?.fragmentHelper?.closeJourneyFragment()
+        (activity as MainActivity?)?.fragmentManager?.closeJourneyFragment()
     }
 }

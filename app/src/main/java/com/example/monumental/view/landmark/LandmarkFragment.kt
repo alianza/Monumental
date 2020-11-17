@@ -133,7 +133,7 @@ class LandmarkFragment : Fragment() {
     private fun closeFragment() {
         btnClose.isPressed = true
         Handler().postDelayed({
-            (activity as MainActivity?)?.fragmentHelper?.closeLandmarkFragment()
+            (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
         }, actionDelayVal)
     }
 }

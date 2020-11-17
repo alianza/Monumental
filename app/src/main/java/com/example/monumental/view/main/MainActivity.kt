@@ -39,7 +39,7 @@ import com.example.monumental.common.CameraPreview
 import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.common.helpers.CameraHelper
 import com.example.monumental.common.helpers.CustomTabHelper
-import com.example.monumental.common.helpers.FragmentHelper
+import com.example.monumental.common.helpers.FragmentManager
 import com.example.monumental.common.helpers.ImageHelper
 import com.example.monumental.model.Journey
 import com.example.monumental.model.Landmark
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     val actionDelayVal = 250L
     private var dialog: AlertDialog? = null
 
-    lateinit var fragmentHelper: FragmentHelper
+    lateinit var fragmentManager: FragmentManager
     private lateinit var viewModel: MainViewModel
     private lateinit var flashOptionsItem: MenuItem
     private lateinit var journeysOptionsItem: MenuItem
@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
 
     /** Catch back press event */
     override fun onBackPressed() {
-        if (fragmentHelper.closeLandmarkFragment()) { return }
-        if (fragmentHelper.closeJourneyFragment()) { resetViews(); return }
+        if (fragmentManager.closeLandmarkFragment()) { return }
+        if (fragmentManager.closeJourneyFragment()) { resetViews(); return }
         super.onBackPressed()
     }
 
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                     cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
                 return true }
             R.id.journeys -> {
-                if (fragmentHelper.toggleJourneyFragment()) { // is open
+                if (fragmentManager.toggleJourneyFragment()) { // is open
                     camera?.stopPreview()
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
                 } else { resetViews() } // is closed
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         customTabHelper = CustomTabHelper()
         imageHelper = ImageHelper(previewPane, controlPanel)
         cameraHelper = CameraHelper()
-        fragmentHelper = FragmentHelper(this)
+        fragmentManager = FragmentManager(this)
         landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
     }
 
