@@ -35,8 +35,7 @@ class CustomTabHelper {
             context.startActivity(intentOpenUri)
             (context as Activity).overridePendingTransition(
                 R.anim.anim_slide_in_left,
-                R.anim.anim_slide_out_left
-            )
+                R.anim.anim_slide_out_left)
         } else {
             // Open chrome custom tab
             val customTabsIntent = build(context)
@@ -56,11 +55,7 @@ class CustomTabHelper {
 
         // modify back button icon
         builder.setCloseButtonIcon(
-            BitmapFactory.decodeResource(
-                context.resources,
-                R.drawable.baseline_arrow_back_black_24dp
-            )
-        )
+            BitmapFactory.decodeResource(context.resources, R.drawable.baseline_arrow_back_black_24dp))
 
         // show website title
         builder.setShowTitle(true)

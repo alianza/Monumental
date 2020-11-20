@@ -20,6 +20,7 @@ import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.monumental.data.cloudlandmarkrecognition.VisionImageProcessor
 import com.example.monumental.model.LandmarkResultList
 import com.google.android.gms.common.images.Size
 import java.nio.ByteBuffer

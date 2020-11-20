@@ -11,10 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.example.monumental.common
+package com.example.monumental.data.cloudlandmarkrecognition
 
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
+import com.example.monumental.common.FrameMetadata
+import com.example.monumental.common.GraphicOverlay
 import com.example.monumental.model.LandmarkResultList
 import com.google.firebase.ml.common.FirebaseMLException
 import java.nio.ByteBuffer

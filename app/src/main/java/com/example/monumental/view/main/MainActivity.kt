@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.activeJourney.observe(this, { journey -> if (journey == null)
         { this.currentJourney = null } else { this.currentJourney = journey } })
 
-        resultsButton.setOnClickListener { showDialog() }
+        resultsButton.setOnClickListener { showResultsDialog() }
 
         takeImageButton.setOnClickListener {
             tvNoResults.visibility = View.INVISIBLE
@@ -224,12 +224,12 @@ class MainActivity : AppCompatActivity() {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
                 customTabHelper.startIntent(landmark, this)
-            } else { showDialog() } }
+            } else { showResultsDialog() } }
     }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
-        val result = landmark.replace(" ", "+")
+        val result = landmark.replace(" ", "+") // TODO Move string replace to data
         customTabHelper.startIntent(result, this)
     }
 
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() {
     private fun hasCamera(): Boolean { return this.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) }
 
     /** Displays the Landmark results dialog */
-    private fun showDialog() {
+    private fun showResultsDialog() {
         val dialog = AlertDialog.Builder(this)
         val view = layoutInflater.inflate(R.layout.dialog_results_view, null)
         view.rvResults.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
@@ -321,7 +321,8 @@ class MainActivity : AppCompatActivity() {
                 resizedBitmap?.let { viewModel.doDetectInBitmap(it, previewOverlay, landmarksList) }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500) }
+                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
+            2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
             progressBarHolder.visibility = View.GONE }
