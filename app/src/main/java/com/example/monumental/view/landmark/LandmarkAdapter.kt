@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.monumental.R
-import com.example.monumental.model.Landmark
+import com.example.monumental.model.entity.Landmark
 import kotlinx.android.synthetic.main.landmark_item.view.*
 
 class LandmarkAdapter(

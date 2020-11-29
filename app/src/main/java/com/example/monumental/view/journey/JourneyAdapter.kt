@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.monumental.R
-import com.example.monumental.model.Journey
+import com.example.monumental.model.entity.Journey
 import kotlinx.android.synthetic.main.journey_item.view.*
 
 

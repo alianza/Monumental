@@ -12,8 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
-import com.example.monumental.model.Journey
+import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.main.MainActivity
+import com.example.monumental.viewModel.journey.JourneyViewModel
 import kotlinx.android.synthetic.main.journey_fragment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
