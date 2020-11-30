@@ -42,5 +42,6 @@
     <string name="current_journey">Current journey</string>
     <string name="landmark_image">Landmark image</string>
     <string name="set_current_journey">Set %1$s as current journey</string>
+    <string name="visited_on">Visited on:</string>
 
 </resources>

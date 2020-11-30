@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.view.landmark
 
 import android.app.AlertDialog
@@ -6,18 +8,22 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
 import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.landmark.LandmarkViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.landmark_fragment.*
-
+import java.io.File
+import java.net.URI
 
 class LandmarkFragment : Fragment() {
 
@@ -30,6 +36,9 @@ class LandmarkFragment : Fragment() {
 
     private lateinit var landmarkAdapter: LandmarkAdapter
     private lateinit var journey: Journey
+
+    private val MONTH_OFFSET = 1
+    private val YEAR_OFFSET = 1900
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -128,7 +137,30 @@ class LandmarkFragment : Fragment() {
     }
 
     private fun landmarkClick(landmark: Landmark) {
-        println("Click on: $landmark")
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+
+        builder.setTitle(landmark.name)
+
+        builder.setNegativeButton("Close", null)
+
+        builder.setMessage(getString(R.string.visited_on) + " " + getString(R.string.date_format,
+            landmark.date?.date.toString(),
+            (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
+            (landmark.date?.year?.plus(YEAR_OFFSET)).toString()))
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_landmark_view, null)
+
+        val imageView = dialogView.findViewById<ImageView>(R.id.ivLandmark).also {
+            it.setOnTouchListener(ImageMatrixTouchHandler(view?.context))
+        }
+
+        println("Landmark " + landmark.img_uri)
+
+        Picasso.get().load(File(URI.create(landmark.img_uri))).into(imageView)
+
+        builder.setView(dialogView)
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
     }
 
     private fun closeFragment() {
