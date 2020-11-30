@@ -1,4 +1,4 @@
-package com.example.monumental.view.landmark
+package com.example.monumental.view.landmarks
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,12 +9,12 @@ import com.example.monumental.R
 import com.example.monumental.model.entity.Landmark
 import kotlinx.android.synthetic.main.landmark_item.view.*
 
-class LandmarkAdapter(
+class LandmarksAdapter(
     var landmarks: ArrayList<Landmark>,
     private val onLandmarkClick: (Landmark) -> Unit,
     private val onLandmarkDelete: (Landmark) -> Unit
 ):
-    RecyclerView.Adapter<LandmarkAdapter.ViewHolder>() {
+    RecyclerView.Adapter<LandmarksAdapter.ViewHolder>() {
 
     private lateinit var context: Context
 

@@ -1,7 +1,8 @@
-package com.example.monumental.view.journey
+package com.example.monumental.view.journeys
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +15,14 @@ import com.example.monumental.model.entity.Journey
 import kotlinx.android.synthetic.main.journey_item.view.*
 
 
-class JourneyAdapter(
+class JourneysAdapter(
     var journeys: ArrayList<Journey>,
     val actionDelayVal: Long,
     private val onJourneyClick: (Journey) -> Unit,
     private val onJourneyDelete: (Journey) -> Unit,
     private val onJourneyEdit: (String, Journey) -> Unit
 ):
-    RecyclerView.Adapter<JourneyAdapter.ViewHolder>() {
+    RecyclerView.Adapter<JourneysAdapter.ViewHolder>() {
 
     private lateinit var context: Context
 
@@ -57,15 +58,17 @@ class JourneyAdapter(
                 }
             })
 
-            itemView.ivEdit.setOnClickListener { Handler().postDelayed(
-                { editJourney(itemView) },
-                actionDelayVal
-            ) }
+            itemView.ivEdit.setOnClickListener {
+                Handler(Looper.getMainLooper()).postDelayed({
+                        editJourney(itemView)
+                }, actionDelayVal)
+            }
 
-            itemView.ivDone.setOnClickListener { Handler().postDelayed(
-                { updateJourney(itemView) },
-                actionDelayVal
-            ) }
+            itemView.ivDone.setOnClickListener {
+                Handler(Looper.getMainLooper()).postDelayed({
+                        updateJourney(itemView)
+                }, actionDelayVal)
+            }
         }
 
         fun bind(journey: Journey) {

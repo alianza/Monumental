@@ -1,10 +1,9 @@
-@file:Suppress("DEPRECATION")
-
-package com.example.monumental.view.landmark
+package com.example.monumental.view.landmarks
 
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,22 +18,23 @@ import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
 import com.example.monumental.view.main.MainActivity
-import com.example.monumental.viewModel.landmark.LandmarkViewModel
+import com.example.monumental.viewModel.landmark.LandmarksViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.landmark_fragment.*
 import java.io.File
 import java.net.URI
 
-class LandmarkFragment : Fragment() {
 
-    companion object { fun newInstance() = LandmarkFragment() }
+class LandmarksFragment : Fragment() {
+
+    companion object { fun newInstance() = LandmarksFragment() }
 
     private var actionDelayVal: Long = 0
-    private lateinit var viewModel: LandmarkViewModel
+    private lateinit var viewModel: LandmarksViewModel
 
     private var landmarks = arrayListOf<Landmark>()
 
-    private lateinit var landmarkAdapter: LandmarkAdapter
+    private lateinit var landmarksAdapter: LandmarksAdapter
     private lateinit var journey: Journey
 
     private val MONTH_OFFSET = 1
@@ -50,7 +50,7 @@ class LandmarkFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LandmarkViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(LandmarksViewModel::class.java)
         actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
         journey = this.arguments?.getParcelable("Journey")!!
@@ -61,12 +61,12 @@ class LandmarkFragment : Fragment() {
     }
 
     private fun initViews() {
-        landmarkAdapter = LandmarkAdapter(landmarks,
+        landmarksAdapter = LandmarksAdapter(landmarks,
             { landmark: Landmark -> landmarkClick(landmark) },
             { landmark: Landmark -> landmarkDelete(landmark) })
 
         rvLandmarks.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
-        rvLandmarks.adapter = landmarkAdapter
+        rvLandmarks.adapter = landmarksAdapter
 
         viewModel.getLandmarksByJourney(journey.id!!).observe(viewLifecycleOwner, { landmarks ->
             if (landmarks != null) {
@@ -76,7 +76,7 @@ class LandmarkFragment : Fragment() {
                 }
             }
             this.landmarks.sortByDescending { it.id }
-            landmarkAdapter.notifyDataSetChanged()
+            landmarksAdapter.notifyDataSetChanged()
             if (this.landmarks.isEmpty()) {
                 tvNoLandmarks.visibility = View.VISIBLE
             } else {
@@ -122,7 +122,7 @@ class LandmarkFragment : Fragment() {
         builder.setMessage("Are you sure?")
 
         builder.setPositiveButton("Yes") { dialog, _ ->
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 viewModel.deleteLandmark(landmark)
                 dialog.dismiss()
             }, actionDelayVal)
@@ -131,11 +131,12 @@ class LandmarkFragment : Fragment() {
         builder.setNegativeButton("No", null)
 
         val alert: AlertDialog = builder.create()
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             alert.show()
         }, actionDelayVal)
     }
 
+    @Suppress("DEPRECATION")
     private fun landmarkClick(landmark: Landmark) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
@@ -143,10 +144,14 @@ class LandmarkFragment : Fragment() {
 
         builder.setNegativeButton("Close", null)
 
-        builder.setMessage(getString(R.string.visited_on) + " " + getString(R.string.date_format,
-            landmark.date?.date.toString(),
-            (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
-            (landmark.date?.year?.plus(YEAR_OFFSET)).toString()))
+        builder.setMessage(
+            getString(R.string.visited_on) + " " + getString(
+                R.string.date_format,
+                landmark.date?.date.toString(),
+                (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
+                (landmark.date?.year?.plus(YEAR_OFFSET)).toString()
+            )
+        )
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_landmark_view, null)
 
@@ -165,7 +170,7 @@ class LandmarkFragment : Fragment() {
 
     private fun closeFragment() {
         btnClose.isPressed = true
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
         }, actionDelayVal)
     }

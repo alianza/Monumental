@@ -1,25 +1,25 @@
-package com.example.monumental.view.common.helpers
+package com.example.monumental.view.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction.*
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
-import com.example.monumental.view.journey.JourneyFragment
-import com.example.monumental.view.landmark.LandmarkFragment
+import com.example.monumental.view.journeys.JourneysFragment
+import com.example.monumental.view.landmarks.LandmarksFragment
 
 class FragmentManager(private val activity: AppCompatActivity) {
 
     private var journeyFragmentIsOpen = false
     private var landmarkFragmentIsOpen = false
 
-    private val journeyFragment: JourneyFragment = JourneyFragment.newInstance()
-    private var landmarkFragment: LandmarkFragment = LandmarkFragment.newInstance()
+    private val journeysFragment: JourneysFragment = JourneysFragment.newInstance()
+    private var landmarksFragment: LandmarksFragment = LandmarksFragment.newInstance()
 
     private fun openJourneyFragment() {
         activity.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.journey_fragment_container, journeyFragment)
+            .replace(R.id.journey_fragment_container, journeysFragment)
             .commitNow()
         journeyFragmentIsOpen = true
     }
@@ -28,7 +28,7 @@ class FragmentManager(private val activity: AppCompatActivity) {
         if (journeyFragmentIsOpen) {
             activity.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_FADE)
-                .remove(journeyFragment)
+                .remove(journeysFragment)
                 .commitNow()
             this.journeyFragmentIsOpen = false
             return true
@@ -40,10 +40,10 @@ class FragmentManager(private val activity: AppCompatActivity) {
         val arguments = Bundle()
         arguments.putParcelable("Journey", journey)
 
-        landmarkFragment.arguments = arguments
+        landmarksFragment.arguments = arguments
         activity.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.landmark_fragment_container, landmarkFragment)
+            .replace(R.id.landmark_fragment_container, landmarksFragment)
             .commitNow()
         landmarkFragmentIsOpen = true
     }
@@ -52,10 +52,10 @@ class FragmentManager(private val activity: AppCompatActivity) {
         if (landmarkFragmentIsOpen) {
             activity.supportFragmentManager.beginTransaction()
                 .setTransition(TRANSIT_FRAGMENT_CLOSE)
-                .remove(landmarkFragment)
+                .remove(landmarksFragment)
                 .commitNow()
             landmarkFragmentIsOpen = false
-            landmarkFragment = LandmarkFragment.newInstance() // Refresh instance
+            landmarksFragment = LandmarksFragment.newInstance() // Refresh instance
             return true
         }
         return false

@@ -18,6 +18,7 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
@@ -40,10 +41,10 @@ import com.example.monumental.model.entity.Landmark
 import com.example.monumental.model.entity.LandmarkResult
 import com.example.monumental.model.entity.LandmarkResultList
 import com.example.monumental.view.common.CameraPreview
+import com.example.monumental.view.common.FragmentManager
 import com.example.monumental.view.common.GraphicOverlay
 import com.example.monumental.view.common.helpers.CameraHelper
 import com.example.monumental.view.common.helpers.CustomTabHelper
-import com.example.monumental.view.common.helpers.FragmentManager
 import com.example.monumental.view.common.helpers.ImageHelper
 import com.example.monumental.viewModel.main.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -321,7 +322,7 @@ class MainActivity : AppCompatActivity() {
                 resizedBitmap?.let { viewModel.doDetectInBitmap(it, previewOverlay, landmarksList) }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
+                Handler(Looper.getMainLooper()).postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
             2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
