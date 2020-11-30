@@ -7,6 +7,7 @@ import com.example.monumental.model.entity.Journey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class JourneyViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,8 +23,8 @@ class JourneyViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    suspend fun createJourney(): Long {
-        return journeyRepository.insertJourney(Journey(null,"New Journey!"))
+    fun createJourney(): Long = runBlocking {
+        return@runBlocking journeyRepository.insertJourney(Journey(null,"New Journey!"))
     }
 
     fun updateJourney(journey: Journey) {
