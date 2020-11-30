@@ -62,14 +62,14 @@ class MainActivity : AppCompatActivity() {
     private var picture: Camera.PictureCallback? = null
     private var currentJourney: Journey? = null
 
-    val actionDelayVal = 250L
-    private var dialog: AlertDialog? = null
+    val actionDelayVal = 250L // Delay Value for delaying user interactions so animations can finish
+    private var dialog: AlertDialog? = null // Variable to reference the results dialog
 
-    lateinit var fragmentManager: FragmentManager
-    private lateinit var viewModel: MainViewModel
     private lateinit var flashOptionsItem: MenuItem
     private lateinit var journeysOptionsItem: MenuItem
     private lateinit var landmarksList: MutableLiveData<LandmarkResultList>
+    private lateinit var viewModel: MainViewModel
+            lateinit var fragmentManager: FragmentManager
     private lateinit var cameraHelper: CameraHelper
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
@@ -184,8 +184,7 @@ class MainActivity : AppCompatActivity() {
                 camera = cameraHelper.getCameraInstance()
                 preview = camera?.let { CameraPreview(this, it) }
                 cameraHelper.setParameters(camera!!)
-                preview?.also { val preview: FrameLayout = findViewById(R.id.camera_preview)
-                                preview.addView(it) } // Set the Preview view as the content of our activity.
+                preview?.also { val preview: FrameLayout = findViewById(R.id.camera_preview); preview.addView(it) } // Set the Preview view as the content of the activity
                 picture = Camera.PictureCallback { data, _ ->
                     pictureFile = viewModel.getOutputMediaFile() ?: run {
                         Log.d(TAG, ("Error creating media file, check storage permissions"))
@@ -199,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        landmarksList.observe(this, { landmarkResultList ->
+        landmarksList.observe(this, { landmarkResultList -> // Listener for landmark results
             if (landmarkResultList.results.isNotEmpty()) {
                 resultsAdapter.clear()
                 landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
@@ -208,20 +207,20 @@ class MainActivity : AppCompatActivity() {
             } else { if (tvNoResults.visibility == View.INVISIBLE) { tvNoResults.visibility = View.VISIBLE } }
             progressBarHolder.visibility = View.GONE })
 
-        viewModel.activeJourney.observe(this, { journey -> if (journey == null)
+        viewModel.activeJourney.observe(this, { journey -> if (journey == null) // Listener for current active Journey
         { this.currentJourney = null } else { this.currentJourney = journey } })
 
-        resultsButton.setOnClickListener { showResultsDialog() }
+        resultsButton.setOnClickListener { showResultsDialog() } // Listener for resultsButton onclick
 
-        takeImageButton.setOnClickListener {
+        takeImageButton.setOnClickListener { // Listener for the takeImageButton
             tvNoResults.visibility = View.INVISIBLE
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                 if (pictureFile == null && imageUri == null) { takePicture() } else { resetPicture() }
             } else { requestPermissions() } }
 
-        getImageButton.setOnClickListener { startChooseImageIntentForResult() }
+        getImageButton.setOnClickListener { startChooseImageIntentForResult() } // Listener for get image from local storage button
 
-        previewOverlay.setOnClickListener {
+        previewOverlay.setOnClickListener { // Listener for the entire image previews
             if (resultsAdapter.itemCount == 1) {
                 val landmark = resultsAdapter.getItem(0).toString()
                 customTabHelper.startIntent(landmark, this)
