@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.main.MainActivity
-import com.example.monumental.viewModel.journey.JourneysViewModel
+import com.example.monumental.viewmodel.journey.JourneysViewModel
 import kotlinx.android.synthetic.main.journey_fragment.*
 
 

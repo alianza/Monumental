@@ -1,30 +1,36 @@
-package com.example.monumental.viewModel.landmark
+package com.example.monumental.viewmodel.journey
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import com.example.monumental.model.data.room.repository.JourneyRepository
-import com.example.monumental.model.data.room.repository.LandmarkRepository
 import com.example.monumental.model.entity.Journey
-import com.example.monumental.model.entity.Landmark
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class LandmarksViewModel(application: Application) : AndroidViewModel(application) {
-    private val landmarkRepository = LandmarkRepository(application.applicationContext)
+class JourneysViewModel(application: Application) : AndroidViewModel(application) {
+
     private val journeyRepository = JourneyRepository(application.applicationContext)
+
+    var journeys = journeyRepository.getJourneys()
 
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
-    fun deleteLandmark(landmark: Landmark) {
+    fun deleteJourney(journey: Journey) {
         mainScope.launch {
-            landmarkRepository.deleteLandmark(landmark)
+            journeyRepository.deleteJourney(journey)
         }
     }
 
-    fun getLandmarksByJourney(journeyId: Int): LiveData<List<Landmark>?> {
-        return landmarkRepository.getLandmarksByJourney(journeyId)
+    fun createJourney(): Long = runBlocking {
+        return@runBlocking journeyRepository.insertJourney(Journey(null,"New Journey!"))
+    }
+
+    fun updateJourney(journey: Journey) {
+        mainScope.launch {
+            journeyRepository.updateJourney(journey)
+        }
     }
 
     fun setActiveJourney(journey: Journey) {

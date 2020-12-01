@@ -1,4 +1,4 @@
-package com.example.monumental.viewModel.main
+package com.example.monumental.viewmodel.main
 
 import android.app.Application
 import android.content.ContentResolver
