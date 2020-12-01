@@ -1,4 +1,4 @@
-package com.example.monumental.model.data.room.typeconverters
+package com.example.monumental.model.data.room.typeConverters
 
 import androidx.room.TypeConverter
 import java.util.*

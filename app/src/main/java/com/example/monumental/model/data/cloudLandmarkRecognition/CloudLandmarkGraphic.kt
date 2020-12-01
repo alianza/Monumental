@@ -1,4 +1,4 @@
-package com.example.monumental.model.data.cloudlandmarkrecognition
+package com.example.monumental.model.data.cloudLandmarkRecognition
 
 import android.graphics.Canvas
 import android.graphics.Color

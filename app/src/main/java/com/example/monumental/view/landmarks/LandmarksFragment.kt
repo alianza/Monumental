@@ -18,7 +18,7 @@ import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
 import com.example.monumental.view.main.MainActivity
-import com.example.monumental.viewmodel.landmark.LandmarksViewModel
+import com.example.monumental.viewModel.landmark.LandmarksViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.landmark_fragment.*
 import java.io.File

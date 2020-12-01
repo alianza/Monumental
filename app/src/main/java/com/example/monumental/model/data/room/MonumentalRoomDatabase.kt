@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.monumental.model.data.room.dao.JourneyDao
 import com.example.monumental.model.data.room.dao.LandmarkDao
-import com.example.monumental.model.data.room.typeconverters.DateConverter
+import com.example.monumental.model.data.room.typeConverters.DateConverter
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
 

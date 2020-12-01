@@ -1,4 +1,4 @@
-package com.example.monumental.viewmodel.main
+package com.example.monumental.viewModel.main
 
 import android.app.Application
 import android.content.ContentResolver
@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor
+import com.example.monumental.model.data.cloudLandmarkRecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.model.data.room.repository.JourneyRepository
 import com.example.monumental.model.data.room.repository.LandmarkRepository
 import com.example.monumental.model.entity.Landmark

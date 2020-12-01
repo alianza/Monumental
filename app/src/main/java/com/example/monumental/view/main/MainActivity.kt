@@ -46,7 +46,7 @@ import com.example.monumental.view.common.GraphicOverlay
 import com.example.monumental.view.common.helpers.CameraHelper
 import com.example.monumental.view.common.helpers.CustomTabHelper
 import com.example.monumental.view.common.helpers.ImageHelper
-import com.example.monumental.viewmodel.main.MainViewModel
+import com.example.monumental.viewModel.main.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_results_view.view.*
 import java.io.File

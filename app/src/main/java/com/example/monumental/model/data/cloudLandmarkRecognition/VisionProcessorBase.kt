@@ -1,4 +1,4 @@
-package com.example.monumental.model.data.cloudlandmarkrecognition
+package com.example.monumental.model.data.cloudLandmarkRecognition
 
 import android.graphics.Bitmap
 import androidx.annotation.GuardedBy
