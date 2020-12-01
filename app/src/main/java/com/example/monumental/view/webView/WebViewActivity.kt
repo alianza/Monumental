@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.monumental.R
 import kotlinx.android.synthetic.main.activity_webview.*
 
-class WebViewActivity : AppCompatActivity() {
+open class WebViewActivity : AppCompatActivity() {
 
     companion object {
         const val URL = "URL"

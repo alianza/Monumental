@@ -42,7 +42,7 @@ import java.util.*
  * coordinate from the preview's coordinate system to the view coordinate system.
  *
  */
-class GraphicOverlay(
+open class GraphicOverlay(
     context: Context?,
     attrs: AttributeSet?
 ) :

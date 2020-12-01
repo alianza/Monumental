@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.example.monumental</OriginalElement>
+  <nodes>
+    <node x="576.0" y="3401.5">com.example.monumental.view.main.ResultsAdapter.ViewHolder</node>
+    <node x="3476.5" y="3382.0">com.example.monumental.view.common.FragmentManager</node>
+    <node x="2262.5" y="3939.0">com.example.monumental.view.common.BitmapUtils</node>
+    <node x="2443.0" y="2865.0">com.example.monumental.view.landmarks.LandmarksFragment</node>
+    <node x="-30.5" y="2986.0">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor</node>
+    <node x="308.0" y="2853.0">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor.Companion</node>
+    <node x="2822.0" y="3044.0">com.example.monumental.view.common.FrameMetadata</node>
+    <node x="1110.0" y="3401.5">com.example.monumental.view.common.helpers.CustomTabHelper.Companion</node>
+    <node x="4083.0" y="2858.0">com.example.monumental.view.journeys.JourneysFragment</node>
+    <node x="2868.0" y="93.0">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic.Companion</node>
+    <node x="1570.5" y="1041.5">com.example.monumental.model.data.room.MonumentalRoomDatabase.Companion</node>
+    <node x="1435.5" y="3945.5">com.example.monumental.viewModel.landmark.LandmarksViewModel</node>
+    <node x="1962.0" y="105.5">com.example.monumental.view.main.MainActivity</node>
+    <node x="2472.5" y="363.5">com.example.monumental.view.common.GraphicOverlay.Graphic</node>
+    <node x="1900.5" y="3946.0">com.example.monumental.view.common.CameraPreview</node>
+    <node x="1689.0" y="3401.5">com.example.monumental.view.landmarks.LandmarksAdapter.ViewHolder</node>
+    <node x="847.5" y="3963.5">com.example.monumental.viewModel.journey.JourneysViewModel</node>
+    <node x="809.5" y="2887.0">com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase</node>
+    <node x="548.5" y="1186.5">com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl</node>
+    <node x="3476.5" y="2699.5">com.example.monumental.view.journeys.JourneysAdapter.ViewHolder</node>
+    <node x="689.0" y="30.5">com.example.monumental.model.data.room.typeConverters.DateConverter</node>
+    <node x="2153.5" y="3388.5">com.example.monumental.viewModel.main.MainViewModel</node>
+    <node x="2828.0" y="3373.0">com.example.monumental.view.webView.WebViewActivity.Companion</node>
+    <node x="3145.0" y="3494.5">com.example.monumental.view.common.helpers.CameraHelper</node>
+    <node x="3131.5" y="2890.5">com.example.monumental.view.journeys.JourneysAdapter</node>
+    <node x="3228.0" y="3373.0">com.example.monumental.view.common.helpers.CameraHelper.Companion</node>
+    <node x="68.0" y="3373.0">com.example.monumental.view.common.helpers.ImageHelper.Companion</node>
+    <node x="1445.0" y="3523.5">com.example.monumental.view.landmarks.LandmarksAdapter</node>
+    <node x="931.0" y="2711.0">com.example.monumental.model.data.cloudlandmarkrecognition.VisionImageProcessor</node>
+    <node x="533.5" y="530.5">com.example.monumental.model.data.room.dao.LandmarkDao_Impl</node>
+    <node x="102.5" y="1466.5">com.example.monumental.model.data.room.dao.JourneyDao</node>
+    <node x="131.5" y="-37.5">com.example.monumental.model.entity.Landmark</node>
+    <node x="1812.0" y="2688.0">com.example.monumental.view.common.CameraSource.FrameProcessingRunnable</node>
+    <node x="65.5" y="1799.5">com.example.monumental.model.data.room.dao.JourneyDao_Impl</node>
+    <node x="4138.0" y="2721.5">com.example.monumental.view.journeys.JourneysFragment.Companion</node>
+    <node x="1716.5" y="2898.0">com.example.monumental.view.common.CameraSource</node>
+    <node x="2228.0" y="3053.0">com.example.monumental.view.common.CameraSource.Companion</node>
+    <node x="2627.5" y="3950.5">com.example.monumental.view.common.helpers.BitmapHelper</node>
+    <node x="1149.0" y="3974.5">com.example.monumental.model.entity.LandmarkResult</node>
+    <node x="2492.0" y="2721.5">com.example.monumental.view.landmarks.LandmarksFragment.Companion</node>
+    <node x="2357.5" y="-7.0">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic</node>
+    <node x="1043.5" y="3531.0">com.example.monumental.view.common.helpers.CustomTabHelper</node>
+    <node x="367.5" y="3530.5">com.example.monumental.view.main.ResultsAdapter</node>
+    <node x="-36.5" y="3508.5">com.example.monumental.view.common.helpers.ImageHelper</node>
+    <node x="2068.0" y="-27.0">com.example.monumental.view.main.MainActivity.Companion</node>
+    <node x="3044.0" y="3950.5">com.example.monumental.view.common.helpers.MediaFileHelper</node>
+    <node x="2843.0" y="2712.5">com.example.monumental.view.common.FrameMetadata.Builder</node>
+    <node x="3856.5" y="3374.5">com.example.monumental.model.data.room.repository.LandmarkRepository</node>
+    <node x="1130.0" y="917.5">com.example.monumental.model.data.room.dao.LandmarkDao</node>
+    <node x="2725.5" y="342.0">com.example.monumental.view.common.GraphicOverlay</node>
+    <node x="2751.5" y="3495.0">com.example.monumental.view.webView.WebViewActivity</node>
+    <node x="1600.0" y="1197.0">com.example.monumental.model.data.room.MonumentalRoomDatabase</node>
+    <node x="167.5" y="2228.5">com.example.monumental.model.entity.Journey</node>
+    <node x="-16.0" y="3963.5">com.example.monumental.model.data.room.repository.JourneyRepository</node>
+    <node x="417.0" y="3974.5">com.example.monumental.model.entity.LandmarkResultList</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.entity.Landmark">
+      <point x="-226.5" y="-40.0" />
+      <point x="280.0" y="640.0" />
+      <point x="0.0" y="237.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl">
+      <point x="-40.0" y="-93.5" />
+      <point x="720.0" y="1120.0" />
+      <point x="480.0" y="1120.0" />
+      <point x="480.0" y="1280.0" />
+      <point x="-211.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.common.helpers.CameraHelper.Companion" target="com.example.monumental.view.common.helpers.CameraHelper">
+      <point x="0.0" y="27.0" />
+      <point x="0.0" y="-105.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase" target="com.example.monumental.model.data.cloudlandmarkrecognition.VisionImageProcessor">
+      <point x="0.0" y="-193.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor.Companion" target="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor">
+      <point x="0.0" y="27.0" />
+      <point x="0.0" y="-94.0" />
+    </edge>
+    <edge source="com.example.monumental.view.common.helpers.CustomTabHelper.Companion" target="com.example.monumental.view.common.helpers.CustomTabHelper">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-149.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic" target="com.example.monumental.view.common.GraphicOverlay.Graphic">
+      <point x="0.0" y="127.0" />
+      <point x="0.0" y="-116.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao_Impl">
+      <point x="0.0" y="93.5" />
+      <point x="760.0" y="1960.0" />
+      <point x="214.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.common.GraphicOverlay.Graphic" target="com.example.monumental.view.common.GraphicOverlay">
+      <point x="87.5" y="-0.0" />
+      <point x="-114.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao">
+      <point x="40.0" y="-93.5" />
+      <point x="800.0" y="1000.0" />
+      <point x="-190.0" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.main.ResultsAdapter.ViewHolder" target="com.example.monumental.view.main.ResultsAdapter">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-149.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.JourneyDao_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao_Impl">
+      <point x="-40.0" y="-160.5" />
+      <point x="240.0" y="1720.0" />
+      <point x="0.0" y="1720.0" />
+      <point x="0.0" y="1960.0" />
+      <point x="-214.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao">
+      <point x="-211.5" y="40.0" />
+      <point x="280.0" y="1320.0" />
+      <point x="0.0" y="-93.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase.Companion" target="com.example.monumental.model.data.room.MonumentalRoomDatabase">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-83.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.JourneyDao_Impl" target="com.example.monumental.model.entity.Journey">
+      <point x="214.5" y="40.0" />
+      <point x="560.0" y="2000.0" />
+      <point x="560.0" y="2400.0" />
+      <point x="112.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic.Companion" target="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic">
+      <point x="-52.0" y="-0.0" />
+      <point x="202.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.landmarks.LandmarksFragment.Companion" target="com.example.monumental.view.landmarks.LandmarksFragment">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-215.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor" target="com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase">
+      <point x="390.5" y="-0.0" />
+      <point x="-390.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.MonumentalRoomDatabase">
+      <point x="211.5" y="-0.0" />
+      <point x="-120.0" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.webView.WebViewActivity.Companion" target="com.example.monumental.view.webView.WebViewActivity">
+      <point x="0.0" y="27.0" />
+      <point x="0.0" y="-105.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.typeConverters.DateConverter">
+      <point x="0.0" y="-149.5" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="com.example.monumental.view.common.FrameMetadata.Builder" target="com.example.monumental.view.common.FrameMetadata">
+      <point x="0.0" y="127.5" />
+      <point x="0.0" y="-116.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao">
+      <point x="226.5" y="-0.0" />
+      <point x="1320.0" y="680.0" />
+      <point x="0.0" y="-82.5" />
+    </edge>
+    <edge source="com.example.monumental.view.common.helpers.ImageHelper.Companion" target="com.example.monumental.view.common.helpers.ImageHelper">
+      <point x="0.0" y="27.0" />
+      <point x="0.0" y="-171.5" />
+    </edge>
+    <edge source="com.example.monumental.view.common.CameraSource.Companion" target="com.example.monumental.view.common.CameraSource">
+      <point x="-52.0" y="-0.0" />
+      <point x="203.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.view.landmarks.LandmarksAdapter.ViewHolder" target="com.example.monumental.view.landmarks.LandmarksAdapter">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-116.5" />
+    </edge>
+    <edge source="com.example.monumental.view.journeys.JourneysAdapter.ViewHolder" target="com.example.monumental.view.journeys.JourneysAdapter">
+      <point x="0.0" y="60.5" />
+      <point x="0.0" y="-149.5" />
+    </edge>
+    <edge source="com.example.monumental.view.common.CameraSource.FrameProcessingRunnable" target="com.example.monumental.view.common.CameraSource">
+      <point x="0.0" y="72.0" />
+      <point x="0.0" y="-182.0" />
+    </edge>
+    <edge source="com.example.monumental.view.journeys.JourneysFragment.Companion" target="com.example.monumental.view.journeys.JourneysFragment">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-182.0" />
+    </edge>
+    <edge source="com.example.monumental.view.main.MainActivity.Companion" target="com.example.monumental.view.main.MainActivity">
+      <point x="0.0" y="27.0" />
+      <point x="0.0" y="-534.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao_Impl">
+      <point x="40.0" y="149.5" />
+      <point x="800.0" y="920.0" />
+      <point x="1080.0" y="920.0" />
+      <point x="1080.0" y="720.0" />
+      <point x="226.5" y="40.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao_Impl">
+      <point x="0.0" y="-93.5" />
+      <point x="0.0" y="149.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.JourneyDao_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao">
+      <point x="0.0" y="-160.5" />
+      <point x="0.0" y="93.5" />
+    </edge>
+  </edges>
+  <settings layout="Directed Orthogonal" zoom="0.20000000000000015" x="2104.581366236992" y="822.8571428571429" />
+  <SelectedNodes>
+    <node>com.example.monumental.view.main.MainActivity</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

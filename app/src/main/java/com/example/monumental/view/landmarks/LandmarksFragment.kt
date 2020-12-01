@@ -24,8 +24,7 @@ import kotlinx.android.synthetic.main.landmark_fragment.*
 import java.io.File
 import java.net.URI
 
-
-class LandmarksFragment : Fragment() {
+open class LandmarksFragment : Fragment() {
 
     companion object { fun newInstance() = LandmarksFragment() }
 

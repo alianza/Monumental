@@ -15,7 +15,7 @@ import com.example.monumental.model.entity.Journey
 import kotlinx.android.synthetic.main.journey_item.view.*
 
 
-class JourneysAdapter(
+open class JourneysAdapter(
     var journeys: ArrayList<Journey>,
     val actionDelayVal: Long,
     private val onJourneyClick: (Journey) -> Unit,

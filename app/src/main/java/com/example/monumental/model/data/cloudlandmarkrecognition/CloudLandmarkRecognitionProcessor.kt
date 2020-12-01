@@ -15,7 +15,7 @@ import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkD
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
 /** Cloud Landmark Detector */
-class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisionCloudLandmark>>() {
+open class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisionCloudLandmark>>() {
 
     private val detector: FirebaseVisionCloudLandmarkDetector
 

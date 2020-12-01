@@ -19,7 +19,7 @@ import com.example.monumental.viewModel.journey.JourneysViewModel
 import kotlinx.android.synthetic.main.journey_fragment.*
 
 
-class JourneysFragment : Fragment() {
+open class JourneysFragment : Fragment() {
 
     companion object { fun newInstance() = JourneysFragment() }
 

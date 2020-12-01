@@ -54,7 +54,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
 
     private var pictureFile: File? = null
     private var camera: Camera? = null

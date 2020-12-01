@@ -8,7 +8,7 @@ import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.journeys.JourneysFragment
 import com.example.monumental.view.landmarks.LandmarksFragment
 
-class FragmentManager(private val activity: AppCompatActivity) {
+open class FragmentManager(private val activity: AppCompatActivity) {
 
     private var journeyFragmentIsOpen = false
     private var landmarkFragmentIsOpen = false

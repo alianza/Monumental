@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.monumental.R
 import java.io.*
 
-class CameraHelper {
+open class CameraHelper {
 
     fun setParameters (cameraInstance: Camera) {
         val params: Camera.Parameters? = cameraInstance.parameters

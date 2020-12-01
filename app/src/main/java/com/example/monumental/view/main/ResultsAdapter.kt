@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.monumental.R
 import kotlinx.android.synthetic.main.info_item.view.*
 
-class ResultsAdapter(
+open class ResultsAdapter(
     var landmarks: ArrayList<String>,
     private val onLandmarkClick: (String) -> Unit,
     private val onLandmarkSave: (String) -> Unit

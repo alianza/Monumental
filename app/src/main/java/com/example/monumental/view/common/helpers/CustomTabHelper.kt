@@ -12,7 +12,7 @@ import androidx.browser.customtabs.CustomTabsService
 import com.example.monumental.R
 import com.example.monumental.view.webView.WebViewActivity
 
-class CustomTabHelper {
+open class CustomTabHelper {
 
     private lateinit var webViewActivity: WebViewActivity // TODO REMOVE!
 

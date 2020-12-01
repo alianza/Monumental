@@ -6,7 +6,7 @@ import com.example.monumental.model.data.room.MonumentalRoomDatabase
 import com.example.monumental.model.data.room.dao.LandmarkDao
 import com.example.monumental.model.entity.Landmark
 
-class LandmarkRepository(context: Context) {
+open class LandmarkRepository(context: Context) {
 
     private val landmarkDao: LandmarkDao
 

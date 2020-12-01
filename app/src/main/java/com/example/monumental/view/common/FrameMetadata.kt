@@ -14,7 +14,7 @@
 package com.example.monumental.view.common
 
 /** Describing a frame info.  */
-class FrameMetadata private constructor(
+open class FrameMetadata private constructor(
     val width: Int,
     val height: Int,
     val rotation: Int,

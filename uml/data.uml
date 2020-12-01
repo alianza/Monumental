@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.example.monumental.model.data</OriginalElement>
+  <nodes>
+    <node x="529.5669642857142" y="248.0">com.example.monumental.model.data.room.dao.LandmarkDao_Impl</node>
+    <node x="239.23363095238096" y="0.0">com.example.monumental.model.data.room.dao.JourneyDao</node>
+    <node x="99.5" y="1358.9999999999998">com.example.monumental.model.data.cloudlandmarkrecognition.VisionImageProcessor</node>
+    <node x="-22.0" y="1506.9999999999998">com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase</node>
+    <node x="645.2480158730159" y="638.0">com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl</node>
+    <node x="811.9999999999999" y="-244.99999999999966">com.example.monumental.model.data.room.repository.LandmarkRepository</node>
+    <node x="649.5669642857142" y="44.0">com.example.monumental.model.data.room.typeConverters.DateConverter</node>
+    <node x="811.5669642857142" y="11.0">com.example.monumental.model.data.room.dao.LandmarkDao</node>
+    <node x="-22.0" y="1942.9999999999998">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor</node>
+    <node x="20.0" y="237.0">com.example.monumental.model.data.room.dao.JourneyDao_Impl</node>
+    <node x="1095.640376984127" y="314.5">com.example.monumental.model.data.room.MonumentalRoomDatabase</node>
+    <node x="384.0000000000001" y="2156.9999999999995">com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkGraphic</node>
+    <node x="1126.140376984127" y="693.0">com.example.monumental.model.data.room.MonumentalRoomDatabase.Companion</node>
+    <node x="238.0" y="-275.9999999999998">com.example.monumental.model.data.room.repository.JourneyRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.CloudLandmarkRecognitionProcessor" target="com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase">
+      <point x="0.0" y="-94.0" />
+      <point x="0.0" y="193.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl">
+      <point x="0.0" y="93.5" />
+      <point x="856.7480158730159" y="845.0" />
+      <point x="625.2480158730159" y="843.9999999999998" />
+      <point x="625.2480158730159" y="731.5" />
+      <point x="-211.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.cloudlandmarkrecognition.VisionProcessorBase" target="com.example.monumental.model.data.cloudlandmarkrecognition.VisionImageProcessor">
+      <point x="0.0" y="-193.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.MonumentalRoomDatabase">
+      <point x="181.28571428571422" y="-93.5" />
+      <point x="1038.0337301587301" y="618.0" />
+      <point x="1155.640376984127" y="618.0" />
+      <point x="-60.0" y="83.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.typeConverters.DateConverter">
+      <point x="0.0" y="-149.5" />
+      <point x="35.5" y="49.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao_Impl">
+      <point x="-181.28571428571422" y="-93.5" />
+      <point x="675.4623015873017" y="618.0" />
+      <point x="341.75" y="618.0" />
+      <point x="107.25" y="160.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao">
+      <point x="60.428571428571445" y="-93.5" />
+      <point x="917.1765873015873" y="598.0" />
+      <point x="1042.0625" y="598.0" />
+      <point x="1042.0625" y="212.0" />
+      <point x="1001.5669642857142" y="212.0" />
+      <point x="0.0" y="82.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao">
+      <point x="151.0" y="-149.5" />
+      <point x="907.0669642857142" y="212.0" />
+      <point x="874.9002976190477" y="212.0" />
+      <point x="-126.66666666666663" y="82.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao">
+      <point x="-120.85714285714289" y="-93.5" />
+      <point x="735.890873015873" y="608.0" />
+      <point x="459.5000000000001" y="608.0" />
+      <point x="459.5000000000001" y="212.0" />
+      <point x="416.73363095238096" y="212.0" />
+      <point x="0.0" y="93.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.JourneyDao_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao_Impl">
+      <point x="-107.25" y="160.5" />
+      <point x="127.25" y="578.0" />
+      <point x="0.0" y="578.0" />
+      <point x="0.0" y="397.5" />
+      <point x="-214.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase.Companion" target="com.example.monumental.model.data.room.MonumentalRoomDatabase">
+      <point x="0.0" y="-38.5" />
+      <point x="60.0" y="83.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.LandmarkDao_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao_Impl">
+      <point x="-113.25" y="149.5" />
+      <point x="642.8169642857142" y="567.0" />
+      <point x="509.5669642857143" y="567.0" />
+      <point x="509.5669642857143" y="397.5" />
+      <point x="-226.5" y="-0.0" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.MonumentalRoomDatabase_Impl" target="com.example.monumental.model.data.room.dao.LandmarkDao_Impl">
+      <point x="0.0" y="-93.5" />
+      <point x="856.7480158730159" y="618.0" />
+      <point x="869.3169642857142" y="618.0" />
+      <point x="113.25" y="149.5" />
+    </edge>
+    <edge source="com.example.monumental.model.data.room.dao.JourneyDao_Impl" target="com.example.monumental.model.data.room.dao.JourneyDao">
+      <point x="0.0" y="-160.5" />
+      <point x="234.5" y="212.0" />
+      <point x="298.4002976190477" y="212.0" />
+      <point x="-118.33333333333326" y="93.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5000000000000001" x="998.7261904761866" y="403.9999999999999" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -10,7 +10,7 @@ import android.os.Build
 import android.provider.MediaStore
 import kotlin.math.max
 
-class BitmapHelper {
+open class BitmapHelper {
 
     fun getScaledBitmap(contentResolver: ContentResolver, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         val imageBitmap = getBitmap(contentResolver, imageUri)

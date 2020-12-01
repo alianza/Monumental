@@ -11,7 +11,7 @@ import android.view.SurfaceView
 import java.io.IOException
 
 /** A basic Camera preview class */
-class CameraPreview(context: Context, private val mCamera: Camera?) :
+open class CameraPreview(context: Context, private val mCamera: Camera?) :
         SurfaceView(context), SurfaceHolder.Callback {
 
     constructor(context: Context) : this(context, null)

@@ -30,7 +30,7 @@ import java.nio.ByteBuffer
  * displaying extra information). This receives preview frames from the camera at a specified rate,
  * sending those frames to child classes' detectors / classifiers as fast as it is able to process.
  */
-class CameraSource(
+open class CameraSource(
     private val graphicOverlay: GraphicOverlay,
     private val landmarkResultList: MutableLiveData<LandmarkResultList>
 ) {

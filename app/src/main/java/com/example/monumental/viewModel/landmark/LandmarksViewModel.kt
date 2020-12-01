@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class LandmarksViewModel(application: Application) : AndroidViewModel(application) {
+open class LandmarksViewModel(application: Application) : AndroidViewModel(application) {
     private val landmarkRepository = LandmarkRepository(application.applicationContext)
     private val journeyRepository = JourneyRepository(application.applicationContext)
 

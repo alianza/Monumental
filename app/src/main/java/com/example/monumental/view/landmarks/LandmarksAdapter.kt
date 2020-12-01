@@ -9,7 +9,7 @@ import com.example.monumental.R
 import com.example.monumental.model.entity.Landmark
 import kotlinx.android.synthetic.main.landmark_item.view.*
 
-class LandmarksAdapter(
+open class LandmarksAdapter(
     var landmarks: ArrayList<Landmark>,
     private val onLandmarkClick: (Landmark) -> Unit,
     private val onLandmarkDelete: (Landmark) -> Unit

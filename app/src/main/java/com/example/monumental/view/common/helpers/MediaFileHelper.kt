@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Suppress("DEPRECATION")
-class MediaFileHelper {
+open class MediaFileHelper {
 
     /** Create a file Uri for saving an image */
     fun getOutputMediaFileUri(): Uri {

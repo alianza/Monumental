@@ -3,7 +3,7 @@ package com.example.monumental.model.data.room.typeConverters
 import androidx.room.TypeConverter
 import java.util.*
 
-class DateConverter {
+open class DateConverter {
 
     @TypeConverter
     fun toDate(dateLong: Long?): Date? {

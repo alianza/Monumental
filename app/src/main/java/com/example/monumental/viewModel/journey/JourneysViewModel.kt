@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class JourneysViewModel(application: Application) : AndroidViewModel(application) {
+open class JourneysViewModel(application: Application) : AndroidViewModel(application) {
 
     private val journeyRepository = JourneyRepository(application.applicationContext)
 
