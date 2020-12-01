@@ -14,6 +14,8 @@ import com.example.monumental.view.webView.WebViewActivity
 
 class CustomTabHelper {
 
+    private lateinit var webViewActivity: WebViewActivity // TODO REMOVE!
+
     companion object {
         var sPackageNameToUse: String? = null
         const val STABLE_PACKAGE = "com.android.chrome"

@@ -36,6 +36,8 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     @GuardedBy("this")
     private var processingMetaData: FrameMetadata? = null
 
+    private var bitmapUtils: BitmapUtils = BitmapUtils
+
     @Synchronized
     override fun process(
         data: ByteBuffer?,
@@ -101,7 +103,7 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
             .setRotation(frameMetadata.rotation)
             .build()
 
-        val bitmap = BitmapUtils.getBitmap(data, frameMetadata)
+        val bitmap = bitmapUtils.getBitmap(data, frameMetadata)
         detectInVisionImage(
             bitmap,
             FirebaseVisionImage.fromByteBuffer(data, metadata),
