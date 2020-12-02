@@ -16,8 +16,7 @@ import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.journey.JourneysViewModel
-import kotlinx.android.synthetic.main.journey_fragment.*
-
+import kotlinx.android.synthetic.main.journeys_fragment.*
 
 class JourneysFragment : Fragment() {
 
@@ -33,7 +32,7 @@ class JourneysFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.journey_fragment, container, false)
+        return inflater.inflate(R.layout.journeys_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,8 +74,9 @@ class JourneysFragment : Fragment() {
     }
 
     private fun setListeners() {
-        fab.setOnClickListener { journeyCreate() }
-        btnClose.setOnClickListener { closeFragment() }
+        fab.setOnClickListener { onFabClick() }
+
+        btnClose.setOnClickListener { onCloseButtonClick() }
     }
 
     private fun journeyClick(journey: Journey) {
@@ -112,12 +112,12 @@ class JourneysFragment : Fragment() {
         viewModel.updateJourney(journey)
     }
 
-    private fun journeyCreate() {
+    private fun onFabClick() {
         viewModel.setActiveJourney(Journey(viewModel.createJourney().toInt(), "", true))
         Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
     }
 
-    private fun closeFragment() {
+    private fun onCloseButtonClick() {
         (activity as MainActivity?)?.fragmentManager?.closeJourneyFragment()
     }
 }

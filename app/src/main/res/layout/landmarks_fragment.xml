@@ -55,7 +55,7 @@
         app:layout_constraintTop_toTopOf="@+id/btnClose" />
 
     <androidx.appcompat.widget.AppCompatRadioButton
-        android:id="@+id/swCurrentJourney"
+        android:id="@+id/rbCurrentJourney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -64,5 +64,20 @@
         android:textColor="@color/light_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:contentDescription="@string/add_new_journey"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_add_24_white"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,7 +34,7 @@ class BitmapHelper {
         )
     }
 
-    private fun getBitmap(contentResolver: ContentResolver, imageUri: Uri): Bitmap? {
+    fun getBitmap(contentResolver: ContentResolver, imageUri: Uri): Bitmap? {
         return if (Build.VERSION.SDK_INT < 29) {
             MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
         } else {

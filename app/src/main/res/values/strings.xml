@@ -20,7 +20,7 @@
     <string name="flash_on">Flash on</string>
     <string name="flash_not_supported">Flash not supported</string>
     <string name="close">Close</string>
-    <string name="date_format">%s-%s-%s</string>
+    <string name="date_format">%1$s-%2$s-%3$s</string>
     <string name="no_network">No network available, please connect.</string>
 
     <!--    Journey Fragment    -->
@@ -43,5 +43,7 @@
     <string name="landmark_image">Landmark image</string>
     <string name="set_current_journey">Set %1$s as current journey</string>
     <string name="visited_on">Visited on:</string>
+    <string name="name">Name…</string>
+    <string name="name_landmark">Name the landmark!</string>
 
 </resources>
