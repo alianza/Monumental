@@ -19,5 +19,5 @@ data class Landmark(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "img_uri") val img_uri: String,
     @ColumnInfo(name = "date") val date: Date?,
-    @ColumnInfo(name = "journey_id") val journey_id: Int?
+    @ColumnInfo(name = "journey_id",  index = true) val journey_id: Int?
 )
