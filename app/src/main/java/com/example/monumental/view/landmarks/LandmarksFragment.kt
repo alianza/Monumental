@@ -87,14 +87,14 @@ class LandmarksFragment : Fragment() {
                 val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
-                imageUri = viewModel.getOutputMediaFileUri() }
+                imageUri = viewModel.getOutputMediaFileUri()
+                buildLandmarkNameDialog()
+            }
+            println(imageUri)
         }
-
-        buildNameDialog()
-        println(imageUri)
     }
 
-    private fun buildNameDialog() {
+    private fun buildLandmarkNameDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
         builder.setTitle(getString(R.string.name_landmark))
