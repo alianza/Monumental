@@ -77,6 +77,14 @@ class JourneysFragment : Fragment() {
         fab.setOnClickListener { onFabClick() }
 
         btnClose.setOnClickListener { onCloseButtonClick() }
+
+        btnFirstTime.setOnClickListener { onFirstTimeButtonClick() }
+    }
+
+    private fun onFirstTimeButtonClick() {
+        (activity as MainActivity?)?.doFirstTimeActivity()
+        (activity as MainActivity?)?.fragmentManager?.closeJourneyFragment()
+        (activity as MainActivity?)?.resetViews()
     }
 
     private fun journeyClick(journey: Journey) {
