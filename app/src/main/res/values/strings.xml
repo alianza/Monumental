@@ -46,4 +46,13 @@
     <string name="name">Name…</string>
     <string name="name_landmark">Name the landmark!</string>
 
+<!-- FirstTime Activity -->
+    <string name="pref_previously_started">firstTimeActivity</string>
+    <string name="FirstTime_Title_1">Get information about landmarks you visit!</string>
+    <string name="title_activity_first_time">FirstTime</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="swipe_right">Swipe right…</string>
+    <string name="logo">Logo image</string>
+    <string name="logo_shadow">Logo image shadow</string>
+
 </resources>
