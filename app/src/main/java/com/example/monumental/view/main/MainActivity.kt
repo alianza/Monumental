@@ -19,6 +19,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
@@ -46,6 +47,7 @@ import com.example.monumental.view.common.GraphicOverlay
 import com.example.monumental.view.common.helpers.CameraHelper
 import com.example.monumental.view.common.helpers.CustomTabHelper
 import com.example.monumental.view.common.helpers.ImageHelper
+import com.example.monumental.view.firstTime.FirstTimeActivity
 import com.example.monumental.viewModel.main.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_results_view.view.*
@@ -138,7 +140,9 @@ class MainActivity : AppCompatActivity() {
             tvNoResults.visibility = View.INVISIBLE
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
-            tryReloadAndDetectInImage() }
+            tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) {
+            println(data?.getStringExtra("result"))
+        }
     }
 
     /** Request permissions result */
@@ -148,11 +152,23 @@ class MainActivity : AppCompatActivity() {
 
     /** Start everything up */
     private fun initViews() {
+        checkFirstTimeActivity()
         instantiateClasses()
         requestPermissions()
         setupResultsRecyclerView()
         setupCamera()
         setupListeners()
+    }
+
+    private fun checkFirstTimeActivity() { // Check if first time activity has started in the past
+        val prefs = PreferenceManager.getDefaultSharedPreferences(baseContext)
+        val previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false)
+        if (previouslyStarted) { doFirstTimeActivity() }
+    }
+
+    fun doFirstTimeActivity() {
+        val intent = Intent(this, FirstTimeActivity::class.java)
+        startActivityForResult(intent ,REQUEST_CODE_FIRST_TIME)
     }
 
     /** Instantiate all classes */
@@ -281,7 +297,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Resets the activity and starts the camera preview */
-    private fun resetViews() {
+    fun resetViews() {
         camera?.startPreview()
         invalidateOptionsMenu()
         supportActionBar?.title = getString(R.string.app_name)
@@ -322,8 +338,9 @@ class MainActivity : AppCompatActivity() {
                 resizedBitmap?.let { viewModel.doDetectInBitmap(it, previewOverlay, landmarksList) }
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
-                Handler(Looper.getMainLooper()).postDelayed({ startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
-            2500) }
+                Handler(Looper.getMainLooper()).postDelayed({
+                    startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
+                2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
             progressBarHolder.visibility = View.GONE }
@@ -331,7 +348,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val REQUEST_CODE_CHOOSE_IMAGE = 1002
         private const val PERMISSIONS_REQUEST_CODE = 1
+        private const val REQUEST_CODE_CHOOSE_IMAGE = 1002
+        private const val REQUEST_CODE_FIRST_TIME = 2
     }
 }
