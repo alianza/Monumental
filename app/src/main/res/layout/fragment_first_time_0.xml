@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/csFirstTime"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:backgroundTint="@android:color/transparent"
+    tools:context=".view.firstTime.fragments.FirstTime0">
+
+    <TextView
+        android:id="@+id/tvTitleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/welcome_to"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="48sp"
+        app:autoSizeMaxTextSize="48sp"
+        app:autoSizeMinTextSize="24sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="64sp"
+        app:autoSizeMaxTextSize="84sp"
+        app:autoSizeMinTextSize="48sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleSmall" />
+
+    <ImageView
+        android:id="@+id/ivLogoShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/logo_shadow"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleLarge" />
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/logo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleLarge" />
+
+    <TextView
+        android:id="@+id/tvSwipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:text="@string/swipe_right"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="@+id/fab"
+        app:layout_constraintTop_toTopOf="@+id/fab" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:contentDescription="@string/add_new_journey"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
