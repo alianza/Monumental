@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) {
-            println(data?.getStringExtra("result"))
+                initViews() // When return from First Time activity
         }
     }
 
@@ -153,18 +153,20 @@ class MainActivity : AppCompatActivity() {
 
     /** Start everything up */
     private fun initViews() {
-        checkFirstTimeActivity()
-        instantiateClasses()
-        requestPermissions()
-        setupResultsRecyclerView()
-        setupCamera()
-        setupListeners()
+        if (firstTimeActivityHasStarted()) {
+            instantiateClasses()
+            requestPermissions()
+            setupResultsRecyclerView()
+            setupCamera()
+            setupListeners()
+        } else {
+            doFirstTimeActivity()
+        }
     }
 
-    private fun checkFirstTimeActivity() { // Check if first time activity has started in the past
+    private fun firstTimeActivityHasStarted(): Boolean { // Check if first time activity has started in the past
         val prefs = PreferenceManager.getDefaultSharedPreferences(baseContext)
-        val previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false)
-        if (previouslyStarted) { doFirstTimeActivity() }
+        return prefs.getBoolean(getString(R.string.pref_previously_started), false)
     }
 
     fun doFirstTimeActivity() {
