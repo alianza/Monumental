@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.monumental.view.firstTime.fragments.FirstTime0
 import com.example.monumental.view.firstTime.fragments.FirstTime1
 import com.example.monumental.view.firstTime.fragments.FirstTime2
+import com.example.monumental.view.firstTime.fragments.FirstTime3
 
 class FirstTimeAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
 
@@ -16,7 +17,7 @@ class FirstTimeAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
             0 -> FirstTime0()
             1 -> FirstTime1()
             2 -> FirstTime2()
-            3 -> FirstTime0()
+            3 -> FirstTime3()
             else -> FirstTime2()
         }
     }
