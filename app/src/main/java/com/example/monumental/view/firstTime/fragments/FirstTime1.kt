@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.monumental.R
-import com.example.monumental.view.firstTime.FirstTimeActivity
-import kotlinx.android.synthetic.main.fragment_first_time_0.*
+import kotlinx.android.synthetic.main.fragment_first_time_1.*
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class FirstTime1 : Fragment() {
 
     override fun onCreateView(
@@ -27,24 +24,29 @@ class FirstTime1 : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         initViews()
-        setListeners()
         doAnimations()
     }
 
     private fun initViews() {
+        Glide.with(context!!).asGif().load(R.drawable.first_time_1_1).into(iv1)
+        Glide.with(context!!).asGif().load(R.drawable.first_time_1_2).into(iv2)
 
-    }
-
-    private fun setListeners() {
-        fab.setOnClickListener { onFabClick() }
-    }
-
-    private fun onFabClick() {
-        (activity as FirstTimeActivity?)?.goToNextPage()
+        view?.alpha = 0F
+        csGifs?.alpha = 0F
+        csGifs.translationY = 400F
+        tvTitleLarge1?.translationY = -200F
+        tvTitleSmall1?.alpha = 0F
     }
 
     private fun doAnimations() {
+        tvTitleLarge1?.animate()?.translationY(0F)?.setDuration(2000)?.withEndAction{
+            tvTitleSmall1?.animate()?.alpha(1F)?.setDuration(2000)?.start()
+        }?.start()
 
+        view?.animate()?.alpha(1F)?.setDuration(4500)?.withEndAction {
+            csGifs?.animate()?.alpha(1F)?.setDuration(1000)?.start()
+            csGifs?.animate()?.translationY(0F)?.setDuration(1000)?.setInterpolator(OvershootInterpolator())?.start()
+        }?.start()
     }
 
     override fun onResume() {
