@@ -54,6 +54,8 @@
     <string name="first_time_title_1">Identify landmarks you visit!</string>
     <string name="first_time_subtitle_1">Take a picture or choose an image:</string>
     <string name="first_time_title_2">Get info about visited landmarks and save them to your journeys!</string>
+    <string name="first_time_title_3">Create journeys and add landmarks!</string>
+    <string name="first_time_subtitle_3">View previously saved landmarks!</string>
 
     <!-- Image descriptions-->
     <string name="logo_desc">Logo image</string>
