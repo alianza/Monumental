@@ -33,7 +33,6 @@ import java.io.File
 import java.net.URI
 import java.util.*
 
-
 class LandmarksFragment : Fragment() {
 
     companion object { fun newInstance() = LandmarksFragment() }
@@ -73,6 +72,52 @@ class LandmarksFragment : Fragment() {
         instantiateClasses()
         initViews()
         setListeners()
+    }
+
+    private fun instantiateClasses() {
+        cameraHelper = CameraHelper()
+    }
+
+    private fun initViews() {
+        landmarksAdapter = LandmarksAdapter(landmarks,
+            { landmark: Landmark -> landmarkClick(landmark) },
+            { landmark: Landmark -> landmarkDelete(landmark) })
+
+        rvLandmarks.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
+        rvLandmarks.adapter = landmarksAdapter
+
+        viewModel.getLandmarksByJourney(journey.id!!).observe(viewLifecycleOwner, { landmarks ->
+            if (landmarks != null) {
+                this.landmarks.clear()
+                landmarks.forEach { landmark ->
+                    this.landmarks.add(landmark)
+                }
+            }
+            this.landmarks.sortByDescending { it.id }
+            landmarksAdapter.notifyDataSetChanged()
+            if (this.landmarks.isEmpty()) {
+                tvNoLandmarks.visibility = View.VISIBLE
+            } else {
+                tvNoLandmarks.visibility = View.GONE
+            }
+        })
+
+        rbCurrentJourney.isChecked = journey.current
+        rbCurrentJourney.isSelected = journey.current
+
+        (activity as MainActivity?)?.supportActionBar?.title = journey.name
+    }
+
+    private fun setListeners() {
+        btnClose.setOnClickListener { closeFragment() }
+
+        tvBack.setOnClickListener { closeFragment() }
+
+        rbCurrentJourney.setOnCheckedChangeListener { _, isChecked ->
+            onCurrentJourneyClick(isChecked)
+        }
+
+        fab.setOnClickListener { onFabClick() }
     }
 
     /** Activity result, take image and try detect landmarks */
@@ -125,57 +170,6 @@ class LandmarksFragment : Fragment() {
                 imm?.showSoftInput(dialogView.etLandmarkName, InputMethodManager.SHOW_IMPLICIT)
             }, actionDelayVal)
         }, actionDelayVal)
-    }
-
-    private fun instantiateClasses() {
-        cameraHelper = CameraHelper()
-    }
-
-    private fun initViews() {
-        landmarksAdapter = LandmarksAdapter(landmarks,
-            { landmark: Landmark -> landmarkClick(landmark) },
-            { landmark: Landmark -> landmarkDelete(landmark) })
-
-        rvLandmarks.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
-        rvLandmarks.adapter = landmarksAdapter
-
-        viewModel.getLandmarksByJourney(journey.id!!).observe(viewLifecycleOwner, { landmarks ->
-            if (landmarks != null) {
-                this.landmarks.clear()
-                landmarks.forEach { landmark ->
-                    this.landmarks.add(landmark)
-                }
-            }
-            this.landmarks.sortByDescending { it.id }
-            landmarksAdapter.notifyDataSetChanged()
-            if (this.landmarks.isEmpty()) {
-                tvNoLandmarks.visibility = View.VISIBLE
-            } else {
-                tvNoLandmarks.visibility = View.GONE
-            }
-        })
-
-        rbCurrentJourney.isChecked = journey.current
-        rbCurrentJourney.isSelected = journey.current
-
-        (activity as MainActivity?)?.supportActionBar?.title = journey.name
-    }
-
-    override fun onDestroy() {
-        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
-        super.onDestroy()
-    }
-
-    private fun setListeners() {
-        btnClose.setOnClickListener { closeFragment() }
-
-        tvBack.setOnClickListener { closeFragment() }
-
-        rbCurrentJourney.setOnCheckedChangeListener { _, isChecked ->
-            onCurrentJourneyClick(isChecked)
-        }
-
-        fab.setOnClickListener { onFabClick() }
     }
 
     /** Choose image activity */
@@ -245,6 +239,8 @@ class LandmarksFragment : Fragment() {
             it.setOnTouchListener(ImageMatrixTouchHandler(view?.context))
         }
 
+        println("URL!: " + File(URI.create(landmark.img_uri)))
+
         Picasso.get().load(File(URI.create(landmark.img_uri))).into(imageView)
 
         builder.setView(dialogView)
@@ -257,6 +253,11 @@ class LandmarksFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
         }, actionDelayVal)
+    }
+
+    override fun onDestroy() {
+        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
+        super.onDestroy()
     }
 }
 
