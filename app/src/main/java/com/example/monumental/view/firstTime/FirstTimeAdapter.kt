@@ -17,7 +17,7 @@ class FirstTimeAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
             1 -> FirstTime1()
             2 -> FirstTime2()
             3 -> FirstTime0()
-            else -> FirstTime0()
+            else -> FirstTime2()
         }
     }
 }
