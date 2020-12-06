@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--    General    -->
-    <!--    <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>-->
+        <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
     <!--    Alternate info url (to google maps)-->
-    <string name="info_url">http://google.com/maps/search/%1$s</string>
+<!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
 
     <string name="app_name">Monumental</string>
     <string name="menu_item_flash">Flash</string>
