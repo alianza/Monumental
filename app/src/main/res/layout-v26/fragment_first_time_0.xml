@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:autoSizeMaxTextSize="48sp"
         android:autoSizeMinTextSize="24sp"

@@ -29,19 +29,19 @@ class FirstTime2 : Fragment() {
     }
 
     private fun initViews() {
-        Glide.with(context!!).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.drawable.first_time_2_1).into(ivTutorialGif1)
+        Glide.with(context!!).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.first_time_2_1).into(iv1)
 
         view?.alpha = 0F
-        ivTutorialGif1?.alpha = 0F
-        ivTutorialGif1.translationY = 400F
+        iv1?.alpha = 0F
+        iv1?.translationY = 400F
     }
 
     private fun doAnimations() {
         tvTitle?.animate()?.translationY(0F)?.setDuration(2000)?.start()
 
         view?.animate()?.alpha(1F)?.setDuration(4500)?.withEndAction {
-            ivTutorialGif1?.animate()?.alpha(1F)?.setDuration(1000)?.start()
-            ivTutorialGif1?.animate()?.translationY(0F)?.setDuration(1000)?.setInterpolator(OvershootInterpolator())?.start()
+            iv1?.animate()?.alpha(1F)?.setDuration(1000)?.start()
+            iv1?.animate()?.translationY(0F)?.setDuration(1000)?.setInterpolator(OvershootInterpolator())?.start()
         }?.start()
     }
 
