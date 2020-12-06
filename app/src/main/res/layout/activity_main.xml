@@ -45,7 +45,7 @@
         android:id="@+id/tvNoResults"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/no_landmarks"
+        android:contentDescription="@string/no_results"
         android:gravity="center"
         android:padding="6dp"
         android:shadowColor="#000000"
