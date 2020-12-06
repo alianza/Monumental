@@ -7,21 +7,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.monumental.R
+import com.example.monumental.viewModel.firstTime.FirstTimeViewModel
 import kotlinx.android.synthetic.main.activity_first_time.*
 
 class FirstTimeActivity : AppCompatActivity() {
 
     private lateinit var firstTimeAdapter: FirstTimeAdapter
+    private lateinit var viewModel: FirstTimeViewModel
 
     private var animationsHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_time)
+        viewModel = ViewModelProvider(this).get(FirstTimeViewModel::class.java)
         supportActionBar?.hide()
 
         initViews()
@@ -68,21 +71,32 @@ class FirstTimeActivity : AppCompatActivity() {
     }
 
     private fun goToNextPage() {
-        vpFirstTime.currentItem = vpFirstTime.currentItem + 1
+        if (vpFirstTime.currentItem.plus(1) != firstTimeAdapter.itemCount) {
+            vpFirstTime.setCurrentItem(vpFirstTime.currentItem + 1, true)
+        } else {
+            setSharedPref()
+            returnIntent()
+            finish()
+        }
+    }
+
+    private fun setSharedPref() {
+        viewModel.setSharedPref()
+    }
+
+    private fun returnIntent() {
+        val returnIntent = Intent()
+        setResult(RESULT_OK, returnIntent)
     }
 
     override fun onBackPressed() {
-        val returnIntent = Intent()
-        returnIntent.putExtra("result", "KAK!!!!")
-        setResult(RESULT_OK, returnIntent)
+        setSharedPref()
+        returnIntent()
         finish()
     }
 
     override fun onDestroy() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(baseContext)
-        val edit = prefs.edit()
-        edit.putBoolean(getString(R.string.pref_previously_started), true)
-        edit.apply()
+        setSharedPref()
         super.onDestroy()
     }
 }
