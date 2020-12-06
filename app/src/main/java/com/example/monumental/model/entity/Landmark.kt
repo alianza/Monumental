@@ -7,10 +7,11 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity(foreignKeys = [ForeignKey(entity = Journey::class,
+@Entity(foreignKeys = [ForeignKey(
+    entity = Journey::class,
     parentColumns = arrayOf("id"),
     childColumns = arrayOf("journey_id"),
-    onDelete = ForeignKey.NO_ACTION)]
+    onDelete = ForeignKey.CASCADE)]
 )
 data class Landmark(
     @PrimaryKey(autoGenerate = true)
