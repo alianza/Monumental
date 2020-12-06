@@ -73,7 +73,7 @@ class FirstTimeActivity : AppCompatActivity() {
     private fun goToNextPage() {
         if (vpFirstTime.currentItem.plus(1) != firstTimeAdapter.itemCount) {
             vpFirstTime.setCurrentItem(vpFirstTime.currentItem + 1, true)
-        } else {
+        } else { // When at last page
             setSharedPref()
             returnIntent()
             finish()
