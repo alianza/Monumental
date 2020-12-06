@@ -51,6 +51,8 @@ dependencies {
     implementation 'com.bogdwellers:pinchtozoom:0.1' // Pinch to zoom lib
     implementation 'com.squareup.picasso:picasso:2.71828' // Picasso image loading lib
 
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
     // Firebase/machine learning
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
     implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
