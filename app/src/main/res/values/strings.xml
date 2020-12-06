@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--    General    -->
-    <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
+    <!--    <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>-->
     <!--    Alternate info url (to google maps)-->
-    <!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
+    <string name="info_url">http://google.com/maps/search/%1$s</string>
 
     <string name="app_name">Monumental</string>
     <string name="menu_item_flash">Flash</string>
@@ -46,13 +46,18 @@
     <string name="name">Name…</string>
     <string name="name_landmark">Name the landmark!</string>
 
-<!-- FirstTime Activity -->
+    <!-- FirstTime Activity -->
     <string name="pref_previously_started">firstTimeActivity</string>
-    <string name="FirstTime_Title_1">Get information about landmarks you visit!</string>
     <string name="title_activity_first_time">FirstTime</string>
-    <string name="welcome_to">Welcome to</string>
-    <string name="swipe_right">Swipe right…</string>
-    <string name="logo">Logo image</string>
-    <string name="logo_shadow">Logo image shadow</string>
+    <string name="swipe_tip">Swipe right…</string>
+    <string name="first_time_title_0">Welcome to</string>
+    <string name="first_time_title_1">Identify landmarks you visit!</string>
+    <string name="first_time_subtitle_1">Take a picture or choose an image:</string>
+    <string name="first_time_title_2">Get info about visited landmarks and save them to your journeys!</string>
+
+    <!-- Image descriptions-->
+    <string name="logo_desc">Logo image</string>
+    <string name="logo_shadow_desc">Logo image shadow</string>
+    <string name="gif_image_desc">Tutorial Gif</string>
 
 </resources>
