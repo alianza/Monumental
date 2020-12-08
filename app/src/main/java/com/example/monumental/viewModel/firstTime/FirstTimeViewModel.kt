@@ -1,10 +1,10 @@
-@file:Suppress("DEPRECATION")
+//@file:Suppress("DEPRECATION")
 
 package com.example.monumental.viewModel.firstTime
 
 import android.app.Application
-import android.preference.PreferenceManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.preference.PreferenceManager
 import com.example.monumental.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
