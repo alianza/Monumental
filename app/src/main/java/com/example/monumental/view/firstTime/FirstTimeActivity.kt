@@ -57,7 +57,7 @@ class FirstTimeActivity : AppCompatActivity() {
                     .setDuration(300)
                     .start()
 
-                if (position != 0) {
+                if (position != 0) { // When move from first page
                     animationsHandler.removeCallbacksAndMessages(null)
                     tvSwipe?.animate()?.alpha(0F)?.setDuration(1000)?.start()
                     tvSwipe?.animate()?.translationX(0F)?.setDuration(1000)?.start()
@@ -73,6 +73,7 @@ class FirstTimeActivity : AppCompatActivity() {
     private fun goToNextPage() {
         if (vpFirstTime.currentItem.plus(1) != firstTimeAdapter.itemCount) {
             vpFirstTime.setCurrentItem(vpFirstTime.currentItem + 1, true)
+            firstTimeAdapter.notifyItemChanged(vpFirstTime.currentItem)
         } else { // When at last page
             setSharedPref()
             returnIntent()
