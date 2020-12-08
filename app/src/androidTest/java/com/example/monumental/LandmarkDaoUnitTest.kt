@@ -65,7 +65,7 @@ class LandmarkDaoUnitTest {
             db.landmarkDao().insertLandmark(landmark)
         }
 
-        val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getValueBlocking()
+        val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getOrAwaitValue()
 
         assertThat(retrievedLandmark?.name, equalTo(landmark.name))
     }
@@ -94,7 +94,7 @@ class LandmarkDaoUnitTest {
         runBlocking {
             db.landmarkDao().updateLandmark(landmark)
         }.runCatching {
-            val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getValueBlocking()
+            val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getOrAwaitValue()
 
             assertThat(retrievedLandmark?.name, equalTo(landmark.name))
         }
@@ -121,7 +121,7 @@ class LandmarkDaoUnitTest {
         runBlocking {
             db.landmarkDao().deleteLandmark(landmark)
         }.runCatching {
-            val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getValueBlocking()
+            val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getOrAwaitValue()
 
             assertThat(retrievedLandmark, equalTo(null))
         }
@@ -145,7 +145,7 @@ class LandmarkDaoUnitTest {
             db.landmarkDao().insertLandmark(landmark)
         }
 
-        val retrievedLandmark = db.landmarkDao().getLandmarksByJourney(journey.id!!).getValueBlocking()
+        val retrievedLandmark = db.landmarkDao().getLandmarksByJourney(journey.id!!).getOrAwaitValue()
 
         assertThat(retrievedLandmark?.get(0)?.name, equalTo(landmark.name))
     }
