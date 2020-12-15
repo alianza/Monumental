@@ -33,7 +33,7 @@ class ResultsAdapter(
         holder.bind(landmarks[position])
     }
 
-    fun getItem(position: Int): String? {
+    fun getItem(position: Int): String {
         return landmarks[position]
     }
 
@@ -45,16 +45,11 @@ class ResultsAdapter(
         }
 
         fun bind(landmarkName: String) {
-
             itemView.tvLandmarkResultName.text = landmarkName
             itemView.tvLandmarkResultName.setTextColor(context.getColor(R.color.colorPrimary))
             itemView.tvLandmarkResultName.textSize = 18.0F
             itemView.results_container.setPadding(24)
             itemView.tvLandmarkResultName.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-
-            println("lmname$landmarkName")
-
-//            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
         }
     }
 

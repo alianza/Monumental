@@ -26,6 +26,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        initViews()
+        initViews().runCatching { animateControlPanel() }
     }
 
     /** Catch back press event */
@@ -106,16 +107,14 @@ class MainActivity : AppCompatActivity() {
     /** Settings button intent */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.flash -> {
-                if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                    cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
-                return true }
-            R.id.journeys -> {
-                if (fragmentManager.toggleJourneyFragment()) { // is open
-                    camera?.stopPreview()
-                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
-                } else { resetViews() } // is closed
-                         return true } }
+            R.id.flash -> { if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+                        cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
+                        return true }
+            R.id.journeys -> { if (fragmentManager.toggleJourneyFragment()) { // is open
+                        camera?.stopPreview()
+                        item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
+                    } else { resetViews() } // is closed
+                             return true } }
         return super.onOptionsItemSelected(item)
     }
 
@@ -142,8 +141,7 @@ class MainActivity : AppCompatActivity() {
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) {
-                initViews() // When return from First Time activity
-        }
+                initViews() } // When return from First Time activity
     }
 
     /** Request permissions result */
@@ -157,11 +155,9 @@ class MainActivity : AppCompatActivity() {
             instantiateClasses()
             requestPermissions()
             setupResultsRecyclerView()
-            setupCamera()
+//            setupCamera()
             setupListeners()
-        } else {
-            doFirstTimeActivity()
-        }
+        } else { doFirstTimeActivity() }
     }
 
     private fun firstTimeActivityHasStarted(): Boolean { // Check if first time activity has started in the past
@@ -242,9 +238,20 @@ class MainActivity : AppCompatActivity() {
 
         previewOverlay.setOnClickListener { // Listener for the entire image previews
             if (resultsAdapter.itemCount == 1) {
-                val landmark = resultsAdapter.getItem(0).toString()
+                val landmark = resultsAdapter.getItem(0)
                 customTabHelper.startIntent(landmark, this)
             } else { showResultsDialog() } }
+    }
+
+    private fun animateControlPanel() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            container.scaleX = 0F
+            container.scaleY = 0F
+            Handler(Looper.getMainLooper()).postDelayed({
+                container.animate().scaleX(1F).scaleY(1F).setDuration(350)
+                    .setInterpolator(AccelerateDecelerateInterpolator()).start()
+            }, 500)
+        }, 0)
     }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
@@ -293,7 +300,11 @@ class MainActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.dialog_results_view, null)
         view.rvResults.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         view.rvResults.adapter = resultsAdapter
-        if (resultsAdapter.itemCount == 0) { view.dialog_results_title.text = getString(R.string.no_landmark_tip) }
+        if (resultsAdapter.itemCount == 0) { // If no results show empty dialog view
+            view.dialog_results_title.text = getString(R.string.no_landmark_tip)
+            dialog.setNeutralButton(getString(R.string.show_intro)) { it, _ ->
+                doFirstTimeActivity()
+                it.dismiss() } }
         resultsAdapter.notifyDataSetChanged()
         dialog.setView(view)
         this.dialog = dialog.show()
@@ -316,12 +327,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isNetworkAvailable() =
-        (this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
-            getNetworkCapabilities(activeNetwork)?.run {
-                           hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false
-        }
+    (this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+        getNetworkCapabilities(activeNetwork)?.run {
+                       hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                    || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false
+    }
 
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
@@ -342,8 +353,7 @@ class MainActivity : AppCompatActivity() {
             } else { // Has NO internet
                 Toast.makeText(this, getString(R.string.no_network), Toast.LENGTH_LONG).show()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() },
-                2500) }
+                    startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
             progressBarHolder.visibility = View.GONE }
