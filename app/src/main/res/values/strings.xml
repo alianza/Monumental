@@ -57,6 +57,7 @@
     <string name="first_time_title_2">Get info about visited landmarks and save them to your journeys!</string>
     <string name="first_time_title_3">Create journeys and add landmarks!</string>
     <string name="first_time_subtitle_3">View previously saved landmarks!</string>
+    <string name="show_intro">SHOW INTRODUCTION</string>
 
     <!-- Image descriptions-->
     <string name="logo_desc">Logo image</string>
