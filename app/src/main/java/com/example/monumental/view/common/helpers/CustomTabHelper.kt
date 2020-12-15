@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.view.common.helpers
 
 import android.app.Activity
@@ -57,7 +59,7 @@ class CustomTabHelper {
 
         // modify back button icon
         builder.setCloseButtonIcon(
-            BitmapFactory.decodeResource(context.resources, R.drawable.baseline_arrow_back_black_24dp))
+            BitmapFactory.decodeResource(context.resources, R.raw.baseline_arrow_back_black_24dp))
 
         // show website title
         builder.setShowTitle(true)
