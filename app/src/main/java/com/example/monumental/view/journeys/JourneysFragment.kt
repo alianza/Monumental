@@ -77,18 +77,9 @@ class JourneysFragment : Fragment() {
         fab.setOnClickListener { onFabClick() }
 
         btnClose.setOnClickListener { onCloseButtonClick() }
-
-        btnFirstTime.setOnClickListener { onFirstTimeButtonClick() }
-    }
-
-    private fun onFirstTimeButtonClick() {
-        (activity as MainActivity?)?.doFirstTimeActivity()
-        (activity as MainActivity?)?.fragmentManager?.closeJourneyFragment()
-        (activity as MainActivity?)?.resetViews()
     }
 
     private fun journeyClick(journey: Journey) {
-        println("Click! " + journey.name)
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.openLandmarkFragment(journey)
         }, actionDelayVal)
@@ -101,7 +92,6 @@ class JourneysFragment : Fragment() {
         builder.setMessage("Are you sure?")
 
         builder.setPositiveButton("Yes") { dialog, _ ->
-            println("Delete!")
             viewModel.deleteJourney(journey)
             dialog.dismiss()
         }
@@ -115,7 +105,6 @@ class JourneysFragment : Fragment() {
     }
 
     private fun journeyEdit(newName: String, journey: Journey) {
-        println("Updatename: " + journey.name)
         journey.name = newName
         viewModel.updateJourney(journey)
     }
