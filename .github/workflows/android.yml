@@ -7,18 +7,26 @@ on:
     branches: [ master ]
 
 jobs:
-  testMac:
-    runs-on: macOS-latest
-    steps:
-    - name: checkout
-      uses: actions/checkout@v2
-    - name: setup permissions on gradle file
-      run: chmod 777 gradlew
-    - name: run tests
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 29
-        script: ./gradlew connectedCheck
+    uses: reactivecircus/android-emulator-runne@v2.13.0
+    with:
+      api-level: 23
+      target: default
+      arch: x86
+      profile: Nexus 6
+      script: ./gradlew connectedCheck --stacktrace
+     
+#   testMac:
+#     runs-on: macOS-latest
+#     steps:
+#     - name: checkout
+#       uses: actions/checkout@v2
+#     - name: setup permissions on gradle file
+#       run: chmod 777 gradlew
+#     - name: run tests
+#       uses: reactivecircus/android-emulator-runner@v2
+#       with:
+#         api-level: 29
+#         script: ./gradlew connectedCheck
      
   test:
     
