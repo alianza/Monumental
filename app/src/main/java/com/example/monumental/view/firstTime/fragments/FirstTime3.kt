@@ -29,9 +29,7 @@ class FirstTime3 : Fragment() {
     }
 
     private fun initViews() {
-//        Glide.with(context!!).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.awdawd).into(iv1)
-//        Glide.with(context!!).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.dadaawdawd).into(iv2)
-        Glide.with(context!!).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.first_time_3_1).into(iv1)
+        Glide.with(requireContext()).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.first_time_3_1).into(iv1)
 
         view?.alpha = 0F
         iv1?.alpha = 0F
@@ -50,7 +48,4 @@ class FirstTime3 : Fragment() {
         }?.start()
     }
 
-    override fun onResume() {
-        super.onResume() // When scrolled to in pager
-    }
 }

@@ -16,8 +16,6 @@ import com.example.monumental.view.webView.WebViewActivity
 
 class CustomTabHelper {
 
-    private lateinit var webViewActivity: WebViewActivity // TODO REMOVE!
-
     companion object {
         var sPackageNameToUse: String? = null
         const val STABLE_PACKAGE = "com.android.chrome"
@@ -117,9 +115,7 @@ class CustomTabHelper {
     private fun hasSpecializedHandlerIntents(context: Context, intent: Intent): Boolean {
         try {
             val pm = context.packageManager
-            val handlers = pm.queryIntentActivities(
-                    intent,
-                    PackageManager.GET_RESOLVED_FILTER)
+            val handlers = pm.queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER)
             if (handlers.size == 0) {
                 return false
             }

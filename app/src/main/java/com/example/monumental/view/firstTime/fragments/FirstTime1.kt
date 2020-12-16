@@ -28,8 +28,8 @@ class FirstTime1 : Fragment() {
     }
 
     private fun initViews() {
-        Glide.with(context!!).asGif().load(R.raw.first_time_1_1).into(iv1)
-        Glide.with(context!!).asGif().load(R.raw.first_time_1_2).into(iv2)
+        Glide.with(requireContext()).asGif().load(R.raw.first_time_1_1).into(iv1)
+        Glide.with(requireContext()).asGif().load(R.raw.first_time_1_2).into(iv2)
 
         view?.alpha = 0F
         csGifs?.alpha = 0F
@@ -49,7 +49,4 @@ class FirstTime1 : Fragment() {
         }?.start()
     }
 
-    override fun onResume() {
-        super.onResume() // When scrolled to in pager
-    }
 }

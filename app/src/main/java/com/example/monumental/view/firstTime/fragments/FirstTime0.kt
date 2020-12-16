@@ -58,14 +58,6 @@ class FirstTime0 : Fragment() {
         }, 1000)
     }
 
-    private fun resetAnimations() {
-        view?.alpha = 0F
-        ivLogo?.translationY = 1000F
-        ivLogoShadow?.alpha = 0F
-        ivLogoShadow?.translationX = 0F
-        ivLogoShadow?.translationY = 0F
-    }
-
     override fun onResume() {
         super.onResume()
         onLogoClick()

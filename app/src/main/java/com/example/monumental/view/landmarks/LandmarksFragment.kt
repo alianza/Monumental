@@ -66,7 +66,8 @@ class LandmarksFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LandmarksViewModel::class.java)
         actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
-        journey = this.arguments?.getParcelable("Journey")!!
+        journey = arguments?.getParcelable("Journey")!!
+
         println("Parcel Bundle $journey")
 
         instantiateClasses()

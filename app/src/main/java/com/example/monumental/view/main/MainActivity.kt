@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
         return prefs.getBoolean(getString(R.string.pref_previously_started), false)
     }
 
-    fun doFirstTimeActivity() {
+    private fun doFirstTimeActivity() {
         val intent = Intent(this, FirstTimeActivity::class.java)
         startActivityForResult(intent ,REQUEST_CODE_FIRST_TIME)
     }
@@ -311,7 +311,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Resets the activity and starts the camera preview */
-    fun resetViews() {
+    private fun resetViews() {
         camera?.startPreview()
         invalidateOptionsMenu()
         supportActionBar?.title = getString(R.string.app_name)
