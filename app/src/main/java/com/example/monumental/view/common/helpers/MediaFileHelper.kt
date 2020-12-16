@@ -10,12 +10,20 @@ import java.util.*
 @Suppress("DEPRECATION")
 class MediaFileHelper {
 
-    /** Create a file Uri for saving an image */
+    /**
+     * Creates a file Uri for saving an image
+     *
+     * @return Uri from File
+     */
     fun getOutputMediaFileUri(): Uri {
         return Uri.fromFile(getOutputMediaFile())
     }
 
-    /** Create a File for saving an image */
+    /**
+     * Creates a File for saving an image
+     *
+     * @return File
+     */
     fun getOutputMediaFile(): File? {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
@@ -35,7 +43,7 @@ class MediaFileHelper {
             }
         }
 
-        // Create a media file name
+        // Create a media file name from date
         val timeStamp =
             SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault()).format(Date())
         return File("${mediaStorageDir.path}${File.separator}IMG_$timeStamp.jpg")

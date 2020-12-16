@@ -10,9 +10,16 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.io.IOException
 
-/** A basic Camera preview class */
-class CameraPreview(context: Context, private val mCamera: Camera?) :
-        SurfaceView(context), SurfaceHolder.Callback {
+/**
+ * A basic Camera preview class
+ *
+ * @property mCamera Camera instance
+ * @constructor
+ * Camera constructor with context and no instance yet
+ *
+ * @param context ApplicationContext
+ */
+class CameraPreview(context: Context, private val mCamera: Camera?) : SurfaceView(context), SurfaceHolder.Callback {
 
     constructor(context: Context) : this(context, null)
 
@@ -24,6 +31,11 @@ class CameraPreview(context: Context, private val mCamera: Camera?) :
         setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
 
+    /**
+     * When the preview surface has been created draw the Camera preview
+     *
+     * @param holder SurfaceHolder of the preview service
+     */
     override fun surfaceCreated(holder: SurfaceHolder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         mCamera?.apply {
@@ -36,10 +48,23 @@ class CameraPreview(context: Context, private val mCamera: Camera?) :
         }
     }
 
+    /**
+     * Takes care of releasing the Camera instance in the activity
+     *
+     * @param holder SurfaceHolder
+     */
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        // empty. Take care of releasing the Camera preview in your activity.
+        mCamera?.release()
     }
 
+    /**
+     * When the preview surface changes
+     *
+     * @param holder SurfaceHolder
+     * @param format  Integer
+     * @param w Integer
+     * @param h Integer
+     */
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, w: Int, h: Int) {
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.

@@ -10,8 +10,20 @@ import android.os.Build
 import android.provider.MediaStore
 import kotlin.math.max
 
+/**
+ * Class for helping with Bitmap related operations
+ *
+ */
 class BitmapHelper {
 
+    /**
+     * Gets a scaled bitmap according to the ImageHelper dimensions
+     *
+     * @param contentResolver
+     * @param imageUri
+     * @param imageHelper
+     * @return Bitmap
+     */
     fun getScaledBitmap(contentResolver: ContentResolver, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         val imageBitmap = getBitmap(contentResolver, imageUri)
         // Get the dimensions of the View
@@ -34,6 +46,13 @@ class BitmapHelper {
         )
     }
 
+    /**
+     * Gets a Bitmap from the device storage
+     *
+     * @param contentResolver ContentResolver class provides applications access to the content model
+     * @param imageUri Uri image to retrieve
+     * @return Bitmap that's retrieved
+     */
     fun getBitmap(contentResolver: ContentResolver, imageUri: Uri): Bitmap? {
         return if (Build.VERSION.SDK_INT < 29) {
             MediaStore.Images.Media.getBitmap(contentResolver, imageUri)

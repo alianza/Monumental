@@ -7,6 +7,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Journey entity
+ *
+ * @property id ID of Journey
+ * @property name Name of Journey
+ * @property current Status of current Journey
+ */
 @Entity
 @Parcelize
 data class Journey(

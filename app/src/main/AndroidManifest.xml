@@ -34,7 +34,6 @@
             android:name=".view.firstTime.FirstTimeActivity"
             android:label="@string/title_activity_first_time"
             android:theme="@style/AppTheme.Fullscreen" />
-
         <activity android:name=".view.webView.WebViewActivity" />
 
         <activity
@@ -50,9 +49,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
-                <data
-                    android:host="www.google.com"
-                    android:scheme="http" />
+                <data android:host="www.google.com" android:scheme="http" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- The BROWSABLE category is required to get links from web pages. -->

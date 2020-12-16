@@ -18,6 +18,13 @@ class ResultsAdapter(
 
     private lateinit var context: Context
 
+    /**
+     * When ViewHolder is created inflate layout
+     *
+     * @param parent ViewGroup
+     * @param viewType Integer
+     * @return ViewHolder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
@@ -25,18 +32,41 @@ class ResultsAdapter(
         )
     }
 
+    /**
+     * Gets the total count of items
+     *
+     * @return Integer number of items
+     */
     override fun getItemCount(): Int {
         return landmarks.size
     }
 
+    /**
+     * Binds the Journey to the ViewHolder
+     *
+     * @param holder ViewHolder
+     * @param position Current page index
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(landmarks[position])
     }
 
+    /**
+     * Gets an item according to index
+     *
+     * @param position Index of item to retrieve
+     * @return String of received item
+     */
     fun getItem(position: Int): String {
         return landmarks[position]
     }
 
+    /**
+     * Inner class for LandmarkResult item ViewHolder
+     * Sets ItemView Listeners and binds LandmarkResult object
+     *
+     * @param itemView View
+     */
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
@@ -44,6 +74,11 @@ class ResultsAdapter(
             itemView.btnSave.setOnClickListener { onLandmarkSave(landmarks[adapterPosition]) }
         }
 
+        /**
+         * Binds LandmarkResult object with ItemView
+         *
+         * @param landmarkName LandmarkResult object to bind
+         */
         fun bind(landmarkName: String) {
             itemView.tvLandmarkResultName.text = landmarkName
             itemView.tvLandmarkResultName.setTextColor(context.getColor(R.color.colorPrimary))
@@ -53,11 +88,17 @@ class ResultsAdapter(
         }
     }
 
+    /**
+     * Resets the data
+     */
     fun reset() {
         clear()
         notifyDataSetChanged()
     }
 
+    /**
+     * Empties the dataset
+     */
     fun clear() {
         landmarks = ArrayList()
     }

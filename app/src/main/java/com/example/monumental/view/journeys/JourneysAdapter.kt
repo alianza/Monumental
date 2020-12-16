@@ -26,6 +26,13 @@ class JourneysAdapter(
 
     private lateinit var context: Context
 
+    /**
+     * When ViewHolder is created inflate layout
+     *
+     * @param parent ViewGroup
+     * @param viewType Integer
+     * @return ViewHolder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
@@ -33,14 +40,31 @@ class JourneysAdapter(
         )
     }
 
+    /**
+     * Gets the total count of items
+     *
+     * @return Integer number of items
+     */
     override fun getItemCount(): Int {
         return journeys.size
     }
 
+    /**
+     * Binds the Journey to the ViewHolder
+     *
+     * @param holder ViewHolder
+     * @param position Current page index
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(journeys[position])
     }
 
+    /**
+     * Inner class for Journey item ViewHolder
+     * Sets ItemView Listeners and binds Journey object
+     *
+     * @param itemView View
+     */
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
@@ -49,7 +73,6 @@ class JourneysAdapter(
 
             itemView.etName.setOnKeyListener(object : View.OnKeyListener {
                 override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
-                    // If the event is a key-down event on the "enter" button
                     if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                         itemView.ivDone.performClick()
                         return true
@@ -71,16 +94,24 @@ class JourneysAdapter(
             }
         }
 
+        /**
+         * Binds Journey object with ItemView
+         *
+         * @param journey Journey object to bind
+         */
         fun bind(journey: Journey) {
 
             itemView.tvName.text = journey.name
 
             itemView.rCurrent.isChecked = journey.current
             itemView.rCurrent.isSelected = journey.current
-
-//            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
         }
 
+        /**
+         * Callback for Journey Update
+         *
+         * @param itemView ItemView where event originates from
+         */
         private fun updateJourney(itemView: View) {
             itemView.ivEdit.visibility = View.VISIBLE
             itemView.tvName.visibility = View.VISIBLE
@@ -93,6 +124,11 @@ class JourneysAdapter(
                 .show()
         }
 
+        /**
+         * Callback for Journey edit
+         *
+         * @param itemView ItemView where event originates from
+         */
         private fun editJourney(itemView: View) {
             itemView.ivEdit.visibility = View.INVISIBLE
             itemView.tvName.visibility = View.INVISIBLE

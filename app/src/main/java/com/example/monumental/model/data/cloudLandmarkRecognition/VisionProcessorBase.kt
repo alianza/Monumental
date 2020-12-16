@@ -38,6 +38,14 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
 
     private var bitmapUtils: BitmapUtils = BitmapUtils
 
+    /**
+     * Process ByteBuffer image for Landmarks
+     *
+     * @param data image to process
+     * @param frameMetadata meta data for frame (dimensions)
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
     @Synchronized
     override fun process(
         data: ByteBuffer?,
@@ -54,7 +62,13 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         }
     }
 
-    // Bitmap version
+    /**
+     * Process Bitmap image for Landmarks
+     *
+     * @param bitmap image to process
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
     override fun process(
         bitmap: Bitmap?,
         graphicOverlay: GraphicOverlay?,
@@ -71,6 +85,12 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         }
     }
 
+    /**
+     * Process latest image for Landmarks
+     *
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
     @Synchronized
     private fun processLatestImage(
         graphicOverlay: GraphicOverlay,
@@ -90,6 +110,14 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         }
     }
 
+    /**
+     * Process ByteBuffer image
+     *
+     * @param data image to process
+     * @param frameMetadata meta data for frame (dimensions)
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
     private fun processImage(
         data: ByteBuffer,
         frameMetadata: FrameMetadata,
@@ -113,6 +141,15 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
         )
     }
 
+    /**
+     * Process Bitmap image
+     *
+     * @param image image to process
+     * @param originalCameraImage FirebaseVisionImage
+     * @param metadata meta data for frame (dimensions)
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
     private fun detectInVisionImage(
         originalCameraImage: Bitmap?,
         image: FirebaseVisionImage,
@@ -156,6 +193,12 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
 
     protected abstract fun onFailure(e: Exception, resultsList: MutableLiveData<LandmarkResultList>)
 
+    /**
+     * Callback that executes with a successful detection result.
+     *
+     * @param originalCameraImage hold the original image from camera, used to draw the background
+     * image.
+     */
     abstract fun onSuccess(
         originalCameraImage: Bitmap?,
         results: List<FirebaseVisionCloudLandmark>,

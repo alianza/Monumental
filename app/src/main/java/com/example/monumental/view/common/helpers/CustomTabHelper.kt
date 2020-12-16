@@ -12,6 +12,7 @@ import android.text.TextUtils
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsService
 import com.example.monumental.R
+import com.example.monumental.model.entity.LandmarkResult
 import com.example.monumental.view.webView.WebViewActivity
 
 class CustomTabHelper {
@@ -24,16 +25,22 @@ class CustomTabHelper {
         const val LOCAL_PACKAGE = "com.google.android.apps.chrome"
     }
 
-    fun startIntent(result: String, context: Context) {
+    /**
+     * Starts intent for either Chrome Custom Tab or WebView Activity
+     *
+     * @param result LandmarkResult to query
+     * @param context ApplicationContext
+     */
+    fun startIntent(result: LandmarkResult, context: Context) {
         val packageName =
-            getPackageNameToUse(context, context.getString(R.string.info_url, result))
+            getPackageNameToUse(context, context.getString(R.string.info_url, result.name))
 
         // check if chrome is available
         if (packageName == null) {
             // If chrome not available open in web view
             val intentOpenUri = Intent(context, WebViewActivity::class.java)
-            intentOpenUri.putExtra(WebViewActivity.URL, context.getString(R.string.info_url, result))
-            intentOpenUri.putExtra(WebViewActivity.NAME, result)
+            intentOpenUri.putExtra(WebViewActivity.URL, context.getString(R.string.info_url, result.name))
+            intentOpenUri.putExtra(WebViewActivity.NAME, result.name)
             context.startActivity(intentOpenUri)
             (context as Activity).overridePendingTransition(
                 R.anim.anim_slide_in_left,
@@ -42,10 +49,16 @@ class CustomTabHelper {
             // Open chrome custom tab
             val customTabsIntent = build(context)
             customTabsIntent.intent.setPackage(packageName)
-            customTabsIntent.launchUrl(context, Uri.parse(context.getString(R.string.info_url, result)))
+            customTabsIntent.launchUrl(context, Uri.parse(context.getString(R.string.info_url, result.name)))
         }
     }
 
+    /**
+     * Builds the CustomTabsIntent and sets all parameters
+     *
+     * @param context ApplicationContext
+     * @return CustomTabsIntent
+     */
     private fun build(context: Context): CustomTabsIntent {
         val builder = CustomTabsIntent.Builder()
 
@@ -69,6 +82,13 @@ class CustomTabHelper {
         return builder.build()
     }
 
+    /**
+     * Gets the package name to use for Chrome
+     *
+     * @param context ApplicationContext
+     * @param url Url of Landmark
+     * @return String package name to use
+     */
     private fun getPackageNameToUse(context: Context, url: String): String? {
         sPackageNameToUse?.let {
             return it
@@ -112,6 +132,13 @@ class CustomTabHelper {
         return sPackageNameToUse
     }
 
+    /**
+     * Checks if intent has specialized handlers
+     *
+     * @param context ApplicationContext
+     * @param intent Intent to inspect
+     * @return Boolean true if intent has specialized handlers false otherwise
+     */
     private fun hasSpecializedHandlerIntents(context: Context, intent: Intent): Boolean {
         try {
             val pm = context.packageManager

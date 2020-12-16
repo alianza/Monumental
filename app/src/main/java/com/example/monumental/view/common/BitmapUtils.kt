@@ -9,9 +9,18 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
-/** Utils functions for bitmap conversions.  */
+/**
+ * Utils functions for bitmap conversions
+ */
 object BitmapUtils {
-    // Convert NV21 format byte buffer to bitmap.
+
+    /**
+     * Convert NV21 format ByteBuffer to Bitmap
+     *
+     * @param data ByteBuffer to convert
+     * @param metadata Bitmap metadata
+     * @return Bitmap that has been converted
+     */
     fun getBitmap(data: ByteBuffer, metadata: FrameMetadata): Bitmap? {
         data.rewind()
         val imageInBuffer = ByteArray(data.limit())
@@ -47,7 +56,14 @@ object BitmapUtils {
         return null
     }
 
-    // Rotates a bitmap if it is converted from a byteBuffer.
+    /**
+     * Rotates a bitmap if it is converted from a byteBuffer
+     *
+     * @param bitmap bitMap to rotate
+     * @param rotation Amount to rotate by
+     * @param facing Facing of image
+     * @return Bitmap that has been rotated
+     */
     private fun rotateBitmap(bitmap: Bitmap, rotation: Int, facing: Int): Bitmap {
         val matrix = Matrix()
         var rotationDegree = 0

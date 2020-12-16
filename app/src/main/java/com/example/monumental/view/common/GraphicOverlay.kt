@@ -48,9 +48,7 @@ class GraphicOverlay(
 ) :
     View(context, attrs) {
     private val lock = Any()
-    private var previewWidth = 0
     private var widthScaleFactor = 1.0f
-    private var previewHeight = 0
     private var heightScaleFactor = 1.0f
     private var facing = CAMERA_FACING_BACK
     private val graphics: MutableList<Graphic> = ArrayList()
@@ -130,8 +128,6 @@ class GraphicOverlay(
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        println("PrvWidth: $previewWidth")
-        println("PrvHeight: $previewHeight")
         println("ThisWidth: " + this.width)
         println("ThisHeight: " + this.height)
 

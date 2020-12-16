@@ -7,6 +7,15 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.util.*
 
+/**
+ * Landmark Entity
+ *
+ * @property id ID of Landmark
+ * @property name Name of Landmark
+ * @property img_uri Uri for image of Landmark
+ * @property date Date of landmark creation
+ * @property journey_id ID of associated Journey
+ */
 @Entity(foreignKeys = [ForeignKey(
     entity = Journey::class,
     parentColumns = arrayOf("id"),

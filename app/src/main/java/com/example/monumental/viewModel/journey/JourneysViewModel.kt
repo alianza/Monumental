@@ -17,25 +17,45 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
 
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
-    fun deleteJourney(journey: Journey) {
-        mainScope.launch {
-            journeyRepository.deleteJourney(journey)
-        }
-    }
-
+    /**
+     * Inserts new Journey
+     *
+     * @return Long ID of inserted journey
+     */
     fun createJourney(): Long = runBlocking {
         return@runBlocking journeyRepository.insertJourney(Journey(null,"New Journey!"))
     }
 
+    /**
+     * Updates journey
+     *
+     * @param journey Journey to update
+     */
     fun updateJourney(journey: Journey) {
         mainScope.launch {
             journeyRepository.updateJourney(journey)
         }
     }
 
+    /**
+     * Sets the active journey
+     *
+     * @param journey Journey to set to active
+     */
     fun setActiveJourney(journey: Journey) {
         mainScope.launch {
             journeyRepository.setActiveJourney(journey)
+        }
+    }
+
+    /**
+     * Deletes Journey
+     *
+     * @param journey Journey to delete
+     */
+    fun deleteJourney(journey: Journey) {
+        mainScope.launch {
+            journeyRepository.deleteJourney(journey)
         }
     }
 }

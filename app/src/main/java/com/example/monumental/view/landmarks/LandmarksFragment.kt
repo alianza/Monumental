@@ -75,10 +75,17 @@ class LandmarksFragment : Fragment() {
         setListeners()
     }
 
+    /**
+     * Instantiate required classes
+     */
     private fun instantiateClasses() {
         cameraHelper = CameraHelper()
     }
 
+    /**
+     * Initiates the views
+     * Sets up LandmarksAdapter and Observers
+     */
     private fun initViews() {
         landmarksAdapter = LandmarksAdapter(landmarks,
             { landmark: Landmark -> landmarkClick(landmark) },
@@ -109,19 +116,26 @@ class LandmarksFragment : Fragment() {
         (activity as MainActivity?)?.supportActionBar?.title = journey.name
     }
 
+    /**
+     * Sets onClick listeners
+     */
     private fun setListeners() {
         btnClose.setOnClickListener { closeFragment() }
 
         tvBack.setOnClickListener { closeFragment() }
 
-        rbCurrentJourney.setOnCheckedChangeListener { _, isChecked ->
-            onCurrentJourneyClick(isChecked)
-        }
+        rbCurrentJourney.setOnCheckedChangeListener { _, isChecked -> onCurrentJourneyClick(isChecked) }
 
         fab.setOnClickListener { onFabClick() }
     }
 
-    /** Activity result, take image and try detect landmarks */
+    /**
+     * Activity result, take image and try detect landmarks
+     *
+     * @param requestCode Request code of Activity
+     * @param resultCode ResultCode of Activity
+     * @param data Data from Activity
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestCodeChooseImage && resultCode == Activity.RESULT_OK) {
@@ -140,6 +154,9 @@ class LandmarksFragment : Fragment() {
         }
     }
 
+    /**
+     * Builds Landmark name dialog when new Landmark has been added
+     */
     private fun buildLandmarkNameDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
@@ -153,7 +170,7 @@ class LandmarksFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({
                 landmarkName = dialogView.etLandmarkName.text.toString()
                 println(landmarkName)
-                viewModel.saveLandmark(Landmark(null, landmarkName!!, imageUri.toString(), Date(), journey.id))
+                viewModel.createLandmark(Landmark(null, landmarkName!!, imageUri.toString(), Date(), journey.id))
                 Toast.makeText(context, context?.getString(R.string.saved_landmark, landmarkName, journey.name), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }, actionDelayVal)
@@ -173,7 +190,9 @@ class LandmarksFragment : Fragment() {
         }, actionDelayVal)
     }
 
-    /** Choose image activity */
+    /**
+     * When the FAB is clicked start Choose image activity
+     */
     private fun onFabClick() {
         val intent = Intent()
         intent.type = "image/*"
@@ -184,6 +203,11 @@ class LandmarksFragment : Fragment() {
         )
     }
 
+    /**
+     * When current Journey button is clicked set Journey as current
+     *
+     * @param checked Boolean True if checkmark is checked, False otherwise
+     */
     private fun onCurrentJourneyClick(checked: Boolean) {
         if (checked) {
             journey.current = rbCurrentJourney.isChecked
@@ -196,6 +220,12 @@ class LandmarksFragment : Fragment() {
         }
     }
 
+    /**
+     * When Landmark Delete Button is clicked
+     * Builds dialog for delete confirmation
+     *
+     * @param landmark Landmark to delete
+     */
     private fun landmarkDelete(landmark: Landmark) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
@@ -217,6 +247,12 @@ class LandmarksFragment : Fragment() {
         }, actionDelayVal)
     }
 
+    /**
+     * When landmark is clicked
+     * Builds Dialog for Landmark display image
+     *
+     * @param landmark Landmark to display
+     */
     @Suppress("DEPRECATION")
     private fun landmarkClick(landmark: Landmark) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -249,6 +285,10 @@ class LandmarksFragment : Fragment() {
         alertDialog.show()
     }
 
+    /**
+     * When back button is clicked
+     * Close LandmarksFragment using FragmentManager
+     */
     private fun closeFragment() {
         btnClose.isPressed = true
         Handler(Looper.getMainLooper()).postDelayed({
@@ -256,6 +296,9 @@ class LandmarksFragment : Fragment() {
         }, actionDelayVal)
     }
 
+    /**
+     * When Fragment is destroyed, change action bar title
+     */
     override fun onDestroy() {
         (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
         super.onDestroy()

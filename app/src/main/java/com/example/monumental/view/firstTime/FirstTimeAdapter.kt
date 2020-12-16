@@ -10,8 +10,19 @@ import com.example.monumental.view.firstTime.fragments.FirstTime3
 
 class FirstTimeAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
 
+    /**
+     * Gets the total amount of items in ViewPager
+     *
+     * @return Integer number of items
+     */
     override fun getItemCount(): Int = 4
 
+    /**
+     * Creates the fragments for each page of the ViewPager
+     *
+     * @param position Index of the current page
+     * @return Fragment for current page
+     */
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> FirstTime0()

@@ -14,6 +14,11 @@ import java.io.*
 
 class CameraHelper {
 
+    /**
+     * Set parameters to Camera
+     *
+     * @param cameraInstance Camera instance to set parameters for
+     */
     fun setParameters (cameraInstance: Camera) {
         val params: Camera.Parameters? = cameraInstance.parameters
         // Check for focus mode support
@@ -27,6 +32,12 @@ class CameraHelper {
         cameraInstance.enableShutterSound(true)
     }
 
+    /**
+     * Saves a File to the device storage
+     *
+     * @param pictureFile File to write
+     * @param data Data to write
+     */
     fun savePicture(pictureFile: File, data: ByteArray) {
         try {
             val fos = FileOutputStream(pictureFile)
@@ -41,10 +52,10 @@ class CameraHelper {
     }
 
     /**
-     * //Convert bitmap to byte array
+     * Convert bitmap to byte array
      *
-     * @param bitmap
-     * @return ByteArray
+     * @param bitmap Bitmap to convert
+     * @return ByteArray Converted ByteArray
      */
     fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val bos = ByteArrayOutputStream()
@@ -52,7 +63,11 @@ class CameraHelper {
         return bos.toByteArray()
     }
 
-    /** A safe way to get an instance of the Camera object. */
+    /**
+     * A safe way to get an instance of the Camera object
+     *
+     * @return Camera object
+     */
     fun getCameraInstance(): Camera? {
         return try {
             Camera.open() // attempt to get a Camera instance
@@ -62,7 +77,13 @@ class CameraHelper {
         }
     }
 
-    /** Toggles the camera flash */
+    /**
+     * Toggles the camera flash
+     *
+     * @param item MenuItem to change drawable after toggle
+     * @param cameraInstance Camera instance to toggle flash for
+     * @param context ApplicationContext
+     */
     fun toggleFlash(item: MenuItem, cameraInstance: Camera, context: Context) {
         val params: Camera.Parameters? = cameraInstance.parameters
 

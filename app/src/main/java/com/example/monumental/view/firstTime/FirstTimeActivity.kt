@@ -21,6 +21,7 @@ class FirstTimeActivity : AppCompatActivity() {
 
     private var animationsHandler = Handler(Looper.getMainLooper())
 
+    /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_time)
@@ -32,6 +33,9 @@ class FirstTimeActivity : AppCompatActivity() {
         doAnimations()
     }
 
+    /**
+     * Initiates the Activity, sets ViewPager Adapter and progressbar
+     */
     private fun initViews() {
         firstTimeAdapter = FirstTimeAdapter(this)
 
@@ -40,6 +44,9 @@ class FirstTimeActivity : AppCompatActivity() {
         pgProgress.max = 100
     }
 
+    /**
+     * Performs animations
+     */
     private fun doAnimations() {
         animationsHandler.postDelayed({
             tvSwipe?.animate()?.alpha(1F)?.setDuration(1000)?.start()
@@ -47,6 +54,9 @@ class FirstTimeActivity : AppCompatActivity() {
         }, 5000)
     }
 
+    /**
+     * Sets event listeners, ViewPager on page change listener and Fab onClick listener
+     */
     private fun setListeners() {
         vpFirstTime.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -70,6 +80,9 @@ class FirstTimeActivity : AppCompatActivity() {
         fab.setOnClickListener { goToNextPage() }
     }
 
+    /**
+     * Moves the ViewPager to the next page
+     */
     private fun goToNextPage() {
         if (vpFirstTime.currentItem.plus(1) != firstTimeAdapter.itemCount) {
             vpFirstTime.setCurrentItem(vpFirstTime.currentItem + 1, true)
@@ -81,21 +94,33 @@ class FirstTimeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets the First Time shared preference
+     */
     private fun setSharedPref() {
         viewModel.setSharedPref()
     }
 
+    /**
+     * sets Intent to end Activity and result
+     */
     private fun returnIntent() {
         val returnIntent = Intent()
         setResult(RESULT_OK, returnIntent)
     }
 
+    /**
+     * Overrides onBackPressed to set shared preference and set return intent before finish is called
+     */
     override fun onBackPressed() {
         setSharedPref()
         returnIntent()
         finish()
     }
 
+    /**
+     * Overrides onDestroy to first set shared preference
+     */
     override fun onDestroy() {
         setSharedPref()
         super.onDestroy()

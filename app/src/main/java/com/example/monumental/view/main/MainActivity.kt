@@ -26,7 +26,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        initViews().runCatching { animateControlPanel() }
+        initViews()
     }
 
     /** Catch back press event */
@@ -157,15 +156,17 @@ class MainActivity : AppCompatActivity() {
             setupResultsRecyclerView()
 //            setupCamera()
             setupListeners()
-        } else { doFirstTimeActivity() }
+        } else { startFirstTimeActivity() }
     }
 
-    private fun firstTimeActivityHasStarted(): Boolean { // Check if first time activity has started in the past
+    /** Checks if first time activity has started in the past */
+    private fun firstTimeActivityHasStarted(): Boolean {
         val prefs = PreferenceManager.getDefaultSharedPreferences(baseContext)
         return prefs.getBoolean(getString(R.string.pref_previously_started), false)
     }
-
-    private fun doFirstTimeActivity() {
+    
+    /** Start the First Time introduction Activity */
+    private fun startFirstTimeActivity() {
         val intent = Intent(this, FirstTimeActivity::class.java)
         startActivityForResult(intent ,REQUEST_CODE_FIRST_TIME)
     }
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity() {
     /** Instantiate all classes */
     private fun instantiateClasses() {
         customTabHelper = CustomTabHelper()
-        imageHelper = ImageHelper(previewPane, controlPanel)
+        imageHelper = ImageHelper(previewPane)
         cameraHelper = CameraHelper()
         fragmentManager = FragmentManager(this)
         landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
@@ -238,32 +239,21 @@ class MainActivity : AppCompatActivity() {
 
         previewOverlay.setOnClickListener { // Listener for the entire image previews
             if (resultsAdapter.itemCount == 1) {
-                val landmark = resultsAdapter.getItem(0)
+                val landmark = LandmarkResult( resultsAdapter.getItem(0))
                 customTabHelper.startIntent(landmark, this)
             } else { showResultsDialog() } }
     }
 
-    private fun animateControlPanel() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            container.scaleX = 0F
-            container.scaleY = 0F
-            Handler(Looper.getMainLooper()).postDelayed({
-                container.animate().scaleX(1F).scaleY(1F).setDuration(350)
-                    .setInterpolator(AccelerateDecelerateInterpolator()).start()
-            }, 500)
-        }, 0)
-    }
-
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
-        val result = landmark.replace(" ", "+") // TODO Move string replace to data
+        val result = LandmarkResult(landmark)
         customTabHelper.startIntent(result, this)
     }
 
     /** Callback when clicked on landmark save button in ResultsRecyclerView */
     private fun onLandmarkResultSave(landmark: String) {
         if (currentJourney != null) {
-            viewModel.saveLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
+            viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
             Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show() }
      else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
             onOptionsItemSelected(journeysOptionsItem)
@@ -303,7 +293,7 @@ class MainActivity : AppCompatActivity() {
         if (resultsAdapter.itemCount == 0) { // If no results show empty dialog view
             view.dialog_results_title.text = getString(R.string.no_landmark_tip)
             dialog.setNeutralButton(getString(R.string.show_intro)) { it, _ ->
-                doFirstTimeActivity()
+                startFirstTimeActivity()
                 it.dismiss() } }
         resultsAdapter.notifyDataSetChanged()
         dialog.setView(view)
@@ -326,6 +316,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
     }
 
+    /** Checks network availability */
     private fun isNetworkAvailable() =
     (this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
         getNetworkCapabilities(activeNetwork)?.run {

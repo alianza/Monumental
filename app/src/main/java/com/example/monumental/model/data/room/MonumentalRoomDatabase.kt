@@ -24,6 +24,12 @@ abstract class MonumentalRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: MonumentalRoomDatabase? = null
 
+        /**
+         * Gets the database, best to initiate as Singleton
+         *
+         * @param context ApplicationContext
+         * @return MonumentalRoomDatabase with Journey and Landmark Dao
+         */
         fun getDatabase(context: Context): MonumentalRoomDatabase? {
             if (INSTANCE == null) {
                 synchronized(MonumentalRoomDatabase::class.java) {

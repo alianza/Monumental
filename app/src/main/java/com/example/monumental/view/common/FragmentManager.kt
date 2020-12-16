@@ -8,6 +8,11 @@ import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.journeys.JourneysFragment
 import com.example.monumental.view.landmarks.LandmarksFragment
 
+/**
+ * Manager class for Journey and Landmark fragments
+ *
+ * @property activity MainActivity that contains the SupportFragmentManager
+ */
 class FragmentManager(private val activity: AppCompatActivity) {
 
     private var journeyFragmentIsOpen = false
@@ -16,6 +21,10 @@ class FragmentManager(private val activity: AppCompatActivity) {
     private val journeysFragment: JourneysFragment = JourneysFragment.newInstance()
     private var landmarksFragment: LandmarksFragment = LandmarksFragment.newInstance()
 
+    /**
+     * Opens the Journey Fragment
+     *
+     */
     private fun openJourneyFragment() {
         activity.supportFragmentManager.beginTransaction()
             .setTransition(TRANSIT_FRAGMENT_OPEN)
@@ -24,6 +33,11 @@ class FragmentManager(private val activity: AppCompatActivity) {
         journeyFragmentIsOpen = true
     }
 
+    /**
+     * Closes the Journey fragment
+     *
+     * @return True if the Journey Fragment has been closed, false otherwise
+     */
     fun closeJourneyFragment(): Boolean {
         if (journeyFragmentIsOpen) {
             activity.supportFragmentManager.beginTransaction()
@@ -36,6 +50,11 @@ class FragmentManager(private val activity: AppCompatActivity) {
         return false
     }
 
+    /**
+     * Opens the Landmark Fragment
+     *
+     * @param journey Journey to load Landmarks from
+     */
     fun openLandmarkFragment(journey: Journey) {
         val arguments = Bundle()
         arguments.putParcelable("Journey", journey)
@@ -48,6 +67,11 @@ class FragmentManager(private val activity: AppCompatActivity) {
         landmarkFragmentIsOpen = true
     }
 
+    /**
+     * Closes the Landmark Fragment
+     *
+     * @return True if the Landmark Fragment has been closed, false otherwise
+     */
     fun closeLandmarkFragment(): Boolean {
         if (landmarkFragmentIsOpen) {
             activity.supportFragmentManager.beginTransaction()
@@ -61,6 +85,11 @@ class FragmentManager(private val activity: AppCompatActivity) {
         return false
     }
 
+    /**
+     * Toggles the Journey Fragment
+     *
+     * @return True if Journey fragment has been opened, False otherwise
+     */
     fun toggleJourneyFragment():Boolean {
         if (journeyFragmentIsOpen) {
             if (landmarkFragmentIsOpen) {

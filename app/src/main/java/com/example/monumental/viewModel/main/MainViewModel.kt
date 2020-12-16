@@ -32,24 +32,54 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var activeJourney = journeyRepository.getActiveJourney()
 
-    fun saveLandmark(landmark: Landmark) {
+    /**
+     * Inserts new Journey
+     *
+     * @return Long ID of inserted journey
+     */
+    fun createLandmark(landmark: Landmark) {
         mainScope.launch {
             landmarkRepository.insertLandmark(landmark)
         }
     }
 
-    fun doDetectInBitmap(bitmap: Bitmap, previewOverlay: GraphicOverlay, resultsList: MutableLiveData<LandmarkResultList>) {
-        imageProcessor.process(bitmap, previewOverlay, resultsList)
+    /**
+     * Detect Landmarks in Bitmap image
+     *
+     * @param bitmap image to process
+     * @param graphicOverlay overlay for displaying landmark boundaries
+     * @param resultsList list to collect and return results
+     */
+    fun doDetectInBitmap(bitmap: Bitmap, graphicOverlay: GraphicOverlay, resultsList: MutableLiveData<LandmarkResultList>) {
+        imageProcessor.process(bitmap, graphicOverlay, resultsList)
     }
 
+    /**
+     * Creates a File for saving an image
+     *
+     * @return File
+     */
     fun getOutputMediaFileUri(): Uri {
         return mediaFileHelper.getOutputMediaFileUri()
     }
 
+    /**
+     * Creates a file Uri for saving an image
+     *
+     * @return Uri from File
+     */
     fun getOutputMediaFile(): File? {
         return mediaFileHelper.getOutputMediaFile()
     }
 
+    /**
+     * Gets a scaled bitmap according to the ImageHelper dimensions
+     *
+     * @param contentResolver
+     * @param imageUri
+     * @param imageHelper
+     * @return Bitmap
+     */
     fun getScaledBitmap(contentResolver: ContentResolver?, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         return bitmapHelper.getScaledBitmap(contentResolver!!, imageUri, imageHelper)
     }

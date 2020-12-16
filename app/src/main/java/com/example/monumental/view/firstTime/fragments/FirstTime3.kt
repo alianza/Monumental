@@ -21,6 +21,11 @@ class FirstTime3 : Fragment() {
         return inflater.inflate(R.layout.fragment_first_time_3, container, false)
     }
 
+    /**
+     * When activity is created, initiate views and do animations
+     *
+     * @param savedInstanceState potential bundle of data
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -28,6 +33,9 @@ class FirstTime3 : Fragment() {
         doAnimations()
     }
 
+    /**
+     * Set initial element properties
+     */
     private fun initViews() {
         Glide.with(requireContext()).asGif().diskCacheStrategy(DiskCacheStrategy.DATA).load(R.raw.first_time_3_1).into(iv1)
 
@@ -38,6 +46,9 @@ class FirstTime3 : Fragment() {
         tvTitleSmall3?.alpha = 0F
     }
 
+    /**
+     * Perform animations
+     */
     private fun doAnimations() {
         tvTitleLarge3?.animate()?.translationY(0F)?.setDuration(2000)?.start()
         tvTitleSmall3?.animate()?.alpha(1F)?.setDuration(2000)?.start()
@@ -47,5 +58,4 @@ class FirstTime3 : Fragment() {
             iv1?.animate()?.translationY(0F)?.setDuration(1000)?.setInterpolator(OvershootInterpolator())?.start()
         }?.start()
     }
-
 }

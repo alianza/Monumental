@@ -1,4 +1,3 @@
-//@file:Suppress("DEPRECATION")
 
 package com.example.monumental.viewModel.firstTime
 
@@ -15,6 +14,9 @@ class FirstTimeViewModel(application: Application) : AndroidViewModel(applicatio
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val context = getApplication<Application>().applicationContext
 
+    /**
+     * Sets the First Time shared preference
+     */
     fun setSharedPref() {
         mainScope.launch {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)

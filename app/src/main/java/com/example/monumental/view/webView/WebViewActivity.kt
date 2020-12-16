@@ -15,6 +15,12 @@ class WebViewActivity : AppCompatActivity() {
         const val NAME = "NAME"
     }
 
+    /**
+     * Overrides onCreate
+     * Sets layout, loads landmark and url
+     *
+     * @param savedInstanceState
+     */
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +44,30 @@ class WebViewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * When options item is clicked
+     *
+     * @param item Options item that has been clicked
+     * @return Boolean from super method
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         this.finish() // Close activity on back press
         doTransition()
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Overrides onBackPressed method to close activity and animate away
+     */
     override fun onBackPressed() {
-        this.finish() // Close activity on back press
+        this.finish()
         doTransition()
         super.onBackPressed()
     }
 
+    /**
+     * Performs transition on Activity
+     */
     private fun doTransition() {
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right)
     }

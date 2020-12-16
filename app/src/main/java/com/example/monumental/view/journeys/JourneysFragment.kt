@@ -44,6 +44,10 @@ class JourneysFragment : Fragment() {
         setListeners()
     }
 
+    /**
+     * Initiates the views
+     * Sets up JourneysAdapter and Observers
+     */
     private fun initViews() {
         journeysAdapter = JourneysAdapter(journeys, actionDelayVal,
             { journey: Journey -> journeyClick(journey) },
@@ -73,18 +77,32 @@ class JourneysFragment : Fragment() {
         (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
     }
 
+    /**
+     * Sets onClick listeners
+     */
     private fun setListeners() {
         fab.setOnClickListener { onFabClick() }
 
         btnClose.setOnClickListener { onCloseButtonClick() }
     }
 
+    /**
+     * When Journey is Clicked
+     *
+     * @param journey Journey that has been Clicked
+     */
     private fun journeyClick(journey: Journey) {
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.openLandmarkFragment(journey)
         }, actionDelayVal)
     }
 
+    /**
+     * When Journey delete button is clicked
+     * Builds dialog for delete confirmation
+     *
+     * @param journey Journey to delete
+     */
     private fun journeyDelete(journey: Journey) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
@@ -104,16 +122,30 @@ class JourneysFragment : Fragment() {
         }, actionDelayVal)
     }
 
+    /**
+     * When Journey edit button is clicked
+     *
+     * @param newName New name for Journey
+     * @param journey Journey to update
+     */
     private fun journeyEdit(newName: String, journey: Journey) {
         journey.name = newName
         viewModel.updateJourney(journey)
     }
 
+    /**
+     * When the FAB is clicked
+     * Create new journey and set it as the active journey
+     */
     private fun onFabClick() {
         viewModel.setActiveJourney(Journey(viewModel.createJourney().toInt(), "", true))
         Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * When the close button is clicked
+     * Close the Journey fragment using the FragmentManager
+     */
     private fun onCloseButtonClick() {
         (activity as MainActivity?)?.fragmentManager?.closeJourneyFragment()
     }
