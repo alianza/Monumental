@@ -21,7 +21,7 @@ jobs:
 #         script: ./gradlew connectedCheck
 
   emulatedTest:
-      runs-on: macos-latest
+      runs-on: ubuntu-latest
       steps:
       - name: checkout
         uses: actions/checkout@v2
