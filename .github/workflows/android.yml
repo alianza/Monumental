@@ -7,14 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-    uses: reactivecircus/android-emulator-runne@v2.13.0
-    with:
-      api-level: 23
-      target: default
-      arch: x86
-      profile: Nexus 6
-      script: ./gradlew connectedCheck --stacktrace
-     
 #   testMac:
 #     runs-on: macOS-latest
 #     steps:
@@ -27,6 +19,18 @@ jobs:
 #       with:
 #         api-level: 29
 #         script: ./gradlew connectedCheck
+
+  emulatedTest:
+      runs-on: macos-latest
+      steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedCheck
      
   test:
     
