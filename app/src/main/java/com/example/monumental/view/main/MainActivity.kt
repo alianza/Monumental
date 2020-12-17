@@ -161,8 +161,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Checks if first time activity has started in the past */
     private fun firstTimeActivityHasStarted(): Boolean {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(baseContext)
-        return prefs.getBoolean(getString(R.string.pref_previously_started), false)
+        return viewModel.firstTimeActivityHasStarted(getString(R.string.pref_previously_started))
     }
     
     /** Start the First Time introduction Activity */

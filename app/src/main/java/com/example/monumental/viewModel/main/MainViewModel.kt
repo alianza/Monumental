@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.example.monumental.model.data.cloudLandmarkRecognition.CloudLandmarkRecognitionProcessor
 import com.example.monumental.model.data.room.repository.JourneyRepository
 import com.example.monumental.model.data.room.repository.LandmarkRepository
@@ -82,5 +83,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun getScaledBitmap(contentResolver: ContentResolver?, imageUri: Uri, imageHelper: ImageHelper): Bitmap? {
         return bitmapHelper.getScaledBitmap(contentResolver!!, imageUri, imageHelper)
+    }
+
+    /**
+     * Checks if the FirstTime Activity has started in the past based on shared preference
+     *
+     * @param prefName Name of preference to retrieve
+     * @return Boolean according to preference value
+     */
+    fun firstTimeActivityHasStarted(prefName: String): Boolean {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplication())
+        return prefs.getBoolean(prefName, false)
     }
 }
