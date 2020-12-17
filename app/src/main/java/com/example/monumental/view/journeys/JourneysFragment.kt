@@ -139,7 +139,7 @@ class JourneysFragment : Fragment() {
      */
     private fun onFabClick() {
         viewModel.setActiveJourney(Journey(viewModel.createJourney().toInt(), "", true))
-        Toast.makeText(context, this.getString(R.string.new_journey), Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, this.getString(R.string.new_journey_msg), Toast.LENGTH_SHORT).show()
     }
 
     /**

@@ -33,7 +33,8 @@
     <string name="journey_name">Journey name…</string>
     <string name="edit_journey_name">Edit Journey name</string>
     <string name="done_editing_journey_name">Done editing Journey name</string>
-    <string name="new_journey">New Journey created!</string>
+    <string name="new_journey_msg">New Journey created!</string>
+    <string name="new_journey">New Journey!</string>
     <string name="journey_updated">Journey Updated!</string>
 
     <!--    Landmarks Fragment    -->

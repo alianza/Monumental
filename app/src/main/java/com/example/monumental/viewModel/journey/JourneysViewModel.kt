@@ -2,6 +2,7 @@ package com.example.monumental.viewModel.journey
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.monumental.R
 import com.example.monumental.model.data.room.repository.JourneyRepository
 import com.example.monumental.model.entity.Journey
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,8 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
      * @return Long ID of inserted journey
      */
     fun createJourney(): Long = runBlocking {
-        return@runBlocking journeyRepository.insertJourney(Journey(null,"New Journey!"))
+        return@runBlocking journeyRepository.insertJourney(Journey(null,
+            getApplication<Application>().applicationContext.getString(R.string.new_journey)))
     }
 
     /**

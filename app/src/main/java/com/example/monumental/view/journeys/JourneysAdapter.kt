@@ -139,6 +139,10 @@ class JourneysAdapter(
             itemView.etName.requestFocus()
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             imm?.showSoftInput(itemView.etName, InputMethodManager.SHOW_IMPLICIT)
+
+            if (itemView.etName.text.toString() == context.getString(R.string.new_journey)) {
+                itemView.etName.selectAll()
+            }
         }
     }
 }
