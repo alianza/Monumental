@@ -1,6 +1,8 @@
 package com.example.monumental.view.landmarks
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +14,8 @@ import kotlinx.android.synthetic.main.landmark_item.view.*
 class LandmarksAdapter(
     var landmarks: ArrayList<Landmark>,
     private val onLandmarkClick: (Landmark) -> Unit,
-    private val onLandmarkDelete: (Landmark) -> Unit
+    private val onLandmarkDelete: (Landmark) -> Unit,
+    private val onLandmarkShare: (Landmark) -> Unit
 ):
     RecyclerView.Adapter<LandmarksAdapter.ViewHolder>() {
 
@@ -62,18 +65,19 @@ class LandmarksAdapter(
         init {
             itemView.setOnClickListener { onLandmarkClick(landmarks[adapterPosition]) }
             itemView.btnRemove.setOnClickListener { onLandmarkDelete(landmarks[adapterPosition]) }
+            itemView.btnShare.setOnClickListener { onLandmarkShare(landmarks[adapterPosition]) }
         }
 
         /**
-         * Binds Journey object with ItemView
+         * Binds landmark object with ItemView
          *
-         * @param landmark Journey object to bind
+         * @param landmark landmark object to bind
          */
         fun bind(landmark: Landmark) {
 
             itemView.tvName.text = landmark.name
 
-//            Glide.with(context).load(savedPokemon.poster_url).into(itemView.ivSavedPokemon)
+            Handler(Looper.getMainLooper()).postDelayed({ itemView.tvName.isSelected = true }, 1500)
         }
     }
 }
