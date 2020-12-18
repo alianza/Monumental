@@ -128,8 +128,8 @@ class GraphicOverlay(
     /** Draws the overlay with its associated graphic objects.  */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        println("ThisWidth: " + this.width)
-        println("ThisHeight: " + this.height)
+//        println("ThisWidth: " + this.width)
+//        println("ThisHeight: " + this.height)
 
 //        previewWidth = this.width
 //        previewHeight = this.height

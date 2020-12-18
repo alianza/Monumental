@@ -169,7 +169,6 @@ class LandmarksFragment : Fragment() {
         builder.setPositiveButton("Done") { dialog, _ ->
             Handler(Looper.getMainLooper()).postDelayed({
                 landmarkName = dialogView.etLandmarkName.text.toString()
-                println(landmarkName)
                 viewModel.createLandmark(Landmark(null, landmarkName!!, imageUri.toString(), Date(), journey.id))
                 Toast.makeText(context, context?.getString(R.string.saved_landmark, landmarkName, journey.name), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
