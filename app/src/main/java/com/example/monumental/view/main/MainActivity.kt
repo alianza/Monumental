@@ -19,7 +19,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceManager
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
@@ -85,6 +86,9 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        val builder = VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+
         initViews()
     }
 
@@ -139,8 +143,9 @@ class MainActivity : AppCompatActivity() {
             tvNoResults.visibility = View.INVISIBLE
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
-            tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) {
-                initViews() } // When return from First Time activity
+            tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) { // When return from First Time activity
+                initViews(); if (imageUri == null) { Handler(Looper.getMainLooper()).postDelayed({
+                tvNoResults.visibility = View.INVISIBLE; }, 0) } }
     }
 
     /** Request permissions result */
@@ -167,7 +172,7 @@ class MainActivity : AppCompatActivity() {
     /** Start the First Time introduction Activity */
     private fun startFirstTimeActivity() {
         val intent = Intent(this, FirstTimeActivity::class.java)
-        startActivityForResult(intent ,REQUEST_CODE_FIRST_TIME)
+        startActivityForResult(intent, REQUEST_CODE_FIRST_TIME)
     }
 
     /** Instantiate all classes */
@@ -190,6 +195,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupResultsRecyclerView() {
         resultsAdapter = ResultsAdapter(ArrayList(),
             { string: String -> onLandmarkResultClick(string) },
+            { string: String -> onLandmarkResultShare(string) },
             { string: String -> onLandmarkResultSave(string) })
     }
 
@@ -238,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 
         previewOverlay.setOnClickListener { // Listener for the entire image previews
             if (resultsAdapter.itemCount == 1) {
-                val landmark = LandmarkResult( resultsAdapter.getItem(0))
+                val landmark = LandmarkResult(resultsAdapter.getItem(0))
                 customTabHelper.startIntent(landmark, this)
             } else { showResultsDialog() } }
     }
@@ -257,6 +263,19 @@ class MainActivity : AppCompatActivity() {
      else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
             onOptionsItemSelected(journeysOptionsItem)
             this.dialog?.dismiss() }
+    }
+
+    /** Callback when clicked on landmark share button in ResultsRecyclerView */
+    private fun onLandmarkResultShare(landmark: String) {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            data = imageUri
+            putExtra(Intent.EXTRA_TITLE, "${getString(R.string.share)} $landmark")
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message, landmark))
+            putExtra(Intent.EXTRA_STREAM, imageUri)
+            type = "image/jpeg" }
+        startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} $landmark"))
     }
 
     /** Resets the current taken picture */

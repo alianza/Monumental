@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    &#032; is a space   -->
     <!--    General    -->
         <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
     <!--    Alternate info url (to google maps)-->
@@ -23,6 +24,8 @@
     <string name="close">Close</string>
     <string name="date_format">%1$s-%2$s-%3$s</string>
     <string name="no_network">No network available, please connect.</string>
+    <string name="share">Share</string>
+    <string name="share_message">I just visited the %1$s!</string>
 
     <!--    Journey Fragment    -->
     <string name="no_journeys">No Journeys yet… \n Create a new one…</string>
@@ -36,6 +39,10 @@
     <string name="new_journey_msg">New Journey created!</string>
     <string name="new_journey">New Journey!</string>
     <string name="journey_updated">Journey Updated!</string>
+    <string name="no_landmarks_to_share">No saved landmarks to share under %1$s</string>
+    <string name="share_journey_message_start">I went to %1$s and visited the&#160;</string>
+    <string name="share_journey_message_middle">,&#160;</string>
+    <string name="share_journey_message_end">&#160;and %1$s.</string>
 
     <!--    Landmarks Fragment    -->
     <string name="landmark_name">Landmark name…</string>
@@ -47,6 +54,7 @@
     <string name="visited_on">Visited on:</string>
     <string name="name">Name…</string>
     <string name="name_landmark">Name the landmark!</string>
+    <string name="share_landmark_message">I visited the %1$s in %2$s on %3$s!</string>
 
     <!-- FirstTime Activity -->
     <string name="pref_previously_started">firstTimeActivity</string>

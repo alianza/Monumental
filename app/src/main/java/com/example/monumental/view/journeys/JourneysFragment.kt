@@ -1,6 +1,8 @@
 package com.example.monumental.view.journeys
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +19,7 @@ import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.journey.JourneysViewModel
 import kotlinx.android.synthetic.main.journeys_fragment.*
+import java.lang.StringBuilder
 
 class JourneysFragment : Fragment() {
 
@@ -52,7 +55,8 @@ class JourneysFragment : Fragment() {
         journeysAdapter = JourneysAdapter(journeys, actionDelayVal,
             { journey: Journey -> journeyClick(journey) },
             { journey: Journey -> journeyDelete(journey) },
-            { newName: String, journey: Journey -> journeyEdit(newName, journey) })
+            { newName: String, journey: Journey -> journeyEdit(newName, journey) },
+            { journey: Journey -> journeyShare(journey) })
 
         rvJourneys.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         rvJourneys.adapter = journeysAdapter
@@ -131,6 +135,32 @@ class JourneysFragment : Fragment() {
     private fun journeyEdit(newName: String, journey: Journey) {
         journey.name = newName
         viewModel.updateJourney(journey)
+    }
+
+
+    /**
+     * Shares a Journey with all saved landmarks in it
+     *
+     * @param journey Journey to share
+     */
+    private fun journeyShare(journey: Journey) {
+        viewModel.getLandmarksByJourney(journey.id!!).observe(viewLifecycleOwner, { landmarks ->
+            if (landmarks!!.isNotEmpty()) {
+            val imageUris: ArrayList<Uri> = arrayListOf()
+            val messageString = StringBuilder(getString(R.string.share_journey_message_start, journey.name))
+            landmarks.forEachIndexed { index, landmark ->
+                imageUris.add((Uri.parse(landmark.img_uri)))
+                if (index < landmarks.size.minus(1)) { messageString.append(landmark.name)
+                    if (index < landmarks.size.minus(2)) { messageString.append((getString(R.string.share_journey_message_middle))) }
+                } else { messageString.append(getString(R.string.share_journey_message_end, landmark.name)) } }
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND_MULTIPLE
+                putExtra(Intent.EXTRA_TEXT, messageString.toString())
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris)
+                type = "image/*" }
+                startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} ${journey.name}"))
+            } else { Toast.makeText(context, getString(R.string.no_landmarks_to_share, journey.name), Toast.LENGTH_SHORT).show() }
+        })
     }
 
     /**

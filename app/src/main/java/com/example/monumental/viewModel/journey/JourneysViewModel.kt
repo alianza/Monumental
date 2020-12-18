@@ -2,9 +2,12 @@ package com.example.monumental.viewModel.journey
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.example.monumental.R
 import com.example.monumental.model.data.room.repository.JourneyRepository
+import com.example.monumental.model.data.room.repository.LandmarkRepository
 import com.example.monumental.model.entity.Journey
+import com.example.monumental.model.entity.Landmark
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 class JourneysViewModel(application: Application) : AndroidViewModel(application) {
 
     private val journeyRepository = JourneyRepository(application.applicationContext)
+    private val landmarkRepository = LandmarkRepository(application.applicationContext)
 
     var journeys = journeyRepository.getJourneys()
 
@@ -59,5 +63,15 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
         mainScope.launch {
             journeyRepository.deleteJourney(journey)
         }
+    }
+
+    /**
+     * Gets all Landmarks of Journey
+     *
+     * @param journeyId ID of Landmark to get Landmarks of
+     * @return List of Landmarks
+     */
+    fun getLandmarksByJourney(journeyId: Int): LiveData<List<Landmark>?> {
+        return landmarkRepository.getLandmarksByJourney(journeyId)
     }
 }
