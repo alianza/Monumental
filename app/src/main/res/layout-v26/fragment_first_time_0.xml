@@ -46,6 +46,7 @@
         android:id="@+id/ivLogoShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/logo_shadow_desc"
         android:scaleType="centerCrop"
@@ -59,6 +60,7 @@
         android:id="@+id/ivLogo"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/logo_desc"
         android:scaleType="centerCrop"
@@ -67,4 +69,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleLarge" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+        android:text="@string/permissions_message"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        app:autoSizeMaxTextSize="36sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

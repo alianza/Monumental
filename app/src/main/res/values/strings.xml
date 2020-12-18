@@ -72,5 +72,6 @@
     <string name="logo_desc">Logo image</string>
     <string name="logo_shadow_desc">Logo image shadow</string>
     <string name="gif_image_desc">Tutorial Gif</string>
+    <string name="permissions_message">Additional permissions are not required but recommended</string>
 
 </resources>
