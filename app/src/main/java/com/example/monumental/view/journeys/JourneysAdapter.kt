@@ -105,6 +105,11 @@ class JourneysAdapter(
 
             itemView.rCurrent.isChecked = journey.current
             itemView.rCurrent.isSelected = journey.current
+
+            if (journey.current) { itemView.rCurrent.visibility = View.VISIBLE }
+            else { itemView.rCurrent.visibility = View.GONE }
+
+            Handler(Looper.getMainLooper()).postDelayed({ itemView.tvName.isSelected = true }, 1500)
         }
 
         /**
