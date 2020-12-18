@@ -9,13 +9,31 @@
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:importantForAutofill="no"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="3"
+        android:singleLine="true"
         android:text="@string/landmark_name"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnShare"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnShare"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/delete_journey"
+        android:foregroundGravity="right"
+        android:src="@drawable/ic_baseline_share_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnRemove"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -23,9 +41,9 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitXY"
         android:contentDescription="@string/delete_journey"
         android:foregroundGravity="right"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_baseline_delete_forever_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
