@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +36,6 @@ import kotlinx.android.synthetic.main.landmarks_fragment.*
 import java.io.File
 import java.net.URI
 import java.util.*
-
 
 class LandmarksFragment : Fragment() {
 
@@ -71,10 +69,7 @@ class LandmarksFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(LandmarksViewModel::class.java)
         actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
-
         journey = arguments?.getParcelable("Journey")!!
-
-        println("Parcel Bundle $journey")
 
         instantiateClasses()
         initViews()
@@ -110,11 +105,8 @@ class LandmarksFragment : Fragment() {
             }
             this.landmarks.sortByDescending { it.id }
             landmarksAdapter.notifyDataSetChanged()
-            if (this.landmarks.isEmpty()) {
-                tvNoLandmarks.visibility = View.VISIBLE
-            } else {
-                tvNoLandmarks.visibility = View.GONE
-            }
+            if (this.landmarks.isEmpty()) { tvNoLandmarks.visibility = View.VISIBLE }
+            else { tvNoLandmarks.visibility = View.GONE }
         })
 
         rbCurrentJourney.isChecked = journey.current
@@ -150,7 +142,6 @@ class LandmarksFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestCodeChooseImage && resultCode == Activity.RESULT_OK) {
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
-
             val resizedBitmap: Bitmap? = viewModel.getBitmap(context?.contentResolver, imageUri!!)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
@@ -158,7 +149,7 @@ class LandmarksFragment : Fragment() {
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
                 imageUri = viewModel.getOutputMediaFileUri()
-                LandmarkNameDialog()
+                landmarkNameDialog()
             }
         }
     }
@@ -166,7 +157,7 @@ class LandmarksFragment : Fragment() {
     /**
      * Builds Landmark name dialog when new Landmark has been added
      */
-    private fun LandmarkNameDialog() {
+    private fun landmarkNameDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
         builder.setTitle(getString(R.string.name_landmark))
@@ -186,7 +177,6 @@ class LandmarksFragment : Fragment() {
         }
 
         builder.setNegativeButton("Cancel", null)
-
         val alert: AlertDialog = builder.create()
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -206,10 +196,7 @@ class LandmarksFragment : Fragment() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(intent, "Select Picture"),
-            requestCodeChooseImage
-        )
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCodeChooseImage)
     }
 
     /**
@@ -221,11 +208,7 @@ class LandmarksFragment : Fragment() {
         if (checked) {
             journey.current = rbCurrentJourney.isChecked
             viewModel.setActiveJourney(journey)
-            Toast.makeText(
-                context,
-                getString(R.string.set_current_journey, journey.name),
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(context, getString(R.string.set_current_journey, journey.name), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -306,8 +289,6 @@ class LandmarksFragment : Fragment() {
         val imageView = dialogView.findViewById<ImageView>(R.id.ivLandmark).also {
             it.setOnTouchListener(ImageMatrixTouchHandler(view?.context))
         }
-
-        println("URL!: " + File(URI.create(landmark.img_uri)))
 
         Picasso.get().load(File(URI.create(landmark.img_uri))).into(imageView)
 

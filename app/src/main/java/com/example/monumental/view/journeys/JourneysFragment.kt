@@ -66,16 +66,14 @@ class JourneysFragment : Fragment() {
                 this.journeys.clear()
                 journeys.forEach { journey ->
                     this.journeys.add(journey)
-                    println("Got: $journey")
                 }
             }
             this.journeys.sortByDescending { it.id }
+
             journeysAdapter.notifyDataSetChanged()
-            if (this.journeys.isEmpty()) {
-                tvNoJourneys.visibility = View.VISIBLE
-            } else {
-                tvNoJourneys.visibility = View.GONE
-            }
+
+            if (this.journeys.isEmpty()) { tvNoJourneys.visibility = View.VISIBLE }
+            else { tvNoJourneys.visibility = View.GONE }
         })
 
         (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
@@ -136,7 +134,6 @@ class JourneysFragment : Fragment() {
         journey.name = newName
         viewModel.updateJourney(journey)
     }
-
 
     /**
      * Shares a Journey with all saved landmarks in it
