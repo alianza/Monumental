@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.view.landmarks
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -10,11 +13,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +37,7 @@ import kotlinx.android.synthetic.main.landmarks_fragment.*
 import java.io.File
 import java.net.URI
 import java.util.*
+
 
 class LandmarksFragment : Fragment() {
 
@@ -89,7 +95,8 @@ class LandmarksFragment : Fragment() {
     private fun initViews() {
         landmarksAdapter = LandmarksAdapter(landmarks,
             { landmark: Landmark -> landmarkClick(landmark) },
-            { landmark: Landmark -> landmarkDelete(landmark) })
+            { landmark: Landmark -> landmarkDelete(landmark) },
+            { landmark: Landmark -> landmarkShare(landmark) })
 
         rvLandmarks.layoutManager = StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
         rvLandmarks.adapter = landmarksAdapter
@@ -119,10 +126,13 @@ class LandmarksFragment : Fragment() {
     /**
      * Sets onClick listeners
      */
+    @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         btnClose.setOnClickListener { closeFragment() }
 
         tvBack.setOnClickListener { closeFragment() }
+
+        tvBack.setOnTouchListener { _, motionEvent -> btnClose.isPressed = motionEvent.action == MotionEvent.ACTION_DOWN; false }
 
         rbCurrentJourney.setOnCheckedChangeListener { _, isChecked -> onCurrentJourneyClick(isChecked) }
 
@@ -148,16 +158,15 @@ class LandmarksFragment : Fragment() {
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
                 imageUri = viewModel.getOutputMediaFileUri()
-                buildLandmarkNameDialog()
+                LandmarkNameDialog()
             }
-            println(imageUri)
         }
     }
 
     /**
      * Builds Landmark name dialog when new Landmark has been added
      */
-    private fun buildLandmarkNameDialog() {
+    private fun LandmarkNameDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
         builder.setTitle(getString(R.string.name_landmark))
@@ -221,6 +230,27 @@ class LandmarksFragment : Fragment() {
     }
 
     /**
+     * Shares a landmark
+     *
+     * @param landmark Landmark to share
+     */
+    private fun landmarkShare(landmark: Landmark) {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            putExtra(Intent.EXTRA_TITLE, "${getString(R.string.share)} ${landmark.name}")
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.share_landmark_message, landmark.name, journey.name, getString(
+                R.string.date_format,
+                landmark.date?.date.toString(),
+                (landmark.date?.month?.plus(monthOffset)).toString(),
+                (landmark.date?.year?.plus(yearOffset)).toString())))
+            putExtra(Intent.EXTRA_STREAM, Uri.parse(landmark.img_uri))
+            type = "image/jpeg"
+        }
+        startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} ${landmark.name}"))
+    }
+
+    /**
      * When Landmark Delete Button is clicked
      * Builds dialog for delete confirmation
      *
@@ -253,13 +283,14 @@ class LandmarksFragment : Fragment() {
      *
      * @param landmark Landmark to display
      */
-    @Suppress("DEPRECATION")
     private fun landmarkClick(landmark: Landmark) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
 
         builder.setTitle(landmark.name)
 
         builder.setNegativeButton(context?.getString(R.string.close), null)
+
+        builder.setNeutralButton(getString(R.string.share)) { _, _ -> landmarkShare(landmark) }
 
         builder.setMessage(
             getString(R.string.visited_on) + " " + getString(
@@ -290,7 +321,6 @@ class LandmarksFragment : Fragment() {
      * Close LandmarksFragment using FragmentManager
      */
     private fun closeFragment() {
-        btnClose.isPressed = true
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
         }, actionDelayVal)
