@@ -142,7 +142,7 @@ class GraphicOverlay(
                 widthScaleFactor = 1.5F
                 heightScaleFactor = 1.5F
 //            }
-            for (graphic in graphics) {
+            graphics.forEach { graphic ->
                 graphic.draw(canvas)
             }
         }

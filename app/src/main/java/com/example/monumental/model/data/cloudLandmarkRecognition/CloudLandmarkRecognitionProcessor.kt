@@ -46,14 +46,14 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
         val distinctResults = results.distinctBy { result -> result.landmark }
         graphicOverlay.clear()
 
-        for (distinctResult in distinctResults) { Log.d(TAG, "Landmark: ${distinctResult.landmark}") }
-
         // Add graphics overlay and log for each landmark result
         distinctResults.forEach {
             val cloudLandmarkGraphic = object : CloudLandmarkGraphic(graphicOverlay, it) {}
             graphicOverlay.add(cloudLandmarkGraphic)
             resultNames.add(LandmarkResult(it.landmark))
+            Log.d(TAG, "Landmark: ${it.landmark}")
         }
+
         graphicOverlay.postInvalidate()
 
         if (results.isEmpty()) {

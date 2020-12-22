@@ -106,7 +106,7 @@ class CustomTabHelper {
 
         val resolvedActivityList = pm.queryIntentActivities(activityIntent, 0)
         val packagesSupportingCustomTabs = ArrayList<String>()
-        for (info in resolvedActivityList) {
+        resolvedActivityList.forEach { info ->
             val serviceIntent = Intent()
             serviceIntent.action = CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION
             serviceIntent.setPackage(info.activityInfo.packageName)
