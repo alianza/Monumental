@@ -86,10 +86,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setTheme(R.style.AppTheme)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
-
         initViews()
     }
 
@@ -105,8 +103,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.still_image_menu, menu)
         this.flashOptionsItem = menu?.getItem(0)!!
         this.journeysOptionsItem = menu.getItem(1)
-        return true
-    }
+        return true }
 
     /** Settings button intent */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -119,8 +116,7 @@ class MainActivity : AppCompatActivity() {
                         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
                     } else { resetViews() } // is closed
                              return true } }
-        return super.onOptionsItemSelected(item)
-    }
+        return super.onOptionsItemSelected(item) }
 
     /** Handle touch events and hide keyboard when moving focus from editText */
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -133,8 +129,7 @@ class MainActivity : AppCompatActivity() {
                     view.clearFocus()
                     val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0) } } }
-        return super.dispatchTouchEvent(event)
-    }
+        return super.dispatchTouchEvent(event) }
 
     /** Activity result, take image and try detect landmarks */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -146,8 +141,7 @@ class MainActivity : AppCompatActivity() {
             takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
             tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) { // When return from First Time activity
                 initViews(); if (imageUri == null) { Handler(Looper.getMainLooper()).postDelayed({
-                tvNoResults.visibility = View.INVISIBLE; }, 0) } }
-    }
+                tvNoResults.visibility = View.INVISIBLE; }, 0) } } }
 
     /** Request permissions result */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -162,19 +156,15 @@ class MainActivity : AppCompatActivity() {
             setupResultsRecyclerView()
 //            setupCamera()
             setupListeners()
-        } else { startFirstTimeActivity() }
-    }
+        } else { startFirstTimeActivity() } }
 
     /** Checks if first time activity has started in the past */
-    private fun firstTimeActivityHasStarted(): Boolean {
-        return viewModel.firstTimeActivityHasStarted(getString(R.string.pref_previously_started))
-    }
+    private fun firstTimeActivityHasStarted(): Boolean { return viewModel.firstTimeActivityHasStarted(getString(R.string.pref_previously_started)) }
     
     /** Start the First Time introduction Activity */
     private fun startFirstTimeActivity() {
         val intent = Intent(this, FirstTimeActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_FIRST_TIME)
-    }
+        startActivityForResult(intent, REQUEST_CODE_FIRST_TIME) }
 
     /** Instantiate all classes */
     private fun instantiateClasses() {
@@ -182,23 +172,20 @@ class MainActivity : AppCompatActivity() {
         imageHelper = ImageHelper(previewPane)
         cameraHelper = CameraHelper()
         fragmentManager = FragmentManager(this)
-        landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList()))
-    }
+        landmarksList = MutableLiveData(LandmarkResultList(emptyArray<LandmarkResult>().toMutableList())) }
 
     /** Request all required permissions */
     private fun requestPermissions() {
         requestPermissions(
             arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA,), PERMISSIONS_REQUEST_CODE)
-    }
+                    Manifest.permission.CAMERA,), PERMISSIONS_REQUEST_CODE) }
 
     /** setup the resultsSpinner(Adapter) */
     private fun setupResultsRecyclerView() {
         resultsAdapter = ResultsAdapter(ArrayList(),
             { string: String -> onLandmarkResultClick(string) },
             { string: String -> onLandmarkResultShare(string) },
-            { string: String -> onLandmarkResultSave(string) })
-    }
+            { string: String -> onLandmarkResultSave(string) }) }
 
     /** Setup the camera */
     private fun setupCamera() {
@@ -215,8 +202,7 @@ class MainActivity : AppCompatActivity() {
                 cameraHelper.savePicture(pictureFile!!, data)
                 imageUri = viewModel.getOutputMediaFileUri()
                 camera?.stopPreview()
-                tryReloadAndDetectInImage() } } }
-    }
+                tryReloadAndDetectInImage() } } } }
 
     /** Setup all event listeners */
     @SuppressLint("ClickableViewAccessibility")
@@ -227,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                 landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
                 resultsAdapter.notifyDataSetChanged()
                 tvNoResults.visibility = View.INVISIBLE
-            } else { if (tvNoResults.visibility == View.INVISIBLE) { tvNoResults.visibility = View.VISIBLE } }
+            } else if (tvNoResults.visibility == View.INVISIBLE) { tvNoResults.visibility = View.VISIBLE }
             progressBarHolder.visibility = View.GONE })
 
         viewModel.activeJourney.observe(this, { journey -> if (journey == null) // Listener for current active Journey
@@ -247,14 +233,12 @@ class MainActivity : AppCompatActivity() {
             if (resultsAdapter.itemCount == 1) {
                 val landmark = LandmarkResult(resultsAdapter.getItem(0))
                 customTabHelper.startIntent(landmark, this)
-            } else { showResultsDialog() } }
-    }
+            } else { showResultsDialog() } } }
 
     /** Callback when clicked on landmark row in ResultsRecyclerView */
     private fun onLandmarkResultClick(landmark: String) {
         val result = LandmarkResult(landmark)
-        customTabHelper.startIntent(result, this)
-    }
+        customTabHelper.startIntent(result, this) }
 
     /** Callback when clicked on landmark save button in ResultsRecyclerView */
     private fun onLandmarkResultSave(landmark: String) {
@@ -263,8 +247,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show() }
      else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
             onOptionsItemSelected(journeysOptionsItem)
-            this.dialog?.dismiss() }
-    }
+            this.dialog?.dismiss() } }
 
     /** Callback when clicked on landmark share button in ResultsRecyclerView */
     private fun onLandmarkResultShare(landmark: String) {
@@ -276,8 +259,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message, landmark))
             putExtra(Intent.EXTRA_STREAM, imageUri)
             type = "image/jpeg" }
-        startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} $landmark"))
-    }
+        startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} $landmark")) }
 
     /** Resets the current taken picture */
     private fun resetPicture() {
@@ -290,15 +272,13 @@ class MainActivity : AppCompatActivity() {
         val graphicOverlay = GraphicOverlay(this, null)
         graphicOverlay.clear()
         previewOverlay.clear()
-        resultsAdapter.reset()
-    }
+        resultsAdapter.reset() }
 
     /** Takes a picture using the Camera pictureCallback */
     private fun takePicture() {
         progressBarHolder.visibility = View.VISIBLE
         camera?.takePicture(null, null, picture)
-        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
-    }
+        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp)) }
 
     /** Check if this device has a camera */
     private fun hasCamera(): Boolean { return this.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) }
@@ -316,24 +296,20 @@ class MainActivity : AppCompatActivity() {
                 it.dismiss() } }
         resultsAdapter.notifyDataSetChanged()
         dialog.setView(view)
-        this.dialog = dialog.show()
-    }
+        this.dialog = dialog.show() }
 
     /** Resets the activity and starts the camera preview */
     private fun resetViews() {
         camera?.startPreview()
         invalidateOptionsMenu()
-        supportActionBar?.title = getString(R.string.app_name)
-    }
+        supportActionBar?.title = getString(R.string.app_name) }
 
     /** Choose image activity */
     private fun startChooseImageIntentForResult() {
-        tvNoResults.visibility = View.INVISIBLE
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE)
-    }
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_IMAGE) }
 
     /** Checks network availability */
     private fun isNetworkAvailable() =
@@ -341,8 +317,7 @@ class MainActivity : AppCompatActivity() {
         getNetworkCapabilities(activeNetwork)?.run {
                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                     || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false
-    }
+                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false }
 
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {
@@ -366,8 +341,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)); resetPicture() }, 2500) }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
-            progressBarHolder.visibility = View.GONE }
-    }
+            progressBarHolder.visibility = View.GONE } }
 
     companion object {
         private const val TAG = "MainActivity"
