@@ -146,7 +146,7 @@ class JourneysFragment : Fragment() {
             val imageUris: ArrayList<Uri> = arrayListOf()
             val messageString = StringBuilder(getString(R.string.share_journey_message_start, journey.name))
             landmarks.forEachIndexed { index, landmark ->
-                imageUris.add((Uri.parse(landmark.img_uri)))
+                imageUris.add((Uri.parse(landmark.imgUri)))
                 if (index < landmarks.size.minus(1)) { messageString.append(landmark.name)
                     if (index < landmarks.size.minus(2)) { messageString.append((getString(R.string.share_journey_message_middle))) }
                 } else { messageString.append(getString(R.string.share_journey_message_end, landmark.name)) } }

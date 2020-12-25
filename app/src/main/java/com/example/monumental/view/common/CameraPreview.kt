@@ -53,9 +53,7 @@ class CameraPreview(context: Context, private val mCamera: Camera?) : SurfaceVie
      *
      * @param holder SurfaceHolder
      */
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-//        mCamera?.release()
-    }
+    override fun surfaceDestroyed(holder: SurfaceHolder) { } // Empty
 
     /**
      * When the preview surface changes

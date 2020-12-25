@@ -71,8 +71,6 @@ object BitmapUtils {
             FirebaseVisionImageMetadata.ROTATION_90 -> rotationDegree = 90
             FirebaseVisionImageMetadata.ROTATION_180 -> rotationDegree = 180
             FirebaseVisionImageMetadata.ROTATION_270 -> rotationDegree = 270
-            else -> {
-            }
         }
 
         // Rotate the image back to straight.}

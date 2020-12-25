@@ -55,10 +55,8 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
     ) {
         latestImage = data
         latestImageMetaData = frameMetadata
-        if (processingImage == null && processingMetaData == null) {
-            if (graphicOverlay != null) {
-                processLatestImage(graphicOverlay, resultsList)
-            }
+        if (processingImage == null && processingMetaData == null && graphicOverlay != null) {
+            processLatestImage(graphicOverlay, resultsList)
         }
     }
 
@@ -173,7 +171,8 @@ abstract class VisionProcessorBase<T> : VisionImageProcessor {
             .addOnFailureListener { e -> onFailure(e, resultsList) }
     }
 
-    override fun stop() {}
+    /** Stops the underlying machine learning model and release resources.  */
+    override fun stop() { } // Empty
 
     protected abstract fun detectInImage(image: FirebaseVisionImage): Task<T>
 

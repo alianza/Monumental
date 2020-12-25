@@ -3,8 +3,8 @@
     <!--    &#032; is a space   -->
     <!--    General    -->
         <string name="info_url">https://www.google.com/search?q=%1$s#topstuff</string>
-    <!--    Alternate info url (to google maps)-->
-<!--    <string name="info_url">http://google.com/maps/search/%1$s</string>-->
+    <!-- Alternate info url (to google maps) -->
+    <string name="info_url_alternate">http://google.com/maps/search/%1$s</string>
 
     <string name="app_name">Monumental</string>
     <string name="menu_item_flash">Flash</string>

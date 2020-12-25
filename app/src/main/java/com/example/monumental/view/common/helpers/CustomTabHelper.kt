@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsService
 import com.example.monumental.R
@@ -153,6 +154,7 @@ class CustomTabHelper {
                 return true
             }
         } catch (e: RuntimeException) {
+            Log.e("CustomTabHelper", "Error: " + e.message)
         }
         return false
     }

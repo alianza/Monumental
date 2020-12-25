@@ -226,7 +226,7 @@ class LandmarksFragment : Fragment() {
                 landmark.date?.date.toString(),
                 (landmark.date?.month?.plus(monthOffset)).toString(),
                 (landmark.date?.year?.plus(yearOffset)).toString())))
-            putExtra(Intent.EXTRA_STREAM, Uri.parse(landmark.img_uri))
+            putExtra(Intent.EXTRA_STREAM, Uri.parse(landmark.imgUri))
             type = "image/jpeg"
         }
         startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} ${landmark.name}"))
@@ -289,7 +289,7 @@ class LandmarksFragment : Fragment() {
             it.setOnTouchListener(ImageMatrixTouchHandler(view?.context))
         }
 
-        Picasso.get().load(File(URI.create(landmark.img_uri))).into(imageView)
+        Picasso.get().load(File(URI.create(landmark.imgUri))).into(imageView)
 
         builder.setView(dialogView)
         val alertDialog: AlertDialog = builder.create()
