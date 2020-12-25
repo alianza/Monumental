@@ -34,7 +34,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var activeJourney = journeyRepository.getActiveJourney()
 
     /**
-     * Inserts new Journey
+     * Inserts new Landmark under the current Journey
      *
      * @return Long ID of inserted journey
      */
