@@ -52,18 +52,6 @@ class CameraHelper {
     }
 
     /**
-     * Convert bitmap to byte array
-     *
-     * @param bitmap Bitmap to convert
-     * @return ByteArray Converted ByteArray
-     */
-    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-        return bos.toByteArray()
-    }
-
-    /**
      * A safe way to get an instance of the Camera object
      *
      * @return Camera object

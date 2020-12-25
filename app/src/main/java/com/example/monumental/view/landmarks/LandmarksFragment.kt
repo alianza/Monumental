@@ -27,6 +27,7 @@ import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
+import com.example.monumental.view.common.BitmapUtils
 import com.example.monumental.view.common.helpers.CameraHelper
 import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.landmark.LandmarksViewModel
@@ -145,7 +146,7 @@ class LandmarksFragment : Fragment() {
             val resizedBitmap: Bitmap? = viewModel.getBitmap(context?.contentResolver, imageUri!!)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
-                val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
+                val bitmapData = BitmapUtils.bitmapToByteArray(resizedBitmap!!)
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
                 imageUri = viewModel.getOutputMediaFileUri()

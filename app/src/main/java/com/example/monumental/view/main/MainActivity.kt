@@ -42,6 +42,7 @@ import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
 import com.example.monumental.model.entity.LandmarkResult
 import com.example.monumental.model.entity.LandmarkResultList
+import com.example.monumental.view.common.BitmapUtils
 import com.example.monumental.view.common.CameraPreview
 import com.example.monumental.view.common.FragmentManager
 import com.example.monumental.view.common.GraphicOverlay
@@ -351,7 +352,7 @@ class MainActivity : AppCompatActivity() {
             val resizedBitmap: Bitmap? = viewModel.getScaledBitmap(contentResolver, imageUri!!, imageHelper)
 
             if (imageUri!!.scheme == "content") { // if Image from device Content
-                val bitmapData = cameraHelper.bitmapToByteArray(resizedBitmap!!)
+                val bitmapData = BitmapUtils.bitmapToByteArray(resizedBitmap!!)
                 pictureFile = viewModel.getOutputMediaFile()
                 cameraHelper.savePicture(pictureFile!!, bitmapData)
                 imageUri = viewModel.getOutputMediaFileUri() }
