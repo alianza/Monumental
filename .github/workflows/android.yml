@@ -20,29 +20,28 @@ jobs:
 #         api-level: 29
 #         script: ./gradlew connectedCheck
 
-  emulatedTest:
-      runs-on: macos-latest
-      steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: setup permissions on gradle file
-        run: chmod 777 gradlew
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedCheck
+#  emulatedTest:
+#      runs-on: macos-latest
+#      steps:
+#      - name: checkout
+#        uses: actions/checkout@v2
+#      - name: setup permissions on gradle file
+#        run: chmod 777 gradlew
+#      - name: run tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: 29
+#          script: ./gradlew connectedCheck
      
-  test:
-    
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Android Emulator
-      uses: vgaidarji/android-github-actions-emulator@v1.0.1
+#  test:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Android Emulator
+#      uses: vgaidarji/android-github-actions-emulator@v1.0.1
       
   build:
-
     runs-on: ubuntu-latest
 
     steps:
