@@ -22,7 +22,7 @@ jobs:
       uses: ReactiveCircus/android-emulator-runner@v2.13.0
       with:
         api-level: 29
-        script: ./gradlew connectedDebugAndroidTest
+        script: ./gradlew connectedDebugAndroidTest --info --stacktrace
 
 #  emulatedTest:
 #      runs-on: macos-latest
