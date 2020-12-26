@@ -58,8 +58,8 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
      *
      * @param journey Journey to delete
      */
-    fun deleteJourney(journey: Journey) {
-        mainScope.launch { journeyRepository.deleteJourney(journey) }
+    fun deleteJourney(journey: Journey): Int = runBlocking {
+        return@runBlocking journeyRepository.deleteJourney(journey)
     }
 
     /**

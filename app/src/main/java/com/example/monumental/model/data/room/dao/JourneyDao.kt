@@ -64,6 +64,5 @@ interface JourneyDao {
      * @param journey Journey to remove
      */
     @Delete
-    suspend fun deleteJourney(journey: Journey)
-
+    suspend fun deleteJourney(journey: Journey):Int
 }

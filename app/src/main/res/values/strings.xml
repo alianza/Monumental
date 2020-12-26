@@ -43,6 +43,8 @@
     <string name="share_journey_message_start">I went to %1$s and visited the&#160;</string>
     <string name="share_journey_message_middle">,&#160;</string>
     <string name="share_journey_message_end">&#160;and %1$s.</string>
+    <string name="journey_deleted">%1$s successfully removed</string>
+    <string name="journey_not_deleted">%1$s could not be deleted</string>
 
     <!--    Landmarks Fragment    -->
     <string name="landmark_name">Landmark name…</string>
@@ -55,6 +57,8 @@
     <string name="name">Name…</string>
     <string name="name_landmark">Name the landmark!</string>
     <string name="share_landmark_message">I visited the %1$s in %2$s on %3$s!</string>
+    <string name="landmark_deleted">%1$s successfully removed</string>
+    <string name="landmark_not_deleted">%1$s could not be deleted</string>
 
     <!-- FirstTime Activity -->
     <string name="pref_previously_started">firstTimeActivity</string>

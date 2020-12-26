@@ -77,7 +77,7 @@ class JourneyRepository(context: Context) {
      *
      * @param journey Journey to remove
      */
-    suspend fun deleteJourney(journey: Journey) {
-        journeyDao.deleteJourney(journey)
+    suspend fun deleteJourney(journey: Journey):Int {
+        return journeyDao.deleteJourney(journey)
     }
 }

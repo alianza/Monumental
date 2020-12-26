@@ -112,7 +112,7 @@ class JourneysFragment : Fragment() {
         builder.setMessage("Are you sure?")
 
         builder.setPositiveButton("Yes") { dialog, _ ->
-            viewModel.deleteJourney(journey)
+            deleteJourney(journey)
             dialog.dismiss()
         }
 
@@ -122,6 +122,16 @@ class JourneysFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             alert.show()
         }, actionDelayVal)
+    }
+
+    private fun deleteJourney(journey: Journey) {
+        if (viewModel.deleteJourney(journey) == 1) {
+            Toast.makeText(requireContext(), getString(R.string.journey_deleted, journey.name),
+                Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.journey_not_deleted, journey.name),
+                Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

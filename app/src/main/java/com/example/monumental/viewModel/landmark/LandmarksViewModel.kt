@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.monumental.R
 import com.example.monumental.model.data.room.repository.JourneyRepository
 import com.example.monumental.model.data.room.repository.LandmarkRepository
 import com.example.monumental.model.entity.Journey
@@ -15,6 +16,7 @@ import com.example.monumental.view.common.helpers.MediaFileHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class LandmarksViewModel(application: Application) : AndroidViewModel(application) {
@@ -92,9 +94,7 @@ class LandmarksViewModel(application: Application) : AndroidViewModel(applicatio
      *
      * @param landmark Landmark to remove
      */
-    fun deleteLandmark(landmark: Landmark) {
-        mainScope.launch {
-            landmarkRepository.deleteLandmark(landmark)
-        }
+    fun deleteLandmark(landmark: Landmark): Int = runBlocking {
+        return@runBlocking landmarkRepository.deleteLandmark(landmark)
     }
 }

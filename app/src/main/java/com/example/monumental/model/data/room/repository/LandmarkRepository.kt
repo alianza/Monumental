@@ -69,7 +69,7 @@ class LandmarkRepository(context: Context) {
      *
      * @param landmark Landmark to remove
      */
-    suspend fun deleteLandmark(landmark: Landmark) {
-        landmarkDao.deleteLandmark(landmark)
+    suspend fun deleteLandmark(landmark: Landmark):Int {
+        return landmarkDao.deleteLandmark(landmark)
     }
 }

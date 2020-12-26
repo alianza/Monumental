@@ -57,6 +57,5 @@ interface LandmarkDao {
      * @param landmark Landmark to remove
      */
     @Delete
-    suspend fun deleteLandmark(landmark: Landmark)
-
+    suspend fun deleteLandmark(landmark: Landmark):Int
 }

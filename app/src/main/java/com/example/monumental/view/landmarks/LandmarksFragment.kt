@@ -248,7 +248,7 @@ class LandmarksFragment : Fragment() {
 
         builder.setPositiveButton("Yes") { dialog, _ ->
             Handler(Looper.getMainLooper()).postDelayed({
-                viewModel.deleteLandmark(landmark)
+                deleteLandmark(landmark)
                 dialog.dismiss()
             }, actionDelayVal)
         }
@@ -306,6 +306,16 @@ class LandmarksFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
         }, actionDelayVal)
+    }
+
+    private fun deleteLandmark(landmark: Landmark) {
+        if (viewModel.deleteLandmark(landmark) == 1) {
+            Toast.makeText(requireContext(), getString(R.string.landmark_deleted, landmark.name),
+                Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.landmark_not_deleted, landmark.name),
+                Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**
