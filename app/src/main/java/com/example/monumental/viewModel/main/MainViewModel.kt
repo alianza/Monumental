@@ -91,7 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * @param prefName Name of preference to retrieve
      * @return Boolean according to preference value
      */
-    fun firstTimeActivityHasStarted(prefName: String): Boolean {
+    fun hasFirstTimeActivityStarted(prefName: String): Boolean {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplication<Application>().applicationContext)
         return prefs.getBoolean(prefName, false)
     }

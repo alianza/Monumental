@@ -40,7 +40,12 @@ import java.util.*
 
 class LandmarksFragment : Fragment() {
 
-    companion object { fun newInstance() = LandmarksFragment() }
+    companion object {
+        fun newInstance() = LandmarksFragment()
+        private const val MONTH_OFFSET = 1
+        private const val YEAR_OFFSET = 1900
+        private const val CHOOSE_IMAGE_REQUEST_CODE = 1002
+    }
 
     private var actionDelayVal: Long = 0
     private lateinit var viewModel: LandmarksViewModel
@@ -53,10 +58,6 @@ class LandmarksFragment : Fragment() {
     private lateinit var landmarksAdapter: LandmarksAdapter
     private lateinit var journey: Journey
     private lateinit var cameraHelper: CameraHelper
-
-    private val monthOffset = 1
-    private val yearOffset = 1900
-    private val requestCodeChooseImage = 1002
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,7 +142,7 @@ class LandmarksFragment : Fragment() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == requestCodeChooseImage && resultCode == Activity.RESULT_OK) {
+        if (requestCode == CHOOSE_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
             val resizedBitmap: Bitmap? = viewModel.getBitmap(context?.contentResolver, imageUri!!)
 
@@ -196,7 +197,7 @@ class LandmarksFragment : Fragment() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCodeChooseImage)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), CHOOSE_IMAGE_REQUEST_CODE)
     }
 
     /**
@@ -225,8 +226,8 @@ class LandmarksFragment : Fragment() {
             putExtra(Intent.EXTRA_TEXT, getString(R.string.share_landmark_message, landmark.name, journey.name, getString(
                 R.string.date_format,
                 landmark.date?.date.toString(),
-                (landmark.date?.month?.plus(monthOffset)).toString(),
-                (landmark.date?.year?.plus(yearOffset)).toString())))
+                (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
+                (landmark.date?.year?.plus(YEAR_OFFSET)).toString())))
             putExtra(Intent.EXTRA_STREAM, Uri.parse(landmark.imgUri))
             type = "image/jpeg"
         }
@@ -279,8 +280,8 @@ class LandmarksFragment : Fragment() {
             getString(R.string.visited_on) + " " + getString(
                 R.string.date_format,
                 landmark.date?.date.toString(),
-                (landmark.date?.month?.plus(monthOffset)).toString(),
-                (landmark.date?.year?.plus(yearOffset)).toString()
+                (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
+                (landmark.date?.year?.plus(YEAR_OFFSET)).toString()
             )
         )
 

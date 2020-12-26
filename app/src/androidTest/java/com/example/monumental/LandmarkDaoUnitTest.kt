@@ -35,9 +35,8 @@ class LandmarkDaoUnitTest {
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context, MonumentalRoomDatabase::class.java
-        ).setTransactionExecutor(Executors.newSingleThreadExecutor())
+        db = Room.inMemoryDatabaseBuilder(context, MonumentalRoomDatabase::class.java)
+            .setTransactionExecutor(Executors.newSingleThreadExecutor())
             .build()
     }
 
@@ -91,9 +90,8 @@ class LandmarkDaoUnitTest {
 
         landmark.name = nameToChangeTo
 
-        runBlocking {
-            db.landmarkDao().updateLandmark(landmark)
-        }.runCatching {
+        runBlocking { db.landmarkDao().updateLandmark(landmark) }.runCatching {
+
             val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getOrAwaitValue()
 
             assertThat(retrievedLandmark?.name, equalTo(landmark.name))
@@ -118,9 +116,8 @@ class LandmarkDaoUnitTest {
             db.landmarkDao().insertLandmark(landmark)
         }
 
-        runBlocking {
-            db.landmarkDao().deleteLandmark(landmark)
-        }.runCatching {
+        runBlocking { db.landmarkDao().deleteLandmark(landmark) }.runCatching {
+
             val retrievedLandmark = db.landmarkDao().getLandmark(landmark.name).getOrAwaitValue()
 
             assertThat(retrievedLandmark, equalTo(null))
@@ -129,12 +126,19 @@ class LandmarkDaoUnitTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeLandmarkAndGetByJourney() {
+    fun writeLandmarksAndGetByJourney() {
         val journey = Journey(1, "Test Journey", true)
         val date = Date()
-        val landmark = Landmark(
-            null,
-            "Test Landmark",
+        val landmark1 = Landmark(
+            1,
+            "Test Landmark 1",
+            "/storage/emulated/0/Pictures/Monumental/IMG_Sun, 6 Dec 2020 04:54:24 +0100.jpg",
+            date,
+            journey.id
+        )
+        val landmark2 = Landmark(
+            2,
+            "Test Landmark 2",
             "/storage/emulated/0/Pictures/Monumental/IMG_Sun, 6 Dec 2020 04:54:24 +0100.jpg",
             date,
             journey.id
@@ -142,11 +146,12 @@ class LandmarkDaoUnitTest {
 
         runBlocking {
             db.journeyDao().insertJourney(journey)
-            db.landmarkDao().insertLandmark(landmark)
+            db.landmarkDao().insertLandmark(landmark1)
+            db.landmarkDao().insertLandmark(landmark2)
         }
 
-        val retrievedLandmark = db.landmarkDao().getLandmarksByJourney(journey.id!!).getOrAwaitValue()
+        val retrievedLandmarks = db.landmarkDao().getLandmarksByJourney(journey.id!!).getOrAwaitValue()
 
-        assertThat(retrievedLandmark?.get(0)?.name, equalTo(landmark.name))
+        assertThat(retrievedLandmarks, equalTo(listOf(landmark1, landmark2)))
     }
 }

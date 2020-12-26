@@ -35,9 +35,8 @@ open class JourneyDaoUnitTest {
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context, MonumentalRoomDatabase::class.java
-        ).setTransactionExecutor(Executors.newSingleThreadExecutor())
+        db = Room.inMemoryDatabaseBuilder(context, MonumentalRoomDatabase::class.java)
+            .setTransactionExecutor(Executors.newSingleThreadExecutor())
             .build()
     }
 
@@ -49,38 +48,51 @@ open class JourneyDaoUnitTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeJourneyAndRetrieveActive() {
-        val journey = Journey(null, "Test Journey", true)
-
-        runBlocking { db.journeyDao().insertJourney(journey) }
-
-        val activeJourney = db.journeyDao().getActiveJourney().getOrAwaitValue()
-
-        assertThat(activeJourney?.name, equalTo(journey.name))
-    }
-
-    @Test
-    @Throws(Exception::class)
     fun writeJourneyAndRetrieveByName() {
-        val journey = Journey(null, "Test Journey", true)
+        val testJourneyName = "Test Journey"
+
+        val journey = Journey(null, testJourneyName, true)
 
         runBlocking { db.journeyDao().insertJourney(journey) }
 
-        val retrievedJourney = db.journeyDao().getJourney("Test Journey").getOrAwaitValue()
+        val retrievedJourney = db.journeyDao().getJourney(testJourneyName).getOrAwaitValue()
 
         assertThat(retrievedJourney?.name, equalTo(journey.name))
     }
 
     @Test
     @Throws(Exception::class)
+    fun writeJourneysAndRetrieveAll() {
+
+        val journey1 = Journey(1, "Test Journey 1", true)
+        val journey2 = Journey(2, "Test Journey 2", false)
+        val journey3 = Journey(3, "Test Journey 3", false)
+        val journey4 = Journey(4, "Test Journey 4", false)
+
+        runBlocking {
+            db.journeyDao().insertJourney(journey1)
+            db.journeyDao().insertJourney(journey2)
+            db.journeyDao().insertJourney(journey3)
+            db.journeyDao().insertJourney(journey4)
+        }
+
+        val retrievedJourney = db.journeyDao().getJourneys().getOrAwaitValue()
+
+        assertThat(retrievedJourney, equalTo(listOf(journey1, journey2, journey3, journey4)))
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun writeJourneyAndDelete() {
-        val journey = Journey(null, "Test Journey", true)
+        val testJourneyName = "Test Journey"
+
+        val journey = Journey(null, testJourneyName, true)
 
         runBlocking { db.journeyDao().insertJourney(journey) }
 
         runBlocking { db.journeyDao().deleteJourney(journey) }.runCatching {
 
-            val retrievedJourney = db.journeyDao().getJourney("Test Journey").getOrAwaitValue()
+            val retrievedJourney = db.journeyDao().getJourney(testJourneyName).getOrAwaitValue()
 
             assertThat(retrievedJourney, equalTo(null))
         }
@@ -89,7 +101,10 @@ open class JourneyDaoUnitTest {
     @Test
     @Throws(Exception::class)
     fun writeJourneyAndUpdate() {
-        val journey = Journey(null, "Test Journey", true)
+        val testJourneyName = "Test Journey"
+
+        val journey = Journey(null, testJourneyName, true)
+
         val nameToChangeTo = "Changed name"
 
         runBlocking { db.journeyDao().insertJourney(journey) }
@@ -102,6 +117,20 @@ open class JourneyDaoUnitTest {
 
             assertThat(retrievedJourney, equalTo(journey))
         }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun writeJourneyAndRetrieveActive() {
+        val testJourneyName = "Test Journey"
+
+        val journey = Journey(null, testJourneyName, true)
+
+        runBlocking { db.journeyDao().insertJourney(journey) }
+
+        val activeJourney = db.journeyDao().getActiveJourney().getOrAwaitValue()
+
+        assertThat(activeJourney?.name, equalTo(testJourneyName))
     }
 
     @Test
@@ -121,6 +150,6 @@ open class JourneyDaoUnitTest {
 
         val retrievedJourney = db.journeyDao().getActiveJourney().getOrAwaitValue()
 
-        assertThat(retrievedJourney?.current, equalTo(true))
+        assertThat(retrievedJourney?.name, equalTo(journey2.name))
     }
 }

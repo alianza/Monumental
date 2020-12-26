@@ -15,8 +15,7 @@ class ResultsAdapter(
     private val onLandmarkClick: (String) -> Unit,
     private val onLandmarkShare: (String) -> Unit,
     private val onLandmarkSave: (String) -> Unit
-):
-    RecyclerView.Adapter<ResultsAdapter.ViewHolder>() {
+): RecyclerView.Adapter<ResultsAdapter.ViewHolder>() {
 
     private lateinit var context: Context
 

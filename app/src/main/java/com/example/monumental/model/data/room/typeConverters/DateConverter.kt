@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import java.util.*
 
 class DateConverter {
+
     /**
      * Converts a timestamp to a Date
      *

@@ -32,7 +32,6 @@ android {
         sourceCompatibility = "1.8"
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
@@ -71,7 +70,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
 
     // Room persistence library
-    def room_version = "2.2.5"
+    def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

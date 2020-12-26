@@ -17,10 +17,9 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
 
     private val journeyRepository = JourneyRepository(application.applicationContext)
     private val landmarkRepository = LandmarkRepository(application.applicationContext)
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     var journeys = journeyRepository.getJourneys()
-
-    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     /**
      * Inserts new Journey
@@ -60,9 +59,7 @@ class JourneysViewModel(application: Application) : AndroidViewModel(application
      * @param journey Journey to delete
      */
     fun deleteJourney(journey: Journey) {
-        mainScope.launch {
-            journeyRepository.deleteJourney(journey)
-        }
+        mainScope.launch { journeyRepository.deleteJourney(journey) }
     }
 
     /**

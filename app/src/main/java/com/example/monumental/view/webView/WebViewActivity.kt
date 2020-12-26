@@ -33,6 +33,7 @@ class WebViewActivity : AppCompatActivity() {
             if (bundle.getString(NAME) != null) {
                 supportActionBar?.title = bundle.getString(NAME)!!.replace("+", " ")
             }
+
             if (bundle.getString(URL) != null) { // Check for url in bundle
                 webview.settings.javaScriptEnabled = true
                 webview.loadUrl(Uri.parse(bundle.getString(URL)).toString()) // Load webPage url

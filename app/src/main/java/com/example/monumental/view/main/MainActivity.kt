@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         } else { startFirstTimeActivity() } }
 
     /** Checks if first time activity has started in the past */
-    private fun firstTimeActivityHasStarted(): Boolean { return viewModel.firstTimeActivityHasStarted(getString(R.string.pref_previously_started)) }
+    private fun firstTimeActivityHasStarted(): Boolean { return viewModel.hasFirstTimeActivityStarted(getString(R.string.pref_previously_started)) }
     
     /** Start the First Time introduction Activity */
     private fun startFirstTimeActivity() {
