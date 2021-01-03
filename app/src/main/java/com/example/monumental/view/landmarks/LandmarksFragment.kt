@@ -326,5 +326,3 @@ class LandmarksFragment : Fragment() {
         super.onDestroy()
     }
 }
-
-

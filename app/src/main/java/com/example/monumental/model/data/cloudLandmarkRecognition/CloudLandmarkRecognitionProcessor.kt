@@ -70,6 +70,6 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
     }
 
     companion object {
-        private const val TAG = "CloudLmkRecProc"
+        private const val TAG = "CloudLmkRecPrc"
     }
 }
