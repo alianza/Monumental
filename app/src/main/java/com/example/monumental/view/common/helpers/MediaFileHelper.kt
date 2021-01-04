@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.monumental.view.common.helpers
 
 import android.net.Uri
@@ -7,7 +9,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Suppress("DEPRECATION")
 class MediaFileHelper {
 
     /**

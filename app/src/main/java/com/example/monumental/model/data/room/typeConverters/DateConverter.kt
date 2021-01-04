@@ -23,7 +23,7 @@ class DateConverter {
      * @return Long timestamp
      */
     @TypeConverter
-    fun fromDate(date: Date): Long{
+    fun fromDate(date: Date): Long {
         return date.time
     }
 }

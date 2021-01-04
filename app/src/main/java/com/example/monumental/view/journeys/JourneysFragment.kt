@@ -165,12 +165,7 @@ class JourneysFragment : Fragment() {
                             messageString.append((getString(R.string.share_journey_message_middle)))
                         }
                     } else {
-                        messageString.append(
-                            getString(
-                                R.string.share_journey_message_end,
-                                landmark.name
-                            )
-                        )
+                        messageString.append(getString(R.string.share_journey_message_end, landmark.name))
                     }
                 }
 
@@ -180,15 +175,9 @@ class JourneysFragment : Fragment() {
                     putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris)
                     type = "image/*"
                 }
-                startActivity(
-                    Intent.createChooser(shareIntent, "${getString(R.string.share)} ${journey.name}")
-                )
+                startActivity(Intent.createChooser(shareIntent, "${getString(R.string.share)} ${journey.name}"))
             } else {
-                Toast.makeText(
-                    context,
-                    getString(R.string.no_landmarks_to_share, journey.name),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, getString(R.string.no_landmarks_to_share, journey.name), Toast.LENGTH_SHORT).show()
             }
         })
     }

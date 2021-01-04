@@ -33,6 +33,7 @@ import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.landmark.LandmarksViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_new_landmark_view.view.*
+import kotlinx.android.synthetic.main.dialog_saved_landmark_view.*
 import kotlinx.android.synthetic.main.landmarks_fragment.*
 import java.io.File
 import java.net.URI
@@ -276,14 +277,12 @@ class LandmarksFragment : Fragment() {
 
         builder.setNeutralButton(getString(R.string.share)) { _, _ -> landmarkShare(landmark) }
 
-        builder.setMessage(
-            getString(R.string.visited_on) + " " + getString(
+        builder.setMessage(getString(R.string.visited_on) + " " + getString(
                 R.string.date_format,
                 landmark.date?.date.toString(),
                 (landmark.date?.month?.plus(MONTH_OFFSET)).toString(),
                 (landmark.date?.year?.plus(YEAR_OFFSET)).toString()
-            )
-        )
+            ))
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_saved_landmark_view, null)
 
