@@ -48,6 +48,8 @@ class GraphicOverlay(
 ) :
     View(context, attrs) {
     private val lock = Any()
+    private var previewWidth = 0
+    private var previewHeight = 0
     private var widthScaleFactor = 1.0f
     private var heightScaleFactor = 1.0f
     private var facing = CAMERA_FACING_BACK
@@ -129,17 +131,18 @@ class GraphicOverlay(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-//        previewWidth = this.width
-//        previewHeight = this.height
+        previewWidth = this.width
+        previewHeight = this.height
 
         synchronized(lock) {
-//            if (previewWidth != 0 && previewHeight != 0) {
-//                widthScaleFactor = this.width.toFloat() / previewWidth
-//                heightScaleFactor = this.height.toFloat() / previewHeight
+            if (previewWidth != 0 && previewHeight != 0) {
+                widthScaleFactor = this.width.toFloat() / previewWidth
+                heightScaleFactor = this.height.toFloat() / previewHeight
+            }
 
-                widthScaleFactor = 1.5F
+                            widthScaleFactor = 1.5F
                 heightScaleFactor = 1.5F
-//            }
+
             graphics.forEach { graphic ->
                 graphic.draw(canvas)
             }
