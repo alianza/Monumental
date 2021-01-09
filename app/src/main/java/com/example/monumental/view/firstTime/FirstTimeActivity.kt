@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.monumental.view.firstTime
 
 import android.animation.ObjectAnimator

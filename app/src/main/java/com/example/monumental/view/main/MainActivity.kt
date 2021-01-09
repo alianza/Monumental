@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 camera = cameraHelper.getCameraInstance()
                 preview = camera?.let { CameraPreview(this, it) }
                 cameraHelper.setDefaultParameters(camera!!)
-                preview?.also { val preview: FrameLayout = findViewById(R.id.camera_preview); preview.addView(it) } // Set the Preview view as the content of the activity
+                preview?.also { val preview: FrameLayout = camera_preview; preview.addView(it) } // Set the Preview view as the content of the activity
                 picture = Camera.PictureCallback { data, _ ->
                     pictureFile = viewModel.getOutputMediaFile() ?: run {
                         Log.d(TAG, ("Error creating media file, check storage permissions"))
@@ -280,9 +280,7 @@ class MainActivity : AppCompatActivity() {
         view.rvResults.adapter = resultsAdapter
         if (resultsAdapter.itemCount == 0) { // If no results show empty dialog view
             view.dialog_results_title.text = getString(R.string.no_landmark_tip)
-            dialog.setNeutralButton(getString(R.string.show_intro)) { it, _ ->
-                startFirstTimeActivity()
-                it.dismiss() } }
+            dialog.setNeutralButton(getString(R.string.show_intro)) { it, _ -> startFirstTimeActivity(); it.dismiss() } }
         resultsAdapter.notifyDataSetChanged()
         dialog.setView(view)
         this.dialog = dialog.show() }

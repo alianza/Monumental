@@ -22,7 +22,7 @@ class CloudLandmarkRecognitionProcessor : VisionProcessorBase<List<FirebaseVisio
     /** Set options for Cloud Landmark Detector */
     init {
         val options = FirebaseVisionCloudDetectorOptions.Builder()
-            .setMaxResults(10)
+            .setMaxResults(5)
             .setModelType(FirebaseVisionCloudDetectorOptions.STABLE_MODEL)
             .build()
 
