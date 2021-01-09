@@ -74,11 +74,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var journeysOptionsItem: MenuItem
     private lateinit var landmarksList: MutableLiveData<LandmarkResultList>
     private lateinit var viewModel: MainViewModel
-            lateinit var fragmentManager: FragmentManager
     private lateinit var cameraHelper: CameraHelper
     private lateinit var customTabHelper: CustomTabHelper
     private lateinit var imageHelper: ImageHelper
     private lateinit var resultsAdapter: ResultsAdapter
+            lateinit var fragmentManager: FragmentManager
 
     /** onCreate method to set layout, theme and initiate the views */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Catch back press event */
     override fun onBackPressed() {
+        if (pictureFile !== null && imageUri !== null) { resetPicture(); return }
         if (fragmentManager.closeLandmarkFragment()) { return }
         if (fragmentManager.closeJourneyFragment()) { resetViews(); return }
         super.onBackPressed()
@@ -213,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                 landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
                 resultsAdapter.notifyDataSetChanged()
                 tvNoResults.visibility = View.INVISIBLE
-            } else if (tvNoResults.visibility == View.INVISIBLE) { tvNoResults.visibility = View.VISIBLE }
+            } else if (pictureFile !== null && imageUri !== null) { tvNoResults.visibility = View.VISIBLE }
             progressBarHolder.visibility = View.GONE })
 
         viewModel.activeJourney.observe(this, { journey -> if (journey == null) // Listener for current active Journey
@@ -222,7 +223,6 @@ class MainActivity : AppCompatActivity() {
         resultsButton.setOnClickListener { showResultsDialog() } // Listener for resultsButton onclick
 
         takeImageButton.setOnClickListener { // Listener for the takeImageButton
-            tvNoResults.visibility = View.INVISIBLE
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
                 if (pictureFile == null && imageUri == null) { takePicture() } else { resetPicture() }
             } else { requestPermissions() } }
@@ -263,6 +263,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Resets the current taken picture */
     private fun resetPicture() {
+        tvNoResults.visibility = View.INVISIBLE
         progressBarHolder.visibility = View.INVISIBLE
         pictureFile = null
         imageUri = null
