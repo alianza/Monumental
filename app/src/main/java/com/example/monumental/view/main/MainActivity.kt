@@ -3,7 +3,6 @@
 package com.example.monumental.view.main
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -32,7 +31,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -66,12 +64,9 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var picture: Camera.PictureCallback? = null
     private var currentJourney: Journey? = null
+    private var dialog: AlertDialog? = null
 
-    val actionDelayVal = 250L // Delay Value for delaying user interactions so animations can finish
-    private var dialog: AlertDialog? = null // Variable to reference the results dialog
-
-    private lateinit var flashOptionsItem: MenuItem
-    private lateinit var journeysOptionsItem: MenuItem
+    private lateinit var menu: Menu
     private lateinit var landmarksList: MutableLiveData<LandmarkResultList>
     private lateinit var viewModel: MainViewModel
     private lateinit var cameraHelper: CameraHelper
@@ -93,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Catch back press event */
     override fun onBackPressed() {
-        if (pictureFile !== null && imageUri !== null) { resetPicture(); return }
+        if (isPictureTaken()) { resetPicture(); return }
         if (fragmentManager.closeLandmarkFragment()) { return }
         if (fragmentManager.closeJourneyFragment()) { resetViews(); return }
         super.onBackPressed()
@@ -101,22 +96,21 @@ class MainActivity : AppCompatActivity() {
 
     /** Inflate options menu */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.still_image_menu, menu)
-        this.flashOptionsItem = menu?.getItem(0)!!
-        this.journeysOptionsItem = menu.getItem(1)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        this.menu = menu!!
         return true }
 
     /** Settings button intent */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.flash -> { if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                        cameraHelper.toggleFlash(item, camera!!, this) } else { requestPermissions() }
-                        return true }
-            R.id.journeys -> { if (fragmentManager.toggleJourneyFragment()) { // is open
-                        camera?.stopPreview()
-                        item.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_explore_off_24)
-                    } else { resetViews() } // is closed
-                             return true } }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { when (item.itemId) {
+        R.id.flash -> { if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
+                cameraHelper.toggleFlash(item, camera!!, this)
+            } else { requestPermissions() }
+            return true }
+        R.id.journeys -> { if (fragmentManager.toggleJourneyFragment()) { // is opened
+                camera?.stopPreview()
+                item.setIcon(R.drawable.ic_baseline_explore_off_24)
+            } else { resetViews() } // is closed
+            return true } }
         return super.onOptionsItemSelected(item) }
 
     /** Handle touch events and hide keyboard when moving focus from editText */
@@ -139,15 +133,14 @@ class MainActivity : AppCompatActivity() {
             progressBarHolder.visibility = View.VISIBLE
             tvNoResults.visibility = View.INVISIBLE
             imageUri = data!!.data // In this case, imageUri is returned by the chooser, save it.
-            takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp))
+            takeImageButton.setImageResource(R.drawable.ic_autorenew_black_24dp)
             tryReloadAndDetectInImage() } else if (requestCode == REQUEST_CODE_FIRST_TIME && resultCode == Activity.RESULT_OK) { // When return from First Time activity
                 initViews(); if (imageUri == null) { Handler(Looper.getMainLooper()).postDelayed({
                 tvNoResults.visibility = View.INVISIBLE; }, 0) } } }
 
     /** Request permissions result */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) { PERMISSIONS_REQUEST_CODE -> { setupCamera() } } // When permissions granted, start the camera(preview)
-    }
+        when (requestCode) {PERMISSIONS_REQUEST_CODE -> { setupCamera() } } } // When permissions granted, start the camera(preview)
 
     /** Start everything up */
     private fun initViews() {
@@ -159,9 +152,6 @@ class MainActivity : AppCompatActivity() {
             setupListeners()
         } else { startFirstTimeActivity() } }
 
-    /** Checks if first time activity has started in the past */
-    private fun firstTimeActivityHasStarted(): Boolean { return viewModel.hasFirstTimeActivityStarted(getString(R.string.pref_previously_started)) }
-    
     /** Start the First Time introduction Activity */
     private fun startFirstTimeActivity() {
         val intent = Intent(this, FirstTimeActivity::class.java)
@@ -179,7 +169,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestPermissions() {
         requestPermissions(
             arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA,), PERMISSIONS_REQUEST_CODE) }
+            Manifest.permission.CAMERA,), PERMISSIONS_REQUEST_CODE) }
 
     /** setup the resultsSpinner(Adapter) */
     private fun setupResultsRecyclerView() {
@@ -194,7 +184,7 @@ class MainActivity : AppCompatActivity() {
             if (hasCamera()) {
                 camera = cameraHelper.getCameraInstance()
                 preview = camera?.let { CameraPreview(this, it) }
-                cameraHelper.setParameters(camera!!)
+                cameraHelper.setDefaultParameters(camera!!)
                 preview?.also { val preview: FrameLayout = findViewById(R.id.camera_preview); preview.addView(it) } // Set the Preview view as the content of the activity
                 picture = Camera.PictureCallback { data, _ ->
                     pictureFile = viewModel.getOutputMediaFile() ?: run {
@@ -206,7 +196,6 @@ class MainActivity : AppCompatActivity() {
                 tryReloadAndDetectInImage() } } } }
 
     /** Setup all event listeners */
-    @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
         landmarksList.observe(this, { landmarkResultList -> // Listener for landmark results
             if (landmarkResultList.results.isNotEmpty()) {
@@ -214,7 +203,7 @@ class MainActivity : AppCompatActivity() {
                 landmarkResultList.results.forEach { resultsAdapter.landmarks.add(it.name) }
                 resultsAdapter.notifyDataSetChanged()
                 tvNoResults.visibility = View.INVISIBLE
-            } else if (pictureFile !== null && imageUri !== null) { tvNoResults.visibility = View.VISIBLE }
+            } else if (isPictureTaken()) { tvNoResults.visibility = View.VISIBLE }
             progressBarHolder.visibility = View.GONE })
 
         viewModel.activeJourney.observe(this, { journey -> if (journey == null) // Listener for current active Journey
@@ -224,7 +213,7 @@ class MainActivity : AppCompatActivity() {
 
         takeImageButton.setOnClickListener { // Listener for the takeImageButton
             if (checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_GRANTED) {
-                if (pictureFile == null && imageUri == null) { takePicture() } else { resetPicture() }
+                if (!isPictureTaken()) { takePicture() } else { resetPicture() }
             } else { requestPermissions() } }
 
         getImageButton.setOnClickListener { startChooseImageIntentForResult() } // Listener for get image from local storage button
@@ -246,8 +235,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.createLandmark(Landmark(null, landmark, imageUri.toString(), Date(), currentJourney?.id))
             Toast.makeText(this, getString(R.string.saved_landmark, landmark, currentJourney?.name), Toast.LENGTH_LONG).show() }
      else { Toast.makeText(this, getString(R.string.no_current_journey), Toast.LENGTH_LONG).show()
-            onOptionsItemSelected(journeysOptionsItem)
-            this.dialog?.dismiss() } }
+            fragmentManager.toggleJourneyFragment(); this.dialog?.dismiss() } }
 
     /** Callback when clicked on landmark share button in ResultsRecyclerView */
     private fun onLandmarkResultShare(landmark: String) {
@@ -267,7 +255,7 @@ class MainActivity : AppCompatActivity() {
         progressBarHolder.visibility = View.INVISIBLE
         pictureFile = null
         imageUri = null
-        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_camera_black_24dp))
+        takeImageButton.setImageResource(R.drawable.ic_camera_black_24dp)
         camera?.startPreview()
         previewPane.setImageBitmap(null)
         val graphicOverlay = GraphicOverlay(this, null)
@@ -279,7 +267,7 @@ class MainActivity : AppCompatActivity() {
     private fun takePicture() {
         progressBarHolder.visibility = View.VISIBLE
         camera?.takePicture(null, null, picture)
-        takeImageButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_autorenew_black_24dp)) }
+        takeImageButton.setImageResource(R.drawable.ic_autorenew_black_24dp) }
 
     /** Check if this device has a camera */
     private fun hasCamera(): Boolean { return this.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) }
@@ -302,7 +290,7 @@ class MainActivity : AppCompatActivity() {
     /** Resets the activity and starts the camera preview */
     private fun resetViews() {
         camera?.startPreview()
-        invalidateOptionsMenu()
+        this.menu.findItem(R.id.journeys).setIcon(R.drawable.ic_baseline_explore_24)
         supportActionBar?.title = getString(R.string.app_name) }
 
     /** Choose image activity */
@@ -319,6 +307,12 @@ class MainActivity : AppCompatActivity() {
                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                     || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                     || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) } ?: false }
+
+    /** Checks if a picture is currently taken */
+    private fun isPictureTaken() = (!(pictureFile == null && imageUri == null))
+
+    /** Checks if first time activity has started in the past */
+    private fun firstTimeActivityHasStarted() = (viewModel.hasFirstTimeActivityStarted(getString(R.string.pref_previously_started)))
 
     /** Reload and detect in current image */
     private fun tryReloadAndDetectInImage() {

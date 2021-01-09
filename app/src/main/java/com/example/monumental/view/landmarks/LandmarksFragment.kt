@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
+import com.example.monumental.BuildConfig
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.model.entity.Landmark
@@ -48,7 +49,6 @@ class LandmarksFragment : Fragment() {
         private const val CHOOSE_IMAGE_REQUEST_CODE = 1002
     }
 
-    private var actionDelayVal: Long = 0
     private lateinit var viewModel: LandmarksViewModel
 
     private var landmarks = arrayListOf<Landmark>()
@@ -71,7 +71,6 @@ class LandmarksFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(LandmarksViewModel::class.java)
-        actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
         journey = arguments?.getParcelable("Journey")!!
 
         instantiateClasses()
@@ -175,7 +174,7 @@ class LandmarksFragment : Fragment() {
                 viewModel.createLandmark(Landmark(null, landmarkName!!, imageUri.toString(), Date(), journey.id))
                 Toast.makeText(context, context?.getString(R.string.saved_landmark, landmarkName, journey.name), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
-            }, actionDelayVal)
+            }, BuildConfig.ACTION_DELAY_VAL.toLong())
         }
 
         builder.setNegativeButton("Cancel", null)
@@ -187,8 +186,8 @@ class LandmarksFragment : Fragment() {
                 dialogView.etLandmarkName.requestFocus()
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                 imm?.showSoftInput(dialogView.etLandmarkName, InputMethodManager.SHOW_IMPLICIT)
-            }, actionDelayVal)
-        }, actionDelayVal)
+            }, BuildConfig.ACTION_DELAY_VAL.toLong())
+        }, BuildConfig.ACTION_DELAY_VAL.toLong())
     }
 
     /**
@@ -251,7 +250,7 @@ class LandmarksFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({
                 deleteLandmark(landmark)
                 dialog.dismiss()
-            }, actionDelayVal)
+            }, BuildConfig.ACTION_DELAY_VAL.toLong())
         }
 
         builder.setNegativeButton("No", null)
@@ -259,7 +258,7 @@ class LandmarksFragment : Fragment() {
         val alert: AlertDialog = builder.create()
         Handler(Looper.getMainLooper()).postDelayed({
             alert.show()
-        }, actionDelayVal)
+        }, BuildConfig.ACTION_DELAY_VAL.toLong())
     }
 
     /**
@@ -304,7 +303,7 @@ class LandmarksFragment : Fragment() {
     private fun closeFragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             (activity as MainActivity?)?.fragmentManager?.closeLandmarkFragment()
-        }, actionDelayVal)
+        }, BuildConfig.ACTION_DELAY_VAL.toLong())
     }
 
     private fun deleteLandmark(landmark: Landmark) {

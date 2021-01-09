@@ -14,18 +14,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.monumental.BuildConfig
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.journey.JourneysViewModel
 import kotlinx.android.synthetic.main.journeys_fragment.*
 import java.lang.StringBuilder
+import kotlin.properties.Delegates
 
 class JourneysFragment : Fragment() {
 
     companion object { fun newInstance() = JourneysFragment() }
 
-    private var actionDelayVal: Long = 0
     private var journeys = arrayListOf<Journey>()
 
     private lateinit var viewModel: JourneysViewModel
@@ -41,7 +42,6 @@ class JourneysFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(JourneysViewModel::class.java)
-        actionDelayVal = (activity as MainActivity?)?.actionDelayVal!!
 
         initViews()
         setListeners()
@@ -52,7 +52,9 @@ class JourneysFragment : Fragment() {
      * Sets up JourneysAdapter and Observers
      */
     private fun initViews() {
-        journeysAdapter = JourneysAdapter(journeys, actionDelayVal,
+        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
+
+        journeysAdapter = JourneysAdapter(journeys,
             { journey: Journey -> journeyClick(journey) },
             { journey: Journey -> journeyDelete(journey) },
             { newName: String, journey: Journey -> journeyEdit(newName, journey) },
@@ -64,10 +66,9 @@ class JourneysFragment : Fragment() {
         viewModel.journeys.observe(viewLifecycleOwner, { journeys ->
             if (journeys != null) {
                 this.journeys.clear()
-                journeys.forEach { journey ->
-                    this.journeys.add(journey)
-                }
+                journeys.forEach { journey -> this.journeys.add(journey) }
             }
+
             this.journeys.sortByDescending { it.id }
 
             journeysAdapter.notifyDataSetChanged()
@@ -75,8 +76,6 @@ class JourneysFragment : Fragment() {
             if (this.journeys.isEmpty()) { tvNoJourneys.visibility = View.VISIBLE }
             else { tvNoJourneys.visibility = View.GONE }
         })
-
-        (activity as MainActivity?)?.supportActionBar?.title = getString(R.string.journeys)
     }
 
     /**
@@ -94,9 +93,7 @@ class JourneysFragment : Fragment() {
      * @param journey Journey that has been Clicked
      */
     private fun journeyClick(journey: Journey) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            (activity as MainActivity?)?.fragmentManager?.openLandmarkFragment(journey)
-        }, actionDelayVal)
+        (activity as MainActivity?)?.fragmentManager?.openLandmarkFragment(journey)
     }
 
     /**
@@ -119,9 +116,7 @@ class JourneysFragment : Fragment() {
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
 
         val alert: AlertDialog = builder.create()
-        Handler(Looper.getMainLooper()).postDelayed({
-            alert.show()
-        }, actionDelayVal)
+        alert.show()
     }
 
     private fun deleteJourney(journey: Journey) {

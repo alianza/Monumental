@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.monumental.BuildConfig
 import com.example.monumental.R
 import com.example.monumental.model.entity.Journey
 import kotlinx.android.synthetic.main.journey_item.view.*
@@ -18,13 +19,11 @@ import kotlinx.android.synthetic.main.result_item.view.*
 
 class JourneysAdapter(
     var journeys: ArrayList<Journey>,
-    val actionDelayVal: Long,
     private val onJourneyClick: (Journey) -> Unit,
     private val onJourneyDelete: (Journey) -> Unit,
     private val onJourneyEdit: (String, Journey) -> Unit,
     private val onJourneyShare: (Journey) -> Unit
-):
-    RecyclerView.Adapter<JourneysAdapter.ViewHolder>() {
+): RecyclerView.Adapter<JourneysAdapter.ViewHolder>() {
 
     private lateinit var context: Context
 
@@ -87,13 +86,13 @@ class JourneysAdapter(
             itemView.ivEdit.setOnClickListener {
                 Handler(Looper.getMainLooper()).postDelayed({
                     editJourney(itemView)
-                }, actionDelayVal)
+                }, BuildConfig.ACTION_DELAY_VAL.toLong())
             }
 
             itemView.ivDone.setOnClickListener {
                 Handler(Looper.getMainLooper()).postDelayed({
                     updateJourney(itemView)
-                }, actionDelayVal)
+                }, BuildConfig.ACTION_DELAY_VAL.toLong())
             }
         }
 
