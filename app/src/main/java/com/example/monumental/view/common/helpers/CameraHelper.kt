@@ -3,14 +3,16 @@
 package com.example.monumental.view.common.helpers
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.hardware.Camera
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.monumental.R
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 class CameraHelper {
 
@@ -19,7 +21,7 @@ class CameraHelper {
      *
      * @param cameraInstance Camera instance to set parameters for
      */
-    fun setParameters (cameraInstance: Camera) {
+    fun setDefaultParameters (cameraInstance: Camera) {
         val params: Camera.Parameters? = cameraInstance.parameters
         // Check for focus mode support
         if (cameraInstance.parameters?.supportedFocusModes!!.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
