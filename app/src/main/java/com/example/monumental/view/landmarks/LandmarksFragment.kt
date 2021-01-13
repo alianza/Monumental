@@ -34,7 +34,6 @@ import com.example.monumental.view.main.MainActivity
 import com.example.monumental.viewModel.landmark.LandmarksViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_new_landmark_view.view.*
-import kotlinx.android.synthetic.main.dialog_saved_landmark_view.*
 import kotlinx.android.synthetic.main.landmarks_fragment.*
 import java.io.File
 import java.net.URI
@@ -290,6 +289,8 @@ class LandmarksFragment : Fragment() {
         }
 
         Picasso.get().load(File(URI.create(landmark.imgUri))).into(imageView)
+
+        //  Glide.with(requireContext()).load(File(URI.create(landmark.imgUri))).into(imageView) Glide Technique
 
         builder.setView(dialogView)
         val alertDialog: AlertDialog = builder.create()
