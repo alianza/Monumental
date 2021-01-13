@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.monumental.model.entity.LandmarkResult
 import com.example.monumental.model.entity.LandmarkResultList
+import com.example.monumental.view.common.CloudLandmarkGraphic
 import com.example.monumental.view.common.FrameMetadata
 import com.example.monumental.view.common.GraphicOverlay
 import com.google.android.gms.tasks.Task

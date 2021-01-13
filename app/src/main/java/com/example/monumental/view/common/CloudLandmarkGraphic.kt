@@ -1,11 +1,10 @@
-package com.example.monumental.model.data.cloudLandmarkRecognition
+package com.example.monumental.view.common
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.text.TextPaint
-import com.example.monumental.view.common.GraphicOverlay
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 
 /** Graphic instance for rendering detected landmark.  */

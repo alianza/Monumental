@@ -1,9 +1,7 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.monumental.view.common
 
 import android.graphics.*
-import android.hardware.Camera.CameraInfo
+import android.hardware.Camera.*
 import android.util.Log
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import java.io.ByteArrayOutputStream

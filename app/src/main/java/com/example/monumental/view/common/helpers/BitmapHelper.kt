@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.monumental.view.common.helpers
 
 import android.content.ContentResolver
@@ -54,7 +52,7 @@ class BitmapHelper {
      * @return Bitmap that's retrieved
      */
     fun getBitmap(contentResolver: ContentResolver, imageUri: Uri): Bitmap? {
-        return if (Build.VERSION.SDK_INT < 29) {
+        return if (Build.VERSION.SDK_INT < 29) { // Conditional compatibility statement API based
             MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
         } else {
             val source = ImageDecoder.createSource(contentResolver, imageUri)
