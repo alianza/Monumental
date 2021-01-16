@@ -1,5 +1,5 @@
 # Monumental Android Application
-Monumental is and Android Application written by Jan-Willem van Bremen
+Monumental is an Android Application written by Jan-Willem van Bremen
 ## Intro
 More and more people go on far away ventures to foreign countries to see the world. But traveling is expensive and a lot to organize. Because of that many people travel without a dedicated guide to show them around and give information about the local Landmarks wherever they might be visiting. They are left handling tourist booklets offering outdated information on top of being a hassle to carry around and consult.
 
